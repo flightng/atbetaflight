@@ -71,7 +71,7 @@ typedef struct adcTagMap_s {
 typedef struct adcDevice_s {
     ADC_TypeDef* ADCx;
     rccPeriphTag_t rccADC;
-#if !defined(USE_DMA_SPEC)
+#if !defined(USE_DMA_SPEC)//FixME 这里可能造成了一个bug，没有理清楚为什么USE_DMA_SPEC 定义没了
     dmaResource_t* dmaResource;
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
     uint32_t channel;
@@ -84,6 +84,9 @@ typedef struct adcDevice_s {
 #if defined(STM32H7) || defined(STM32G4)
     uint8_t irq;
     uint32_t channelBits;
+#endif
+#if defined(AT32F4) //for at32f4 adc request adc1 -》 dma1  channel1
+    dmaResource_t* dmaResource;
 #endif
 } adcDevice_t;
 
@@ -142,4 +145,16 @@ void adcGetChannelValues(void);
 #define TEMPSENSOR_CAL_VREFANALOG          (3300U)
 #define TEMPSENSOR_CAL1_TEMP               ((int32_t)  30)
 #define TEMPSENSOR_CAL2_TEMP               ((int32_t) 110)
+#endif
+
+#if defined(AT32F4) && defined(STM32F1)
+#define VREFINT_CAL_ADDR                   ((uint16_t*) ((uint32_t)0x1FFFF7BAU)) /* Internal voltage reference, address of parameter VREFINT_CAL: VrefInt ADC raw data acquired at temperature 30 DegC (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
+#define VREFINT_CAL_VREF                   ((uint32_t) 3300U)                    /* Analog voltage reference (Vref+) value with which temperature sensor has been calibrated in production (tolerance: +-10 mV) (unit: mV). */
+/* Temperature sensor */
+#define TEMPSENSOR_CAL1_ADDR               ((uint16_t*) ((uint32_t)0x1FFFF7B8U)) /* Internal temperature sensor, address of parameter TS_CAL1: On STM32F3, temperature sensor ADC raw data acquired at temperature  25 DegC (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
+#define TEMPSENSOR_CAL2_ADDR               ((uint16_t*) ((uint32_t)0x1FFFF7C2U)) /* Internal temperature sensor, address of parameter TS_CAL2: On STM32F3, temperature sensor ADC raw data acquired at temperature 110 DegC (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
+#define TEMPSENSOR_CAL1_TEMP               (( int32_t)   25)                     /* Internal temperature sensor, temperature at which temperature sensor has been calibrated in production for data into TEMPSENSOR_CAL1_ADDR (tolerance: +-5 DegC) (unit: DegC). */
+#define TEMPSENSOR_CAL2_TEMP               (( int32_t)  110)                     /* Internal temperature sensor, temperature at which temperature sensor has been calibrated in production for data into TEMPSENSOR_CAL2_ADDR (tolerance: +-5 DegC) (unit: DegC). */
+#define TEMPSENSOR_CAL_VREFANALOG          ((uint32_t) 3300U)                    /* Analog voltage reference (Vref+) voltage with which temperature sensor has been calibrated in production (+-10 mV) (unit: mV). */
+
 #endif

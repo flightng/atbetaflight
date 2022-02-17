@@ -80,14 +80,14 @@ void mcoConfigure(MCODevice_e device, const mcoConfig_t *config)
     case MCODEV_2: // MCO2 on PC9
         io = IOGetByTag(DEFIO_TAG_E(PC9));
         IOInit(io, OWNER_MCO, 2);
-#if defined(STM32F7)
-        HAL_RCC_MCOConfig(RCC_MCO2, RCC_MCO2SOURCE_PLLI2SCLK, RCC_MCODIV_4);
-        IOConfigGPIOAF(io, IO_CONFIG(GPIO_MODE_AF_PP, GPIO_SPEED_FREQ_VERY_HIGH,  GPIO_NOPULL), GPIO_AF0_MCO);
-#else
-        // All F4s
-        RCC_MCO2Config(RCC_MCO2Source_PLLI2SCLK, RCC_MCO2Div_4);
-        IOConfigGPIOAF(io, IO_CONFIG(GPIO_Mode_AF, GPIO_Speed_50MHz, GPIO_OType_PP, GPIO_PuPd_NOPULL), GPIO_AF_MCO);
-#endif
+	#if defined(STM32F7)
+			HAL_RCC_MCOConfig(RCC_MCO2, RCC_MCO2SOURCE_PLLI2SCLK, RCC_MCODIV_4);
+			IOConfigGPIOAF(io, IO_CONFIG(GPIO_MODE_AF_PP, GPIO_SPEED_FREQ_VERY_HIGH,  GPIO_NOPULL), GPIO_AF0_MCO);
+	#else
+			// All F4s
+			RCC_MCO2Config(RCC_MCO2Source_PLLI2SCLK, RCC_MCO2Div_4);
+			IOConfigGPIOAF(io, IO_CONFIG(GPIO_Mode_AF, GPIO_Speed_50MHz, GPIO_OType_PP, GPIO_PuPd_NOPULL), GPIO_AF_MCO);
+	#endif
         break;
     }
 #elif defined(STM32G4)
@@ -97,6 +97,15 @@ void mcoConfigure(MCODevice_e device, const mcoConfig_t *config)
     io = IOGetByTag(DEFIO_TAG_E(PA8));
     IOInit(io, OWNER_MCO, 1);
     HAL_RCC_MCOConfig(RCC_MCO, mcoSources[config->source], mcoDividers[config->divider]);
+
+#elif defined(AT32F4)
+    // AT32F4 only supports one MCO on PA8,use sys clk for default
+    UNUSED(device);
+
+    io = IOGetByTag(DEFIO_TAG_E(PA8));
+    IOInit(io, OWNER_MCO, 1);
+    RCC_MCOConfig(config->source);
+
 #else
 #error Unsupported MCU
 #endif

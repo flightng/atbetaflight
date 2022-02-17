@@ -42,7 +42,7 @@ typedef uint32_t timCCR_t;
 typedef uint32_t timCCER_t;
 typedef uint32_t timSR_t;
 typedef uint32_t timCNT_t;
-#elif defined(STM32F1)
+#elif defined(STM32F1) || defined(AT32F4)
 typedef uint16_t timCCR_t;
 typedef uint16_t timCCER_t;
 typedef uint16_t timSR_t;
@@ -178,6 +178,9 @@ extern const timerHardware_t timerHardware[];
 
 #define FULL_TIMER_CHANNEL_COUNT 93 // XXX Need review
 
+#elif defined(AT32F4)
+#define FULL_TIMER_CHANNEL_COUNT 28 // XXX Need review
+
 #endif
 
 extern const timerHardware_t fullTimerHardware[];
@@ -185,7 +188,7 @@ extern const timerHardware_t fullTimerHardware[];
 #define TIMER_CHANNEL_COUNT FULL_TIMER_CHANNEL_COUNT
 #define TIMER_HARDWARE fullTimerHardware
 
-#if defined(STM32F7) || defined(STM32F4)
+#if defined(STM32F7) || defined(STM32F4) ||defined(AT32F4)
 
 #if defined(STM32F411xE)
 #define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) | TIM_N(9) | TIM_N(10) | TIM_N(11) )
@@ -196,10 +199,6 @@ extern const timerHardware_t fullTimerHardware[];
 #elif defined(STM32F3)
 
 #define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(6) | TIM_N(7) | TIM_N(8) | TIM_N(15) | TIM_N(16) | TIM_N(17) )
-
-#elif defined(STM32F1)
-
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) )
 
 #elif defined(STM32H7)
 

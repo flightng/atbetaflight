@@ -111,7 +111,7 @@ void config_streamer_start(config_streamer_t *c, uintptr_t base, int size)
 #if defined(CONFIG_IN_RAM) || defined(CONFIG_IN_FILE) || defined(CONFIG_IN_EXTERNAL_FLASH)
     // NOP
 #elif defined(CONFIG_IN_FLASH)
-#if defined(STM32F10X)
+#if defined(STM32F10X) || defined(AT32F4)
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
 #elif defined(STM32F303)
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);

@@ -28,12 +28,12 @@
 // -Wpadded can be turned on to check padding of structs
 //#pragma GCC diagnostic warning "-Wpadded"
 
-#ifdef STM32F1
-#define MINIMAL_CLI
-// Using RX DMA disables the use of receive callbacks
-#define USE_UART1_RX_DMA
-#define USE_UART1_TX_DMA
-#endif
+//#ifdef STM32F1
+//#define MINIMAL_CLI
+//// Using RX DMA disables the use of receive callbacks
+//#define USE_UART1_RX_DMA
+//#define USE_UART1_TX_DMA
+//#endif
 
 #ifdef STM32F3
 #define MINIMAL_CLI
@@ -68,6 +68,26 @@
 #define USE_OVERCLOCK
 #endif
 #endif // STM32F4
+
+#ifdef AT32F4
+#define USE_DSHOT
+#define USE_DSHOT_BITBANG
+#define USE_DSHOT_TELEMETRY
+#define USE_DSHOT_TELEMETRY_STATS
+#define USE_RPM_FILTER
+#define USE_DYN_IDLE
+#define USE_DYN_NOTCH_FILTER
+#define USE_ADC_INTERNAL
+#define USE_USB_CDC_HID //will be support
+#define USE_USB_MSC
+#define USE_PERSISTENT_MSC_RTC
+#define USE_MCO
+#define USE_DMA_SPEC
+#define USE_TIMER_MGMT
+#define USE_PERSISTENT_OBJECTS
+#define USE_CUSTOM_DEFAULTS_ADDRESS
+#define USE_LATE_TASK_STATISTICS
+#endif // AT32F4
 
 #ifdef STM32F7
 #define USE_ITCM_RAM

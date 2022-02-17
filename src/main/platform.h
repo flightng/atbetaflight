@@ -138,6 +138,24 @@
 #define STM32F1
 #endif
 
+#elif defined(AT32F403AX)
+
+#include "stm32f10x_conf.h"
+#include "stm32f10x_gpio.h"
+#include "core_cm3.h"
+
+// Chip Unique ID on F103
+#define U_ID_0 (*(uint32_t*)0x1FFFF7E8)
+#define U_ID_1 (*(uint32_t*)0x1FFFF7EC)
+#define U_ID_2 (*(uint32_t*)0x1FFFF7F0)
+
+#ifndef STM32F1
+	#define STM32F1
+#endif
+#ifndef AT32F4
+	#define AT32F4
+#endif
+
 #elif defined(SIMULATOR_BUILD)
 
 // Nop
