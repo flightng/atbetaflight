@@ -489,10 +489,12 @@ static const dmaPeripheralMapping_t dmaPeripheralMapping[18] = {
     { DMA_PERIPH_ADC,     ADCDEV_2, { DMA(2, 1) } },
 #endif
     { DMA_PERIPH_ADC,     ADCDEV_3, { DMA(2, 5) } },
-#ifdef ADC24_DMA_REMAP
-    { DMA_PERIPH_ADC,     ADCDEV_4, { DMA(2, 4) } },
-#else
-    { DMA_PERIPH_ADC,     ADCDEV_4, { DMA(2, 2) } },
+#ifndef AT32F4
+	#ifdef ADC24_DMA_REMAP
+		{ DMA_PERIPH_ADC,     ADCDEV_4, { DMA(2, 4) } },
+	#else
+		{ DMA_PERIPH_ADC,     ADCDEV_4, { DMA(2, 2) } },
+	#endif
 #endif
 #endif
 
@@ -641,10 +643,12 @@ const dmaChannelSpec_t *dmaGetChannelSpecByTimer(const timerHardware_t *timer)
 }
 
 // dmaGetOptionByTimer is called by pgResetFn_timerIOConfig to find out dmaopt for pre-configured timer.
-
+//at32 无法不支持预先配置dma
 dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
 {
-#if defined(STM32H7) || defined(STM32G4)
+#if defined( AT32F4)
+//no op
+#elif defined(STM32H7) || defined(STM32G4)
     for (unsigned opt = 0; opt < ARRAYLEN(dmaChannelSpec); opt++) {
         if (timer->dmaRefConfigured == dmaChannelSpec[opt].ref) {
                 return (dmaoptValue_t)opt;

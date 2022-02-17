@@ -52,6 +52,10 @@ const timerDef_t timerDefinitions[HARDWARE_TIMER_DEFINITION_COUNT] = {
 uint32_t timerClock(TIM_TypeDef *tim)
 {
     UNUSED(tim);
+#ifndef AT32F4
     return SystemCoreClock;
+#else
+    return SystemCoreClock/2;
+#endif
 }
 #endif

@@ -507,7 +507,7 @@ void init(void)
 #if defined(STM32F4) || defined(STM32F7)
     // F4 and F7 support MCO on PA8 and MCO2 on PC9, but only MCO2 is supported for now
     mcoConfigure(MCODEV_2, mcoConfig(MCODEV_2));
-#elif defined(STM32G4)
+#elif defined(STM32G4)|| defined(AT32F4)
     // G4 only supports one MCO on PA8
     mcoConfigure(MCODEV_1, mcoConfig(MCODEV_1));
 #else

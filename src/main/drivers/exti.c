@@ -150,7 +150,7 @@ void EXTIConfig(IO_t io, extiCallbackRec_t *cb, int irqPriority, ioConfig_t conf
 #else
     IOConfigGPIO(io, config);
 
-#if defined(STM32F10X)
+#if defined(STM32F10X) ||defined(AT32F4)
     GPIO_EXTILineConfig(IO_GPIO_PortSource(io), IO_GPIO_PinSource(io));
 #elif defined(STM32F303xC)
     SYSCFG_EXTILineConfig(IO_EXTI_PortSourceGPIO(io), IO_EXTI_PinSource(io));

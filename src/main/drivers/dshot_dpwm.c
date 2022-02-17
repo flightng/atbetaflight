@@ -113,7 +113,12 @@ static bool dshotPwmEnableMotors(void)
     for (int i = 0; i < dshotPwmDevice.count; i++) {
         motorDmaOutput_t *motor = getMotorDmaOutput(i);
         const IO_t motorIO = IOGetByTag(motor->timerHardware->tag);
+#if defined(STM32F1) && defined(AT32F4)
+    //init gpio pin using bus_spi_config
+    IOConfigGPIO(motorIO,motor->iocfg);
+#else
         IOConfigGPIOAF(motorIO, motor->iocfg, motor->timerHardware->alternateFunction);
+#endif
     }
 
     // No special processing required

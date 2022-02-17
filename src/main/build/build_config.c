@@ -25,7 +25,7 @@
 
 #include "build_config.h"
 
-#ifdef STM32F1
+#if defined(STM32F1) && !defined(AT32F4)
 #warning STM32F1 based targets are unsupported as of Betaflight 3.3.
 #endif
 
@@ -80,6 +80,8 @@ mcuTypeId_e getMcuTypeId(void)
     return MCU_TYPE_H723_725;
 #elif defined(STM32G474xx)
     return MCU_TYPE_G474;
+#elif defined(AT32F403Ax)
+    return MCU_TYPE_AT32F4;
 #else
     return MCU_TYPE_UNKNOWN;
 #endif

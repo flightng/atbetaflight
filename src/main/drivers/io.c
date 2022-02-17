@@ -429,6 +429,11 @@ void IOConfigGPIOAF(IO_t io, ioConfig_t cfg, uint8_t af)
     };
     GPIO_Init(IO_GPIO(io), &init);
 }
+#elif defined(AT32F4)
+
+
+
+
 #endif
 
 #if DEFIO_PORT_USED_COUNT > 0
