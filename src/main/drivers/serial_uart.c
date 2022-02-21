@@ -320,7 +320,9 @@ void uartConfigureDma(uartDevice_t *uartdev)
         dmaChannelSpec = dmaGetChannelSpecByPeripheral(DMA_PERIPH_UART_TX, device, serialUartConfig(device)->txDmaopt);
         if (dmaChannelSpec) {
             uartPort->txDMAResource = dmaChannelSpec->ref;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
             uartPort->txDMAChannel = dmaChannelSpec->channel;
+#endif
         }
     }
 
@@ -328,7 +330,9 @@ void uartConfigureDma(uartDevice_t *uartdev)
         dmaChannelSpec = dmaGetChannelSpecByPeripheral(DMA_PERIPH_UART_RX, device, serialUartConfig(device)->txDmaopt);
         if (dmaChannelSpec) {
             uartPort->rxDMAResource = dmaChannelSpec->ref;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
             uartPort->rxDMAChannel = dmaChannelSpec->channel;
+#endif
         }
     }
 #else
@@ -336,12 +340,17 @@ void uartConfigureDma(uartDevice_t *uartdev)
 
     if (hardware->rxDMAResource) {
         uartPort->rxDMAResource = hardware->rxDMAResource;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
         uartPort->rxDMAChannel = hardware->rxDMAChannel;
+#endif
     }
 
     if (hardware->txDMAResource) {
         uartPort->txDMAResource = hardware->txDMAResource;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+
         uartPort->txDMAChannel = hardware->txDMAChannel;
+#endif
     }
 #endif
 

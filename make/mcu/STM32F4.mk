@@ -169,25 +169,24 @@ endif
 DEVICE_FLAGS    += -DHSE_VALUE=$(HSE_VALUE)
 
 MCU_COMMON_SRC = \
-            startup/system_stm32f4xx.c \
-            drivers/accgyro/accgyro_mpu.c \
-            drivers/adc_stm32f4xx.c \
+            drivers/adc_stm32f10x.c \
             drivers/bus_i2c_stm32f10x.c \
             drivers/bus_spi_stdperiph.c \
-            drivers/dma_stm32f4xx.c \
-            drivers/dshot_bitbang.c \
-            drivers/dshot_bitbang_decode.c \
-            drivers/dshot_bitbang_stdperiph.c \
+            drivers/dma.c \
             drivers/inverter.c \
             drivers/light_ws2811strip_stdperiph.c \
-            drivers/transponder_ir_io_stdperiph.c \
-            drivers/pwm_output_dshot.c \
-            drivers/pwm_output_dshot_shared.c \
             drivers/serial_uart_stdperiph.c \
-            drivers/serial_uart_stm32f4xx.c \
-            drivers/system_stm32f4xx.c \
-            drivers/timer_stm32f4xx.c \
-            drivers/persistent.c
+            drivers/serial_uart_stm32f10x.c \
+            drivers/system_stm32f10x.c \
+            drivers/timer_stm32f10x.c\
+                        drivers/accgyro/accgyro_mpu.c \
+			            drivers/dshot_bitbang.c \
+			            drivers/dshot_bitbang_decode.c \
+			            drivers/dshot_bitbang_stdperiph.c \
+			            drivers/pwm_output_dshot.c \
+			            drivers/pwm_output_dshot_shared.c \
+                        drivers/transponder_ir_io_stdperiph.c \
+                        drivers/persistent.c
 
 ifeq ($(PERIPH_DRIVER), HAL)
 VCP_SRC = \

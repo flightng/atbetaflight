@@ -77,15 +77,14 @@
 #define USE_RPM_FILTER
 #define USE_DYN_IDLE
 #define USE_DYN_NOTCH_FILTER
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID //will be support
+//#define USE_ADC_INTERNAL
+//#define USE_USB_CDC_HID
 #define USE_USB_MSC
 #define USE_PERSISTENT_MSC_RTC
 #define USE_MCO
 #define USE_DMA_SPEC
 #define USE_TIMER_MGMT
 #define USE_PERSISTENT_OBJECTS
-#define USE_CUSTOM_DEFAULTS_ADDRESS
 #define USE_LATE_TASK_STATISTICS
 #endif // AT32F4
 

@@ -85,13 +85,14 @@ typedef struct timerDef_s {
     uint8_t inputIrq;
 } timerDef_t;
 
+/*FixME 临时注释
 typedef struct timerHardware_s {
     TIM_TypeDef *tim;
     ioTag_t tag;
     uint8_t channel;
     timerUsageFlag_e usageFlags;
     uint8_t output;
-#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F4)
     uint8_t alternateFunction;
 #endif
 
@@ -114,6 +115,19 @@ typedef struct timerHardware_s {
 #endif
     uint8_t dmaTimUPIrqHandler;
 #endif
+} timerHardware_t;
+*/
+//for debug at32f4 only
+typedef struct timerHardware_s {
+    TIM_TypeDef *tim;
+    ioTag_t tag;
+    uint8_t channel;
+    timerUsageFlag_e usageFlags;
+    uint8_t output;
+    uint8_t alternateFunction;
+    dmaResource_t *dmaRef;
+    dmaResource_t *dmaTimUPRef;
+    uint8_t dmaTimUPIrqHandler;
 } timerHardware_t;
 
 typedef enum {

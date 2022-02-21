@@ -16,7 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
-TARGET    ?= STM32F405
+TARGET    ?= AT32F403ADEV
 
 # Compile-time options
 OPTIONS   ?=

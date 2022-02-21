@@ -78,6 +78,9 @@
 #ifdef USE_HAL_DRIVER
 #define BB_GPIO_PULLDOWN GPIO_PULLDOWN
 #define BB_GPIO_PULLUP   GPIO_PULLUP
+#elif defined(AT32F4)
+#define BB_GPIO_PULLDOWN GPIO_Mode_IPD
+#define BB_GPIO_PULLUP   GPIO_Mode_IPU
 #else
 #define BB_GPIO_PULLDOWN GPIO_PuPd_DOWN
 #define BB_GPIO_PULLUP   GPIO_PuPd_UP
@@ -91,7 +94,7 @@ typedef struct dmaRegCache_s {
     uint32_t NDTR;
     uint32_t PAR;
     uint32_t M0AR;
-#elif defined(STM32G4)
+#elif defined(STM32G4) ||defined(AT32F4)
     uint32_t CCR;
     uint32_t CNDTR;
     uint32_t CPAR;
@@ -136,6 +139,12 @@ typedef struct bbPort_s {
     uint32_t gpioModeMask;
     uint32_t gpioModeInput;
     uint32_t gpioModeOutput;
+#if defined(AT32F4)
+    //for at32f4 using f1 use CRH \CRL
+    uint32_t gpioBRR ;
+    uint32_t gpioModeInputH;
+	uint32_t gpioModeOutputH;
+#endif
 
     // Idle value
     uint32_t gpioIdleBSRR;

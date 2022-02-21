@@ -40,6 +40,8 @@
 #include "stm32f4xx.h"
 #elif defined(STM32F3)
 #include "stm32f30x.h"
+#elif defined(AT32F4)
+#include "stm32f10x.h"
 #endif
 
 #include "pwm_output.h"
@@ -98,7 +100,7 @@ FAST_CODE void pwmDshotSetDirectionOutput(
 
 #ifdef USE_DSHOT_DMAR
     if (useBurstDshot) {
-#if defined(STM32F3)
+#if defined(STM32F3) || defined(AT32F4)
         pDmaInit->DMA_DIR = DMA_DIR_PeripheralDST;
 #else
         pDmaInit->DMA_DIR = DMA_DIR_MemoryToPeripheral;
@@ -305,15 +307,26 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     const IO_t motorIO = IOGetByTag(timerHardware->tag);
 
     uint8_t pupMode = 0;
+#ifndef AT32F4
     pupMode = (output & TIMER_OUTPUT_INVERTED) ? GPIO_PuPd_DOWN : GPIO_PuPd_UP;
+#endif
+
 #ifdef USE_DSHOT_TELEMETRY
     if (useDshotTelemetry) {
         output ^= TIMER_OUTPUT_INVERTED;
     }
 #endif
 
+#if defined(AT32F4)
+    //Fixme: 需要修改
+    motor->iocfg = IO_CONFIG(GPIO_Mode_AF_PP,       GPIO_Speed_2MHz);
+    //FIXME: 有可能需要配置 AF功能
+
+#else
     motor->iocfg = IO_CONFIG(GPIO_Mode_AF, GPIO_Speed_50MHz, GPIO_OType_PP, pupMode);
     IOConfigGPIOAF(motorIO, motor->iocfg, timerHardware->alternateFunction);
+#endif
+
 
     if (configureTimer) {
         TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -375,7 +388,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     if (useBurstDshot) {
         motor->timer->dmaBurstBuffer = &dshotBurstDmaBuffer[timerIndex][0];
 
-#if defined(STM32F3)
+#if defined(STM32F3) || defined(AT32F4)
         DMAINIT.DMA_MemoryBaseAddr = (uint32_t)motor->timer->dmaBurstBuffer;
         DMAINIT.DMA_DIR = DMA_DIR_PeripheralDST;
 #else
@@ -400,7 +413,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     {
         motor->dmaBuffer = &dshotDmaBuffer[motorIndex][0];
 
-#if defined(STM32F3)
+#if defined(STM32F3) || defined(AT32F4)
         DMAINIT.DMA_MemoryBaseAddr = (uint32_t)motor->dmaBuffer;
         DMAINIT.DMA_DIR = DMA_DIR_PeripheralDST;
         DMAINIT.DMA_M2M = DMA_M2M_Disable;

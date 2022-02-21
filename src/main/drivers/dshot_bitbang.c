@@ -66,7 +66,7 @@ dshotBitbangStatus_e bbStatus;
 #define BB_OUTPUT_BUFFER_ATTRIBUTE DMA_RW_AXI __attribute__((aligned(32)))
 #define BB_INPUT_BUFFER_ATTRIBUTE  DMA_RW_AXI __attribute__((aligned(32)))
 #else
-#if defined(STM32F4)
+#if defined(STM32F4)  || defined(AT32F4)
 #define BB_OUTPUT_BUFFER_ATTRIBUTE
 #define BB_INPUT_BUFFER_ATTRIBUTE
 #elif defined(STM32F7)
@@ -119,6 +119,13 @@ const timerHardware_t bbTimerHardware[] = {
     DEF_TIM(TIM1,  CH2, NONE,  TIM_USE_NONE, 0, 1, 0),
     DEF_TIM(TIM1,  CH3, NONE,  TIM_USE_NONE, 0, 2, 0),
     DEF_TIM(TIM1,  CH4, NONE,  TIM_USE_NONE, 0, 3, 0),
+#elif defined(AT32F4)
+
+	DEF_TIM(TIM2,  CH1, NONE,  TIM_USE_NONE, 0),
+	DEF_TIM(TIM2,  CH2, NONE,  TIM_USE_NONE, 0),
+	DEF_TIM(TIM2,  CH3, NONE,  TIM_USE_NONE, 0),
+	DEF_TIM(TIM2,  CH4, NONE,  TIM_USE_NONE, 0),
+
 
 #else
 #error MCU dependent code required
@@ -418,10 +425,14 @@ static bool bbMotorConfig(IO_t io, uint8_t motorIndex, motorPwmProtocolTypes_e p
 #ifdef USE_DMA_SPEC
             const dmaChannelSpec_t *dmaChannelSpec = dmaGetChannelSpecByTimerValue(timhw->tim, timhw->channel, dmaGetOptionByTimer(timhw));
             bbPort->dmaResource = dmaChannelSpec->ref;
+#ifndef AT32F4
             bbPort->dmaChannel = dmaChannelSpec->channel;
+#endif
 #else
             bbPort->dmaResource = timhw->dmaRef;
+#ifndef AT32F4
             bbPort->dmaChannel = timhw->dmaChannel;
+#endif
 #endif
         }
 
