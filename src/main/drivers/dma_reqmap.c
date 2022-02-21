@@ -648,6 +648,7 @@ dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
 {
 #if defined( AT32F4)
 //no op
+	UNUSED(timer);
 #elif defined(STM32H7) || defined(STM32G4)
     for (unsigned opt = 0; opt < ARRAYLEN(dmaChannelSpec); opt++) {
         if (timer->dmaRefConfigured == dmaChannelSpec[opt].ref) {

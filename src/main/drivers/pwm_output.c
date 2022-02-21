@@ -236,6 +236,7 @@ motorDevice_t *motorPwmDevInit(const motorDevConfig_t *motorConfig, uint16_t idl
 
 #if defined(STM32F1)
         IOConfigGPIO(motors[motorIndex].io, IOCFG_AF_PP);
+        //FIXME：AT32F1 可以配置pin mux ，需要在io里面改一下
 #else
         IOConfigGPIOAF(motors[motorIndex].io, IOCFG_AF_PP, timerHardware->alternateFunction);
 #endif
