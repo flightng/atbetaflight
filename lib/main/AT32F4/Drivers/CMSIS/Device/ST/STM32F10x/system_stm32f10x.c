@@ -2,8 +2,10 @@
 #include "stm32f10x.h"
 
 #define SYSCLK_FREQ_72MHz  72000000
+#define SYSCLK_FREQ_240MHz  240000000
 
-uint32_t SystemCoreClock = SYSCLK_FREQ_72MHz;   /*!< System Clock Frequency (Core Clock) */
+
+uint32_t SystemCoreClock = SYSCLK_FREQ_240MHz;   /*!< System Clock Frequency (Core Clock) */
 
 static const uint8_t AHBPrescTable[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9 };
 
@@ -86,7 +88,7 @@ enum {
     SRC_HSE
 };
 
-// Set system clock to 72 (HSE) or 64 (HSI) MHz
+// Set system clock to 72 (HSE) or 64 (HSI) MHz 240mhz for at32f4
 void SetSysClock(bool overclock)
 {
     __IO uint32_t StartUpCounter = 0, status = 0, clocksrc = SRC_NONE;
@@ -154,10 +156,17 @@ void SetSysClock(bool overclock)
                     RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL7;
                 else if (RCC_CFGR_PLLMUL == RCC_CFGR_PLLMULL9)
                     RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL10;
+
+
             }
             // overclock=false : PLL configuration: PLLCLK = HSE * 9 = 72 MHz || HSE * 6 = 72 MHz
             // overclock=true  : PLL configuration: PLLCLK = HSE * 10 = 80 MHz || HSE * 7 = 84 MHz
+#if defined(AT32F4)
+            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL30 |RCC_CFG_PLLRANGE_GT72MHZ);
+#else
             RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
+#endif
+
             break;
         case SRC_HSI:
             // PLL configuration: PLLCLK = HSI / 2 * 16 = 64 MHz

@@ -1866,6 +1866,31 @@ typedef struct
  #define  RCC_CFGR_PLLMULL14                 ((uint32_t)0x00300000)        /*!< PLL input clock*14 */
  #define  RCC_CFGR_PLLMULL15                 ((uint32_t)0x00340000)        /*!< PLL input clock*15 */
  #define  RCC_CFGR_PLLMULL16                 ((uint32_t)0x00380000)        /*!< PLL input clock*16 */
+/*
+17	0x003c0000
+18	0x00400000
+19	0x00440000
+20	0x00480000
+21	0x004c0000
+22	0x00500000
+23	0x00540000
+24	0x00580000
+25	0x005c0000
+26	0x00600000
+27	0x00640000
+28	0x00680000
+29	0x006c0000
+30	0x00700000
+*/
+/* for at32f4 */
+#define		RCC_CFG_PLLMULT20 				 ((uint32_t)0x00480000) /*!< PLL input clock * 20 */
+#define  	RCC_CFGR_PLLMULL25               ((uint32_t)0x005c0000)        /*!< PLL input clock*25 */
+#define  	RCC_CFGR_PLLMULL30               ((uint32_t)0x00700000)        /*!< PLL input clock*30 */
+
+#define RCC_CFG_PLLRANGE ((uint32_t)0x80000000) /*!< PLL Frequency range */
+#define RCC_CFG_PLLRANGE_LE72MHZ ((uint32_t)0x00000000) /*!< When PLL frequency is less than or equal to 72MHz */
+#define RCC_CFG_PLLRANGE_GT72MHZ ((uint32_t)0x80000000) /*!< When PLL frequency is greater than 72MHz */
+
  #define  RCC_CFGR_USBPRE                    ((uint32_t)0x00400000)        /*!< USB Device prescaler */
 
 /*!< MCO configuration */
