@@ -76,9 +76,48 @@ bool isMPUSoftReset(void)
     else
         return false;
 }
+/* for at32f4 extend sram to 224k
+ *
+ */
+#define SRAM_96k 0xFF
+#define SRAM_224k 0xFE
+#define USD_BASE     ((uint32_t)0x1FFFF800)
+typedef struct
+{
+  __IO uint16_t fap;
+  __IO uint16_t ssb;
+  __IO uint16_t data0;
+  __IO uint16_t data1;
+  __IO uint16_t epp0;
+  __IO uint16_t epp1;
+  __IO uint16_t epp2;
+  __IO uint16_t epp3;
+  __IO uint16_t eopb0;
+  __IO uint16_t reserved;
+  __IO uint16_t data2;
+  __IO uint16_t data3;
+  __IO uint16_t data4;
+  __IO uint16_t data5;
+  __IO uint16_t data6;
+  __IO uint16_t data7;
+  __IO uint16_t ext_flash_key[8];
+} usd_type;
+#define USD   ((usd_type *) USD_BASE)
+
+void Extend_SRAM(void) {
+	if ((USD->eopb0 & 0xFF) != 0xFE) // check if RAM has been set to 224K, if not, change EOPB0
+	{
+		FLASH_Unlock();
+		FLASH_EraseOptionBytes();
+		FLASH_ProgramOptionByteData(0x1FFFF810, SRAM_224k);
+ 		FLASH_Lock();
+ 		NVIC_SystemReset();
+	}
+}
 
 void systemInit(void)
 {
+	Extend_SRAM();
     checkForBootLoaderRequest();
 
     SetSysClock(false);
@@ -104,8 +143,8 @@ void systemInit(void)
     // Set USART1 TX (PA9) to output and high state to prevent a rs232 break condition on reset.
     // See issue https://github.com/cleanflight/cleanflight/issues/1433
     GPIO_InitTypeDef GPIO_InitStructure = {
-        .GPIO_Mode = GPIO_Mode_Out_PP,
-        .GPIO_Pin = GPIO_Pin_9,
+        .GPIO_Mode 	= GPIO_Mode_Out_PP,
+        .GPIO_Pin 	= GPIO_Pin_9,
         .GPIO_Speed = GPIO_Speed_2MHz
     };
 
