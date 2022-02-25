@@ -25,6 +25,7 @@
 
 #include "drivers/nvic.h"
 #include "drivers/system.h"
+#include "system_at32f403a_usbAcc.h"
 
 #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
 
@@ -76,51 +77,42 @@ bool isMPUSoftReset(void)
     else
         return false;
 }
-/* for at32f4 extend sram to 224k
- *
- */
-#define SRAM_96k 0xFF
-#define SRAM_224k 0xFE
-#define USD_BASE     ((uint32_t)0x1FFFF800)
-typedef struct
-{
-  __IO uint16_t fap;
-  __IO uint16_t ssb;
-  __IO uint16_t data0;
-  __IO uint16_t data1;
-  __IO uint16_t epp0;
-  __IO uint16_t epp1;
-  __IO uint16_t epp2;
-  __IO uint16_t epp3;
-  __IO uint16_t eopb0;
-  __IO uint16_t reserved;
-  __IO uint16_t data2;
-  __IO uint16_t data3;
-  __IO uint16_t data4;
-  __IO uint16_t data5;
-  __IO uint16_t data6;
-  __IO uint16_t data7;
-  __IO uint16_t ext_flash_key[8];
-} usd_type;
-#define USD   ((usd_type *) USD_BASE)
 
-void Extend_SRAM(void) {
-	if ((USD->eopb0 & 0xFF) != 0xFE) // check if RAM has been set to 224K, if not, change EOPB0
-	{
-		FLASH_Unlock();
-		FLASH_EraseOptionBytes();
-		FLASH_ProgramOptionByteData(0x1FFFF810, SRAM_224k);
- 		FLASH_Lock();
- 		NVIC_SystemReset();
-	}
+
+
+
+void setUsb48Mhz(){
+
+	 /* select usb 48m clcok source */
+
+	crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
+
+	/* enable the acc calibration ready interrupt */
+	crm_periph_clock_enable(CRM_ACC_PERIPH_CLOCK, 1);
+
+	/* update the c1\c2\c3 value */
+	ACC->c1 = 7980;
+	ACC->c2 = 8000;
+	ACC->c3 = 8020;
+    /* open acc calibration */
+    ACC->ctrl1_bit.entrim = 1;//true for ACC_CAL_HICKTRIM
+    ACC->ctrl1_bit.calon = 1; //enable
+
+
+
+
+
 }
 
 void systemInit(void)
 {
-	Extend_SRAM();
+//	Extend_SRAM();
+
     checkForBootLoaderRequest();
 
     SetSysClock(false);
+
+    setUsb48Mhz();
 
 #if defined(OPBL)
     /* Accounts for OP Bootloader, set the Vector Table base address as specified in .ld file */

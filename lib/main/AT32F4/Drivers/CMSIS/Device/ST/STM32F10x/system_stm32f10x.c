@@ -35,6 +35,7 @@ void SystemInit(void)
     SCB->VTOR = FLASH_BASE;     /* Vector Table Relocation in Internal FLASH. */
 }
 
+//FIXME: 可能有bug， 系统显示跑的频率是103Mhz
 void SystemCoreClockUpdate(void)
 {
     uint32_t tmp = 0, pllmull = 0, pllsource = 0;
@@ -88,7 +89,7 @@ enum {
     SRC_HSE
 };
 
-// Set system clock to 72 (HSE) or 64 (HSI) MHz 240mhz for at32f4
+// Set system clock to 240mhz for at32f4
 void SetSysClock(bool overclock)
 {
     __IO uint32_t StartUpCounter = 0, status = 0, clocksrc = SRC_NONE;
@@ -125,16 +126,21 @@ void SetSysClock(bool overclock)
     }
 
     // Enable Prefetch Buffer
-    FLASH->ACR |= FLASH_ACR_PRFTBE;
-    // Flash 2 wait state
-    FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
-    FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;
+    //FIXME: flash 这里需要修改，暂时不设置等待
+//    FLASH->ACR |= FLASH_ACR_PRFTBE;
+//    // Flash 2 wait state
+//    FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
+//    FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;
+
+
+
     // HCLK = SYSCLK
     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
     // PCLK2 = HCLK
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
     // PCLK1 = HCLK
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
+
     *RCC_CRH &= (uint32_t)~((uint32_t)0xF << (RCC_CFGR_PLLMULL9 >> 16));
 
     // Configure PLL
@@ -143,12 +149,7 @@ void SetSysClock(bool overclock)
     *RCC_CRH |= (uint32_t)0x8 << (RCC_CFGR_PLLMULL9 >> 16);
     GPIOC->ODR &= (uint32_t)~(CAN_MCR_RESET);
 	
-#if defined(CJMCU)
-    // On CJMCU new revision boards (Late 2014) bit 15 of GPIOC->IDR is '1'.
-    RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL9;
-#else
-    RCC_CFGR_PLLMUL = GPIOC->IDR & GPIO_IDR_IDR15 ? hse_value = 12000000, RCC_CFGR_PLLMULL6 : RCC_CFGR_PLLMULL9;
-#endif
+
     switch (clocksrc) {
         case SRC_HSE:
             if (overclock) {
@@ -163,6 +164,8 @@ void SetSysClock(bool overclock)
             // overclock=true  : PLL configuration: PLLCLK = HSE * 10 = 80 MHz || HSE * 7 = 84 MHz
 #if defined(AT32F4)
             RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL30 |RCC_CFG_PLLRANGE_GT72MHZ);
+//            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
+
 #else
             RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
 #endif
@@ -177,12 +180,20 @@ void SetSysClock(bool overclock)
     // Enable PLL
     RCC->CR |= RCC_CR_PLLON;
     // Wait till PLL is ready
+
+
+    //等待 pll 稳定
     while ((RCC->CR & RCC_CR_PLLRDY) == 0);
     // Select PLL as system clock source
+    //FIXME: 切换过程需要增加平滑
+    *((unsigned int *)0x40021054) |= (0x30);// 开启自动滑顺频率切换功能
+
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
     // Wait till PLL is used as system clock source
     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08);
+
+    *((unsigned int *)0x40021054) &=~ (0x30); //关闭自动滑顺频率切换功能
 
     SystemCoreClockUpdate();
 }
