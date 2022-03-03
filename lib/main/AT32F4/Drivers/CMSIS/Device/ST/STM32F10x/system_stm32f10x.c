@@ -66,7 +66,7 @@ void SystemCoreClockUpdate(void)
 //            pllmull =  RCC-> CFGR & (0x603C0000);
 //            pllmull = pllmull  >> 17;
 //            pllmull = (pllmull & 0x800)*10 + pllmull & 0xF;
-            	pllmull = 30;//use 30 for default
+            pllmull = 30;//use 30 for default
 
 
             if (pllsource == 0x00) {
@@ -200,5 +200,5 @@ void SetSysClock(bool overclock)
 
     *((unsigned int *)0x40021054) &=~ (0x30); //关闭自动滑顺频率切换功能
 
-    SystemCoreClockUpdate();
+//    SystemCoreClockUpdate(); //set clock has error !
 }
