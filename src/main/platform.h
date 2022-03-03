@@ -138,7 +138,7 @@
 #define STM32F1
 #endif
 
-#elif defined(AT32F403AX)
+#elif defined(AT32F403Ax)
 
 #include "stm32f10x_conf.h"
 #include "stm32f10x_gpio.h"
