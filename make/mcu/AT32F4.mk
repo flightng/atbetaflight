@@ -51,9 +51,9 @@ ARCH_FLAGS      = -mthumb -mcpu=cortex-m3 -Wdouble-promotion
 #ARCH_FLAGS = -mthumb -mcpu=cortex-m3 -march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -Wdouble-promotion
 
 ifeq ($(DEVICE_FLAGS),)
-DEVICE_FLAGS    = -DAT32F403AX -DSTM32F10X_HD -DSTM32F10X
+DEVICE_FLAGS    = -DAT32F403Ax -DSTM32F10X_HD -DSTM32F10X
 endif
-DEVICE_FLAGS   += -DAT32F403AX -DSTM32F10X_HD -DSTM32F10X
+DEVICE_FLAGS   += -DAT32F403Ax -DSTM32F10X_HD -DSTM32F10X
 
 VCP_SRC = \
             vcp/hw_config.c \

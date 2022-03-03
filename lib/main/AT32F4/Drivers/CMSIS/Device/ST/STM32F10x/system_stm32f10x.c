@@ -5,6 +5,11 @@
 #define SYSCLK_FREQ_240MHz  240000000
 
 
+
+
+
+
+
 uint32_t SystemCoreClock = SYSCLK_FREQ_240MHz;   /*!< System Clock Frequency (Core Clock) */
 
 static const uint8_t AHBPrescTable[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9 };
@@ -13,7 +18,8 @@ uint32_t hse_value = 8000000;
 
 void SystemInit(void)
 {
-    /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
+
+	/* Reset the RCC clock configuration to the default reset state(for debug purpose) */
     /* Set HSION bit */
     RCC->CR |= (uint32_t) 0x00000001;
 
@@ -53,10 +59,15 @@ void SystemCoreClockUpdate(void)
         case 0x08:                 /* PLL used as system clock */
 
             /* Get PLL clock source and multiplication factor ---------------------- */
-            pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+//            pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
             pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+//            pllmull = (pllmull >> 18) + 2;
+            // at32 30:29 || 21:18
+//            pllmull =  RCC-> CFGR & (0x603C0000);
+//            pllmull = pllmull  >> 17;
+//            pllmull = (pllmull & 0x800)*10 + pllmull & 0xF;
+            	pllmull = 30;//use 30 for default
 
-            pllmull = (pllmull >> 18) + 2;
 
             if (pllsource == 0x00) {
                 /* HSI oscillator clock divided by 2 selected as PLL clock entry */
@@ -94,7 +105,7 @@ void SetSysClock(bool overclock)
 {
     __IO uint32_t StartUpCounter = 0, status = 0, clocksrc = SRC_NONE;
     __IO uint32_t *RCC_CRH = &GPIOC->CRH;
-    __IO uint32_t RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL9;
+    __IO uint32_t RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL30;
 
     // First, try running off HSE
     RCC->CR |= ((uint32_t)RCC_CR_HSEON);
@@ -137,18 +148,18 @@ void SetSysClock(bool overclock)
     // HCLK = SYSCLK
     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
     // PCLK2 = HCLK
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
+    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV2;//upper then 72mhz ,set to 2
     // PCLK1 = HCLK
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
 
-    *RCC_CRH &= (uint32_t)~((uint32_t)0xF << (RCC_CFGR_PLLMULL9 >> 16));
+    *RCC_CRH &= (uint32_t)~((uint32_t)0xF << (RCC_CFGR_PLLMULL30 >> 16));
 
     // Configure PLL
     hse_value = 8000000;
-    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
-    *RCC_CRH |= (uint32_t)0x8 << (RCC_CFGR_PLLMULL9 >> 16);
+    RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL30 |RCC_CFG_PLLRANGE_GT72MHZ));
+    *RCC_CRH |= (uint32_t)0x8 << (RCC_CFGR_PLLMULL30 >> 16);
     GPIOC->ODR &= (uint32_t)~(CAN_MCR_RESET);
-	
+
 
     switch (clocksrc) {
         case SRC_HSE:
@@ -157,19 +168,11 @@ void SetSysClock(bool overclock)
                     RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL7;
                 else if (RCC_CFGR_PLLMUL == RCC_CFGR_PLLMULL9)
                     RCC_CFGR_PLLMUL = RCC_CFGR_PLLMULL10;
-
-
             }
             // overclock=false : PLL configuration: PLLCLK = HSE * 9 = 72 MHz || HSE * 6 = 72 MHz
             // overclock=true  : PLL configuration: PLLCLK = HSE * 10 = 80 MHz || HSE * 7 = 84 MHz
-#if defined(AT32F4)
-            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL30 |RCC_CFG_PLLRANGE_GT72MHZ);
-//            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
-
-#else
-            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
-#endif
-
+            //            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMUL);
+             RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL30 |RCC_CFG_PLLRANGE_GT72MHZ);
             break;
         case SRC_HSI:
             // PLL configuration: PLLCLK = HSI / 2 * 16 = 64 MHz
@@ -187,6 +190,8 @@ void SetSysClock(bool overclock)
     // Select PLL as system clock source
     //FIXME: 切换过程需要增加平滑
     *((unsigned int *)0x40021054) |= (0x30);// 开启自动滑顺频率切换功能
+
+    //切换到PLL
 
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
     RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;

@@ -723,7 +723,7 @@ typedef struct
 #define USD   ((usd_type *) USD_BASE)
 
 //config eopb0 to 0xFE to enable 224k sram
-void Extend_SRAM(void) {
+/*void static Extend_SRAM(void) {
 	if ((USD->eopb0 & 0xFF) != 0xFE) // check if RAM has been set to 224K, if not, change EOPB0
 	{
 		FLASH_Unlock();
@@ -732,6 +732,6 @@ void Extend_SRAM(void) {
  		FLASH_Lock();
  		NVIC_SystemReset();
 	}
-}
+}*/
 
-#endif /* MAIN_DRIVERS_SYSTEM_AT32F403A_USBACC_H_ */
+#endif
