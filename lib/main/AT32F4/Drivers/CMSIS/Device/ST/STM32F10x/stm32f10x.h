@@ -1872,7 +1872,7 @@ typedef struct
 
 /* for at32f4 */
 #define  	RCC_CFGR_PLLMULL25               ((uint32_t)0x20200000)        /*!< PLL input clock*25 @ at32f4*/
-#define  	RCC_CFGR_PLLMULL30               ((uint32_t)0x201A0000)        /*!< PLL input clock*30 @ at32f4*/
+#define  	RCC_CFGR_PLLMULL30               ((uint32_t)0x20340000)        /*!< PLL input clock*30 @ at32f4*/
 
 
 #define RCC_CFG_PLLRANGE ((uint32_t)0x80000000) /*!< PLL Frequency range */
