@@ -630,6 +630,7 @@ void init(void)
     }
 #endif
 
+
 #ifdef USE_PERSISTENT_MSC_RTC
     // if we didn't enter MSC mode then clear the persistent RTC value
     persistentObjectWrite(PERSISTENT_OBJECT_RTC_HIGH, 0);
@@ -705,6 +706,8 @@ void init(void)
     pidInit(currentPidProfile);
 
     mixerInitProfile();
+
+
 
 #ifdef USE_PID_AUDIO
     pidAudioInit();
@@ -871,6 +874,7 @@ void init(void)
     mspInit();
     mspSerialInit();
 
+
 /*
  * CMS, display devices and OSD
  */
@@ -986,7 +990,7 @@ void init(void)
 #endif
 
     // On H7/G4 allocate SPI DMA streams after motor timers as SPI DMA allocate will always be possible
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) ||defined(AT32F4)
 #ifdef USE_SPI
     // Attempt to enable DMA on all SPI busses
     spiInitBusDMA();

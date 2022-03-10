@@ -626,7 +626,7 @@ const dmaChannelSpec_t *dmaGetChannelSpecByTimer(const timerHardware_t *timer)
 }
 
 // dmaGetOptionByTimer is called by pgResetFn_timerIOConfig to find out dmaopt for pre-configured timer.
-//at32 无法不支持预先配置dma
+//fixme: at32f4 启动之后，只有adc 有dma，spi如果启动dma则卡死，说明dma配置不对，需要核查一下这部分的配置和代码
 dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
 {
 #if defined( AT32F4)

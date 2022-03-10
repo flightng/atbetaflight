@@ -40,12 +40,12 @@ dmaChannelDescriptor_t dmaDescriptors[DMA_LAST_HANDLER] = {
     DEFINE_DMA_CHANNEL(DMA1, 5, 16),
     DEFINE_DMA_CHANNEL(DMA1, 6, 20),
     DEFINE_DMA_CHANNEL(DMA1, 7, 24),
-#if defined(STM32F3) || defined(STM32F10X_CL)
+#if defined(STM32F3) || defined(STM32F10X_CL)|| defined(AT32F4)
     DEFINE_DMA_CHANNEL(DMA2, 1,  0),
     DEFINE_DMA_CHANNEL(DMA2, 2,  4),
     DEFINE_DMA_CHANNEL(DMA2, 3,  8),
-    DEFINE_DMA_CHANNEL(DMA2, 4, 12),
-    DEFINE_DMA_CHANNEL(DMA2, 5, 16),
+//    DEFINE_DMA_CHANNEL(DMA2, 4, 12),
+//    DEFINE_DMA_CHANNEL(DMA2, 5, 16),
 #endif
 };
 

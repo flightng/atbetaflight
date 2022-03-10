@@ -50,9 +50,10 @@
 #define USE_MPU_DATA_READY_SIGNAL
 
 #define USE_GYRO
-#define USE_GYRO_SPI_MPU6000
 #define USE_GYRO_SPI_MPU6500
 #define GYRO_1_ALIGN            CW180_DEG
+#define USE_GYRO_SPI_MPU6000
+
 #define USE_ACC
 #define USE_ACC_SPI_MPU6000
 #define USE_ACC_SPI_MPU6500
@@ -106,7 +107,7 @@
 // *************** ADC *****************************
 #define USE_ADC
 #define ADC_INSTANCE         ADC1  // Default added
-#define ADC1_DMA_OPT            0  // DMA 2 Stream 0 Channel 0 
+#define ADC1_DMA_OPT            0  // DMA 2 Stream 0 Channel 0
 
 #define VBAT_ADC_PIN            PB0
 #define CURRENT_METER_ADC_PIN   PB1

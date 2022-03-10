@@ -38,7 +38,7 @@
 #include "pg/bus_spi.h"
 
 const spiHardware_t spiHardware[] = {
-#ifdef STM32F1
+#ifdef AT32F4
     // Remapping is not supported and corresponding lines are commented out.
     // There also is some errata that may prevent these assignments from working:
     // http://www.st.com/content/ccc/resource/technical/document/errata_sheet/7d/02/75/64/17/fc/4d/fd/CD00190234.pdf/files/CD00190234.pdf/jcr:content/translations/en.CD00190234.pdf
@@ -76,6 +76,20 @@ const spiHardware_t spiHardware[] = {
         },
         .rcc = RCC_APB1(SPI2),
     },
+	 {
+	        .device = SPIDEV_3,
+	        .reg = SPI3,
+	        .sckPins = {
+	            { DEFIO_TAG_E(PB3) },
+	        },
+	        .misoPins = {
+	            { DEFIO_TAG_E(PB4) },
+	        },
+	        .mosiPins = {
+	            { DEFIO_TAG_E(PB5) },
+	        },
+	        .rcc = RCC_APB1(SPI2),
+	    },
 #endif
 #ifdef STM32F3
 

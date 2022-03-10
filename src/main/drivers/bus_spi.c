@@ -429,6 +429,8 @@ static void spiIrqHandler(const extDevice_t *dev)
         }
 
         // Launch the next transfer
+        //FIXME:20220310 dma debug 貌似在启动dma之后，因为什么原因，导致spiInternalStartDMA 被死循环调用，应该是哪里没清除中断标志所致，需要进一步跟进
+        //在spiIRQhandler 上打断点看看
         spiInternalStartDMA(dev);
 
         // Prepare the init structures ready for the next segment to reduce inter-segment time
