@@ -139,14 +139,21 @@ void spiInternalResetDescriptors(busDevice_t *bus)
 #if defined(AT32F4) && defined(STM32F1)
         //northing
         initRx->DMA_DIR = DMA_DIR_PeripheralSRC;
-#else
-        initRx->DMA_Channel = bus->dmaRx->channel;
-#endif
         initRx->DMA_Mode = DMA_Mode_Normal;
         initRx->DMA_PeripheralBaseAddr = (uint32_t)&bus->busType_u.spi.instance->DR;
         initRx->DMA_Priority = DMA_Priority_Low;
         initRx->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
         initRx->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+#else
+        initRx->DMA_DIR = DMA_DIR_PeripheralToMemory;
+        initRx->DMA_Channel = bus->dmaRx->channel;
+        initRx->DMA_Mode = DMA_Mode_Normal;
+        initRx->DMA_PeripheralBaseAddr = (uint32_t)&bus->busType_u.spi.instance->DR;
+        initRx->DMA_Priority = DMA_Priority_Low;
+        initRx->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+        initRx->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+#endif
+
     }
 }
 
@@ -156,7 +163,8 @@ void spiInternalResetStream(dmaChannelDescriptor_t *descriptor)
 
     // Disable the stream
 //    streamRegs->CR = 0U;
-	xDMA_Cmd(streamRegs,DISABLE);
+	xDMA_DeInit(streamRegs);
+	//FIXME:20220310 dma debug 这里可能存在bug，修改为CR set0 是完全重置整个DMA Stream，修改后需要重新debug看下
 
     // Clear any pending interrupt flags
     DMA_CLEAR_FLAG(descriptor, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
@@ -272,8 +280,10 @@ void spiInternalStartDMA(const extDevice_t *dev)
         // Disable streams to enable update
 //        streamRegsTx->CR = 0U;
 //        streamRegsRx->CR = 0U;
-    	xDMA_Cmd(streamRegsTx,DISABLE);
-    	xDMA_Cmd(streamRegsRx,DISABLE);
+        xDMA_DeInit(streamRegsTx);
+        xDMA_DeInit(streamRegsRx);
+        xDMA_Cmd(streamRegsTx, DISABLE);
+        xDMA_Cmd(streamRegsRx, DISABLE);
 
 
         /* Use the Rx interrupt as this occurs once the SPI operation is complete whereas the Tx interrupt
@@ -296,6 +306,7 @@ void spiInternalStartDMA(const extDevice_t *dev)
         xDMA_Cmd(streamRegsTx, ENABLE);
         xDMA_Cmd(streamRegsRx, ENABLE);
 
+
         /* Enable the SPI DMA Tx & Rx requests */
         SPI_I2S_DMACmd(dev->bus->busType_u.spi.instance, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, ENABLE);
     } else {
@@ -306,7 +317,7 @@ void spiInternalStartDMA(const extDevice_t *dev)
         DMA_CLEAR_FLAG(dmaTx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
 
         // Disable stream to enable update
-        xDMA_Cmd(streamRegsTx, DISABLE);
+        xDMA_DeInit(streamRegsTx);
 
 
         xDMA_ITConfig(streamRegsTx, DMA_IT_TC, ENABLE);
@@ -341,6 +352,8 @@ void spiInternalStopDMA (const extDevice_t *dev)
     	DMA_ARCH_TYPE *streamRegsRx = (DMA_ARCH_TYPE *)dmaRx->ref;
 
         // Disable streams
+	    xDMA_DeInit(streamRegsTx);
+	    xDMA_DeInit(streamRegsRx);
     	xDMA_Cmd(streamRegsTx,DISABLE);
     	xDMA_Cmd(streamRegsRx,DISABLE);
 
