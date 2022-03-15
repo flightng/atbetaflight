@@ -16,7 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
-TARGET    ?= AT32F403ADEV
+TARGET    ?= AT32F437DEV
 
 # Compile-time options
 OPTIONS   ?=

@@ -20,15 +20,16 @@ F4_TARGETS      := $(F405_TARGETS) $(F411_TARGETS) $(F446_TARGETS)
 F7_TARGETS      := $(F7X2RE_TARGETS) $(F7X5XE_TARGETS) $(F7X5XG_TARGETS) $(F7X5XI_TARGETS) $(F7X6XG_TARGETS)
 G4_TARGETS      := $(G47X_TARGETS)
 H7_TARGETS      := $(H743xI_TARGETS) $(H750xB_TARGETS) $(H7A3xI_TARGETS) $(H7A3xIQ_TARGETS) $(H723xG_TARGETS) $(H725xG_TARGETS) $(H730xB_TARGETS)
-AT32F4_TARGETS  := $(AT32F403xG_TARGETS)
+AT32F403x_TARGETS := $(AT32F403xG_TARGETS)
+AT32F43x_TARGETS := $(AT32F43xxMT7_TARGETS)
 
 
 ifeq ($(filter $(TARGET),$(VALID_TARGETS)),)
 $(error Target '$(TARGET)' is not valid, must be one of $(VALID_TARGETS). Have you prepared a valid target.mk?)
 endif
 
-ifeq ($(filter $(TARGET),$(F1_TARGETS) $(F3_TARGETS) $(F4_TARGETS) $(F7_TARGETS) $(G4_TARGETS) $(H7_TARGETS) $(SITL_TARGETS) $(AT32F4_TARGETS)),)
-$(error Target '$(TARGET)' has not specified a valid STM group, must be one of F1, F3, F405, F411, F446, F7X2RE, F7X5XE, F7X5XG, F7X5XI, F7X6XG, G47X or H7X3XI. Have you prepared a valid target.mk?)
+ifeq ($(filter $(TARGET),$(F1_TARGETS) $(F3_TARGETS) $(F4_TARGETS) $(F7_TARGETS) $(G4_TARGETS) $(H7_TARGETS) $(SITL_TARGETS) $(AT32F403x_TARGETS) $(AT32F43x_TARGETS)),)
+$(error Target '$(TARGET)' has not specified a valid STM group, must be one of F1, F3, F405, F411, F446, F7X2RE, F7X5XE, F7X5XG, F7X5XI, F7X6XG, G47X or H7X3XI ,AT32F403A,AT32F43X . Have you prepared a valid target.mk?)
 endif
 
 ifeq ($(TARGET),$(filter $(TARGET),$(F3_TARGETS)))
@@ -52,8 +53,12 @@ SIMULATOR_BUILD = yes
 
 else ifeq ($(TARGET),$(filter $(TARGET), $(F1_TARGETS)))
 TARGET_MCU := STM32F1
-else ifeq ($(TARGET),$(filter $(TARGET), $(AT32F4_TARGETS)))
-TARGET_MCU := AT32F4
+
+else ifeq ($(TARGET),$(filter $(TARGET), $(AT32F403x_TARGETS)))
+TARGET_MCU := AT32F403A
+
+else ifeq ($(TARGET),$(filter $(TARGET), $(AT32F43x_TARGETS)))
+TARGET_MCU := AT32F43x
 
 else
 $(error Unknown target MCU specified.)
