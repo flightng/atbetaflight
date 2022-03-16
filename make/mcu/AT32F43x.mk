@@ -12,7 +12,7 @@ MCU_FLASH_SIZE  := 256
 endif
 
 # for the bsp dir & src 
-STDPERIPH_DIR   = $(ROOT)/lib/main/AT32F4/drivers/
+STDPERIPH_DIR   = $(ROOT)/lib/main/AT32F43x/drivers/
 STDPERIPH_SRC   = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
 EXCLUDES        = at32f435_437_dvp.c\
 				  at32f435_437_can.c\
@@ -23,12 +23,12 @@ STARTUP_SRC     = startup_at32f435_437.S
 STDPERIPH_SRC   := $(filter-out ${EXCLUDES}, $(STDPERIPH_SRC))
 
 # Search path and source files for the bsp cmsis sources
-VPATH           := $(VPATH):$(ROOT)/lib/main/AT32F4/cmsis/cm4/core_support/
+VPATH           := $(VPATH):$(ROOT)/lib/main/AT32F43x/cmsis/cm4/core_support/
 
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
                    $(STDPERIPH_DIR)/inc \
-                   $(ROOT)/lib/main/AT32F4/cmsis/cm4/core_support \
-                   $(ROOT)/lib/main/AT32F4/cmsis/cm4/
+                   $(ROOT)/lib/main/AT32F43x/cmsis/cm4/core_support \
+                   $(ROOT)/lib/main/AT32F43x/cmsis/cm4/
 
 DEVICE_STDPERIPH_SRC = $(STDPERIPH_SRC)
 

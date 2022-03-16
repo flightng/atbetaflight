@@ -31,94 +31,29 @@
 
 #define PERSISTENT_OBJECT_MAGIC_VALUE (('B' << 24)|('e' << 16)|('f' << 8)|('1' << 0))
 
-#ifdef USE_HAL_DRIVER
-
 uint32_t persistentObjectRead(persistentObjectId_e id)
 {
-    RTC_HandleTypeDef rtcHandle = { .Instance = RTC };
-
-    uint32_t value = HAL_RTCEx_BKUPRead(&rtcHandle, id);
-
+    uint32_t value = ertc_bpr_data_read(id);
     return value;
 }
 
 void persistentObjectWrite(persistentObjectId_e id, uint32_t value)
 {
-    RTC_HandleTypeDef rtcHandle = { .Instance = RTC };
-
-    HAL_RTCEx_BKUPWrite(&rtcHandle, id, value);
-
-#ifdef USE_SPRACING_PERSISTENT_RTC_WORKAROUND
-    // Also write the persistent location used by the bootloader to support DFU etc.
-    if (id == PERSISTENT_OBJECT_RESET_REASON) {
-        // SPRACING firmware sometimes enters DFU mode when MSC mode is requested
-        if (value == RESET_MSC_REQUEST) {
-            value = RESET_NONE;
-        }
-        HAL_RTCEx_BKUPWrite(&rtcHandle, PERSISTENT_OBJECT_RESET_REASON_FWONLY, value);
-    }
-#endif
+    ertc_bpr_data_write(id,value);
 }
 
 void persistentObjectRTCEnable(void)
 {
-#if !defined(STM32G4)
-    // G4 library V1.0.0 __HAL_RTC_WRITEPROTECTION_ENABLE/DISABLE macro does not use handle parameter
-    RTC_HandleTypeDef rtcHandle = { .Instance = RTC };
-#endif
+    /* enable the pwc clock interface */
+    crm_periph_clock_enable(CRM_PWC_PERIPH_CLOCK, TRUE);
 
-#if !defined(STM32H7)
-    __HAL_RCC_PWR_CLK_ENABLE(); // Enable Access to PWR
-#endif
-
-    HAL_PWR_EnableBkUpAccess(); // Disable backup domain protection
-
-#if defined(STM32G4)
-    /* Enable RTC APB clock  */
-    __HAL_RCC_RTCAPB_CLK_ENABLE();
-
-    /* Peripheral clock enable */
-    __HAL_RCC_RTC_ENABLE();
-
-#else // !STM32G4, F7 and H7 case
-
-#if defined(__HAL_RCC_RTC_CLK_ENABLE)
-    // For those MCUs with RTCAPBEN bit in RCC clock enable register, turn it on.
-    __HAL_RCC_RTC_CLK_ENABLE(); // Enable RTC module
-#endif
-
-#endif // STM32G4
+    /* allow access to bpr domain */
+    pwc_battery_powered_domain_access(TRUE);
 
     // We don't need a clock source for RTC itself. Skip it.
-
-    __HAL_RTC_WRITEPROTECTION_ENABLE(&rtcHandle);  // Reset sequence
-    __HAL_RTC_WRITEPROTECTION_DISABLE(&rtcHandle); // Apply sequence
+    ertc_write_protect_enable();
+    ertc_write_protect_disable();
 }
-
-#else
-uint32_t persistentObjectRead(persistentObjectId_e id)
-{
-    uint32_t value = RTC_ReadBackupRegister(id);
-
-    return value;
-}
-
-void persistentObjectWrite(persistentObjectId_e id, uint32_t value)
-{
-    RTC_WriteBackupRegister(id, value);
-}
-
-void persistentObjectRTCEnable(void)
-{
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE); // Enable Access to PWR
-    PWR_BackupAccessCmd(ENABLE); // Disable backup domain protection
-
-    // We don't need a clock source for RTC itself. Skip it.
-
-    RTC_WriteProtectionCmd(ENABLE);  // Reset sequence
-    RTC_WriteProtectionCmd(DISABLE); // Apply sequence
-}
-#endif
 
 void persistentObjectInit(void)
 {
@@ -130,11 +65,8 @@ void persistentObjectInit(void)
 
     uint32_t wasSoftReset;
 
-#ifdef STM32H7
-    wasSoftReset = RCC->RSR & RCC_RSR_SFTRSTF;
-#else
-    wasSoftReset = RCC->CSR & RCC_CSR_SFTRSTF;
-#endif
+//    wasSoftReset = RCC->CSR & RCC_CSR_SFTRSTF;
+    wasSoftReset = crm_flag_get(CRM_SW_RESET_FLAG);
 
     if (!wasSoftReset || (persistentObjectRead(PERSISTENT_OBJECT_MAGIC) != PERSISTENT_OBJECT_MAGIC_VALUE)) {
         for (int i = 1; i < PERSISTENT_OBJECT_COUNT; i++) {

@@ -32,7 +32,7 @@
   * @{
   */
     
-#include "at32f435_437.h"
+#include "../../../lib/main/AT32F43x/cmsis/cm4/at32f435_437.h"
 
 /** @addtogroup AT32F435_437_system_private_defines
   * @{

@@ -35,7 +35,7 @@
 
 #include "system.h"
 
-#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
+#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) ||defined(AT32F43x)
 // See "RM CoreSight Architecture Specification"
 // B2.3.10  "LSR and LAR, Software Lock Status Register and Software Lock Access Register"
 // "E1.2.11  LAR, Lock Access Register"
@@ -49,25 +49,23 @@ static uint32_t usTicks = 0;
 // current uptime for 1kHz systick timer. will rollover after 49 days. hopefully we won't care.
 static volatile uint32_t sysTickUptime = 0;
 static volatile uint32_t sysTickValStamp = 0;
-// cached value of RCC->CSR
+// cached value of RCC->CSR/for at32 is crm->ctrlsts
 uint32_t cachedRccCsrValue;
 static uint32_t cpuClockFrequency = 0;
 
 void cycleCounterInit(void)
 {
-#if defined(USE_HAL_DRIVER)
-    cpuClockFrequency = HAL_RCC_GetSysClockFreq();
-#else
-    RCC_ClocksTypeDef clocks;
-    RCC_GetClocksFreq(&clocks);
-    cpuClockFrequency = clocks.SYSCLK_Frequency;
-#endif
+
+	crm_clocks_freq_type clocks;
+    crm_clocks_freq_get(&clocks);
+    cpuClockFrequency = clocks.sclk_freq;
+
     usTicks = cpuClockFrequency / 1000000;
 
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 
 #if defined(DWT_LAR_UNLOCK_VALUE)
-#if defined(STM32H7)
+#if defined(STM32H7) || defined(AT32F43x)
     ITM->LAR = DWT_LAR_UNLOCK_VALUE;
 #elif defined(STM32F7)
     DWT->LAR = DWT_LAR_UNLOCK_VALUE;
@@ -95,10 +93,7 @@ void SysTick_Handler(void)
         sysTickPending = 0;
         (void)(SysTick->CTRL);
     }
-#ifdef USE_HAL_DRIVER
-    // used by the HAL for some timekeeping and timeouts, should always be 1ms
-    HAL_IncTick();
-#endif
+
 }
 
 // Return system uptime in microseconds (rollover in 70minutes)
