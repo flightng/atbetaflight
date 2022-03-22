@@ -387,7 +387,7 @@ extern "C"
 #pragma GCC diagnostic ignored "-Wattributes"
 
 #else
-#include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_compiler.h"
+#include "cmsis_compiler.h"
 #endif
 
 

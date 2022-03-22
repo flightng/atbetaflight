@@ -30,8 +30,8 @@
 #ifndef _ARM_CONST_STRUCTS_H
 #define _ARM_CONST_STRUCTS_H
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_common_tables.h"
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_math.h"
+#include "arm_math.h"
+#include "arm_common_tables.h"
 
    extern const arm_cfft_instance_f64 arm_cfft_sR_f64_len16;
    extern const arm_cfft_instance_f64 arm_cfft_sR_f64_len32;

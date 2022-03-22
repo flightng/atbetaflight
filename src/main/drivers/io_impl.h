@@ -30,7 +30,7 @@ typedef struct ioDef_s {
 } ioDef_t;
 
 typedef struct ioRec_s {
-    GPIO_TypeDef *gpio;
+    gpio_type *gpio;
     uint16_t pin;
     resourceOwner_e owner;
     uint8_t index;
@@ -49,7 +49,7 @@ int IO_EXTI_PortSourceGPIO(IO_t io);
 int IO_EXTI_PinSource(IO_t io);
 #endif
 
-GPIO_TypeDef* IO_GPIO(IO_t io);
+gpio_type * IO_GPIO(IO_t io);
 uint16_t IO_Pin(IO_t io);
 
 #define IO_GPIOBYTAG(tag) IO_GPIO(IOGetByTag(tag))

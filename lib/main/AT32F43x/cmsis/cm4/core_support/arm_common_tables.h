@@ -29,7 +29,7 @@
 #ifndef _ARM_COMMON_TABLES_H
 #define _ARM_COMMON_TABLES_H
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_math.h"
+#include "arm_math.h"
 
 #if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_FFT_ALLOW_TABLES)
   /* Double Precision Float CFFT twiddles */

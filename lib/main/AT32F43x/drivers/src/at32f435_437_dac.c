@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_dac.c
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    contains all the functions for the dac firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -131,7 +131,7 @@ void dac_trigger_enable(dac_select_type dac_select, confirm_state new_state)
   *         this parameter can be one of the following values:
   *         - DAC1_SELECT
   *         - DAC2_SELECT
-  * @param  dac_trigger_select
+  * @param  dac_trigger_source
   *         this parameter can be one of the following values:
   *         - DAC_TMR6_TRGOUT_EVENT
   *         - DAC_TMR8_TRGOUT_EVENT
@@ -143,15 +143,15 @@ void dac_trigger_enable(dac_select_type dac_select, confirm_state new_state)
   *         - DAC_SOFTWARE_TRIGGER
   * @retval none
   */
-void dac_trigger_select(dac_select_type dac_select, dac_trigger_type dac_trigger_select)
+void dac_trigger_select(dac_select_type dac_select, dac_trigger_type dac_trigger_source)
 {
   switch(dac_select)
   {
     case DAC1_SELECT:
-      DAC->ctrl_bit.d1trgsel = dac_trigger_select;
+      DAC->ctrl_bit.d1trgsel = dac_trigger_source;
       break;
     case DAC2_SELECT:
-      DAC->ctrl_bit.d2trgsel = dac_trigger_select;
+      DAC->ctrl_bit.d2trgsel = dac_trigger_source;
       break;
     default:
       break;

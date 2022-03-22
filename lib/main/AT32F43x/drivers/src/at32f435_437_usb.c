@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_usb.c
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    contains all the functions for the usb firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -898,7 +898,7 @@ void usb_hc_enable(otg_global_type *usbx,
                    uint8_t ept_num, 
                    uint8_t dev_address,
                    uint8_t type, 
-                   uint8_t maxpacket, 
+                   uint16_t maxpacket, 
                    uint8_t speed)
 {
   otg_hchannel_type *hch = USB_CHL(usbx, chn);

@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437.h
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    at32f435_437 header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -100,7 +100,7 @@ extern "C" {
   */
 #define __AT32F435_437_LIBRARY_VERSION_MAJOR    (0x02) /*!< [31:24] major version */
 #define __AT32F435_437_LIBRARY_VERSION_MIDDLE   (0x00) /*!< [23:16] middle version */
-#define __AT32F435_437_LIBRARY_VERSION_MINOR    (0x04) /*!< [15:8]  minor version */
+#define __AT32F435_437_LIBRARY_VERSION_MINOR    (0x05) /*!< [15:8]  minor version */
 #define __AT32F435_437_LIBRARY_VERSION_RC       (0x00) /*!< [7:0]  release candidate */
 #define __AT32F435_437_LIBRARY_VERSION          ((__AT32F435_437_LIBRARY_VERSION_MAJOR << 24)  | \
                                                  (__AT32F435_437_LIBRARY_VERSION_MIDDLE << 16) | \
@@ -328,7 +328,7 @@ typedef enum IRQn
   * @}
   */
 
-#include "../../../AT32F43x/cmsis/cm4/core_support/core_cm4.h"
+#include "core_cm4.h"
 #include "system_at32f435_437.h"
 #include <stdint.h>
 
@@ -769,7 +769,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
   * @}
   */
 
-#include "../../../AT32F43x/drivers/inc/at32f435_437_def.h"
+#include "at32f435_437_def.h"
 #include "at32f435_437_conf.h"
 
 #ifdef __cplusplus

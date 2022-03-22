@@ -25,9 +25,9 @@
 #ifndef _ARM_VEC_MATH_H
 #define _ARM_VEC_MATH_H
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_common_tables.h"
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_helium_utils.h"
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_math.h"
+#include "arm_math.h"
+#include "arm_common_tables.h"
+#include "arm_helium_utils.h"
 
 #ifdef   __cplusplus
 extern "C"

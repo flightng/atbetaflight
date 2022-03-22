@@ -83,7 +83,7 @@ Definitions available for MVEI only
 #if defined (ARM_MATH_HELIUM) || defined(ARM_MATH_MVEI)
 
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/arm_common_tables.h"
+#include "arm_common_tables.h"
 
 /* Following functions are used to transpose matrix in f32 and q31 cases */
 __STATIC_INLINE arm_status arm_mat_trans_32bit_2x2_mve(

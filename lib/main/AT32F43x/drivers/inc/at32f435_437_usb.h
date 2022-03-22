@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_usb.h
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    at32f435_437 usb header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -34,7 +34,7 @@ extern "C" {
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../AT32F43x/cmsis/cm4/at32f435_437.h"
+#include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_periph_driver
   * @{
@@ -1392,7 +1392,7 @@ void usb_hc_enable(otg_global_type *usbx,
                    uint8_t ept_num,
                    uint8_t dev_address,
                    uint8_t type,
-                   uint8_t maxpacket,
+                   uint16_t maxpacket,
                    uint8_t speed);
 uint32_t usb_hch_read_interrupt(otg_global_type *usbx);
 void usb_host_disable(otg_global_type *usbx);

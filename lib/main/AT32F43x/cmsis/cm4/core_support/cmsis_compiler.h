@@ -31,27 +31,27 @@
  * Arm Compiler 4/5
  */
 #if   defined ( __CC_ARM )
-  #include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_armcc.h"
+  #include "cmsis_armcc.h"
 
 
 /*
  * Arm Compiler 6.6 LTM (armclang)
  */
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) && (__ARMCC_VERSION < 6100100)
-  #include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_armclang_ltm.h"
+  #include "cmsis_armclang_ltm.h"
 
   /*
  * Arm Compiler above 6.10.1 (armclang)
  */
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6100100)
-  #include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_armclang.h"
+  #include "cmsis_armclang.h"
 
 
 /*
  * GNU Compiler
  */
 #elif defined ( __GNUC__ )
-  #include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_gcc.h"
+  #include "cmsis_gcc.h"
 
 
 /*
