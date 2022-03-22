@@ -30,7 +30,7 @@
  #ifndef _ARM_MVE_TABLES_H
  #define _ARM_MVE_TABLES_H
 
- #include "../../../../AT32F43x/cmsis/cm4/core_support/arm_math.h"
+ #include "arm_math.h"
 
  
 

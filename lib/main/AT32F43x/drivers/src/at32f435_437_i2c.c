@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_i2c.c
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    contains all the functions for the i2c firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer

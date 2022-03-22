@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_xmc.h
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    at32f435_437 xmc header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -34,7 +34,7 @@ extern "C" {
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../AT32F43x/cmsis/cm4/at32f435_437.h"
+#include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_periph_driver
   * @{
@@ -607,7 +607,7 @@ typedef struct
   /**
     * @brief xmc bank1 reserved register, offset:0x120~0x21C
     */
-  __IO uint32_t reserved2[64];
+  __IO uint32_t reserved2[63];
 
   /**
     * @brief xmc bank1 ext register, offset:0x220~0x22C

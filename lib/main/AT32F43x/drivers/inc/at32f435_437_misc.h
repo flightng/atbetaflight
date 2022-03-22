@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_misc.h
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    at32f435_437 misc header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -34,7 +34,7 @@ extern "C" {
 
 
 /* includes ------------------------------------------------------------------*/
-#include "../../../AT32F43x/cmsis/cm4/at32f435_437.h"
+#include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_periph_driver
   * @{
@@ -99,8 +99,8 @@ typedef enum
   */
 
 void nvic_system_reset(void);
-void nvic_irq_enable(uint32_t irqn, uint32_t preempt_priority, uint32_t sub_priority);
-void nvic_irq_disable(uint32_t irqn);
+void nvic_irq_enable(IRQn_Type irqn, uint32_t preempt_priority, uint32_t sub_priority);
+void nvic_irq_disable(IRQn_Type irqn);
 void nvic_priority_group_config(nvic_priority_group_type priority_group);
 void nvic_vector_table_set(uint32_t base, uint32_t offset);
 void nvic_lowpower_mode_config(nvic_lowpower_mode_type lp_mode, confirm_state new_state);

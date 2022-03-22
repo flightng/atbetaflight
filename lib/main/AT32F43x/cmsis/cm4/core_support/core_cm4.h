@@ -60,7 +60,7 @@
   @{
  */
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_version.h"
+#include "cmsis_version.h"
 
 /* CMSIS CM4 definitions */
 #define __CM4_CMSIS_VERSION_MAIN  (__CM_CMSIS_VERSION_MAIN)              /*!< \deprecated [31:16] CMSIS HAL main version */
@@ -159,7 +159,7 @@
 
 #endif
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/cmsis_compiler.h"               /* CMSIS compiler specific defines */
+#include "cmsis_compiler.h"               /* CMSIS compiler specific defines */
 
 
 #ifdef __cplusplus
@@ -1957,7 +1957,7 @@ __NO_RETURN __STATIC_INLINE void __NVIC_SystemReset(void)
 
 #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
 
-#include "../../../../AT32F43x/cmsis/cm4/core_support/mpu_armv7.h"
+#include "mpu_armv7.h"
 
 #endif
 

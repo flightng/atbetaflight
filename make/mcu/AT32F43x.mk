@@ -55,7 +55,8 @@ ARCH_FLAGS      = -std=c99  -mthumb -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=
 ifeq ($(DEVICE_FLAGS),)
 DEVICE_FLAGS    = -DAT32F437ZMT7
 endif
-DEVICE_FLAGS   += -DAT32F43x
+DEVICE_FLAGS   += -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
+
 
 #VCP_SRC = \
             vcp/hw_config.c \
@@ -96,3 +97,6 @@ OPTIMISE_SIZE       :=
 
 LTO_FLAGS           := $(OPTIMISATION_BASE) $(OPTIMISE_DEFAULT)
 endif
+
+DEVICE_FLAGS += -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING -D__FPU_PRESENT=1 -DUNALIGNED_SUPPORT_DISABLE -DARM_MATH_CM4
+

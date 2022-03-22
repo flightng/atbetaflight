@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_mcudbg.h
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    at32f435_437 mcudbg header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -34,7 +34,7 @@ extern "C" {
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../AT32F43x/cmsis/cm4/at32f435_437.h"
+#include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_periph_driver
   * @{
@@ -64,8 +64,8 @@ extern "C" {
 #define DEBUG_TMR13_PAUSE                0x00000080 /*!< debug timer13 pause */
 #define DEBUG_TMR14_PAUSE                0x00000100 /*!< debug timer14 pause */
 #define DEBUG_ERTC_PAUSE                 0x00000400 /*!< debug ertc pause */
-#define DEBUG_WWDT_PAUSE                 0x00000800 /*!< debug watchdog timer pause */
-#define DEBUG_WDT_PAUSE                  0x00001000 /*!< debug window watchdog timer pause */
+#define DEBUG_WWDT_PAUSE                 0x00000800 /*!< debug window watchdog timer pause */
+#define DEBUG_WDT_PAUSE                  0x00001000 /*!< debug watchdog timer pause */
 #define DEBUG_ERTC_512_PAUSE             0x00008000 /*!< debug ertc_512 pause */
 #define DEBUG_I2C1_SMBUS_TIMEOUT         0x01000000 /*!< debug i2c1 smbus timeout */
 #define DEBUG_I2C2_SMBUS_TIMEOUT         0x08000000 /*!< debug i2c2 smbus timeout */
@@ -131,12 +131,12 @@ typedef struct
       __IO uint32_t tmr2_pause           : 1;/* [0] */
       __IO uint32_t tmr3_pause           : 1;/* [1] */
       __IO uint32_t tmr4_pause           : 1;/* [2] */
-      __IO uint32_t tim5_pause           : 1;/* [3] */
-      __IO uint32_t tim6_pause           : 1;/* [4] */
-      __IO uint32_t tim7_pause           : 1;/* [5] */
-      __IO uint32_t tim12_pause          : 1;/* [6] */
-      __IO uint32_t tim13_pause          : 1;/* [7] */
-      __IO uint32_t tim14_pause          : 1;/* [8] */
+      __IO uint32_t tmr5_pause           : 1;/* [3] */
+      __IO uint32_t tmr6_pause           : 1;/* [4] */
+      __IO uint32_t tmr7_pause           : 1;/* [5] */
+      __IO uint32_t tmr12_pause          : 1;/* [6] */
+      __IO uint32_t tmr13_pause          : 1;/* [7] */
+      __IO uint32_t tmr14_pause          : 1;/* [8] */
       __IO uint32_t reserved1            : 1;/* [9] */
       __IO uint32_t ertc_pause           : 1;/* [10] */
       __IO uint32_t wwdt_pause           : 1;/* [11] */
@@ -161,13 +161,13 @@ typedef struct
     struct
     {
       __IO uint32_t tmr1_pause           : 1;/* [0] */
-      __IO uint32_t tim8_pause           : 1;/* [1] */
+      __IO uint32_t tmr8_pause           : 1;/* [1] */
       __IO uint32_t reserved1            : 4;/* [5:2] */
-      __IO uint32_t tim20_pause          : 1;/* [6] */
+      __IO uint32_t tmr20_pause          : 1;/* [6] */
       __IO uint32_t reserved2            : 9;/* [15:7] */
-      __IO uint32_t tim9_pause           : 1;/* [16] */
-      __IO uint32_t tim10_pause          : 1;/* [17] */
-      __IO uint32_t tim11_pause          : 1;/* [18] */
+      __IO uint32_t tmr9_pause           : 1;/* [16] */
+      __IO uint32_t tmr10_pause          : 1;/* [17] */
+      __IO uint32_t tmr11_pause          : 1;/* [18] */
       __IO uint32_t reserved3            : 13;/* [31:19] */
     } apb2_frz_bit;
   };

@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     system_at32f435_437.c
-  * @version  v2.0.4
-  * @date     2021-12-31
+  * @version  v2.0.5
+  * @date     2022-02-11
   * @brief    contains all the functions for cmsis cortex-m4 system source file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -32,7 +32,7 @@
   * @{
   */
     
-#include "../../../lib/main/AT32F43x/cmsis/cm4/at32f435_437.h"
+#include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_system_private_defines
   * @{

@@ -42,39 +42,25 @@ extiChannelRec_t extiChannelRecs[16];
 static const uint8_t extiGroups[16] = { 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6 };
 static uint8_t extiGroupPriority[EXTI_IRQ_GROUPS];
 
-#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(AT32F43x)
 static const uint8_t extiGroupIRQn[EXTI_IRQ_GROUPS] = {
-    EXTI0_IRQn,
-    EXTI1_IRQn,
-    EXTI2_IRQn,
-    EXTI3_IRQn,
-    EXTI4_IRQn,
-    EXTI9_5_IRQn,
-    EXTI15_10_IRQn
-};
-#elif defined(STM32F3)
-static const uint8_t extiGroupIRQn[EXTI_IRQ_GROUPS] = {
-    EXTI0_IRQn,
-    EXTI1_IRQn,
-    EXTI2_TS_IRQn,
-    EXTI3_IRQn,
-    EXTI4_IRQn,
-    EXTI9_5_IRQn,
-    EXTI15_10_IRQn
+	EXINT0_IRQn,
+    EXINT1_IRQn,
+    EXINT2_IRQn,
+    EXINT3_IRQn,
+    EXINT4_IRQn,
+    EXINT9_5_IRQn,
+    EXINT15_10_IRQn
 };
 #else
 # warning "Unknown CPU"
 #endif
 
 static uint32_t triggerLookupTable[] = {
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
-    [BETAFLIGHT_EXTI_TRIGGER_RISING] = GPIO_MODE_IT_RISING,
-    [BETAFLIGHT_EXTI_TRIGGER_FALLING] = GPIO_MODE_IT_FALLING,
-    [BETAFLIGHT_EXTI_TRIGGER_BOTH] = GPIO_MODE_IT_RISING_FALLING
-#elif defined(STM32F1) || defined(STM32F3) || defined(STM32F4)
-    [BETAFLIGHT_EXTI_TRIGGER_RISING] = EXTI_Trigger_Rising,
-    [BETAFLIGHT_EXTI_TRIGGER_FALLING] = EXTI_Trigger_Falling,
-    [BETAFLIGHT_EXTI_TRIGGER_BOTH] = EXTI_Trigger_Rising_Falling
+#if defined(AT32F43x)
+    [BETAFLIGHT_EXTI_TRIGGER_RISING] = EXINT_TRIGGER_RISING_EDGE,
+    [BETAFLIGHT_EXTI_TRIGGER_FALLING] = EXINT_TRIGGER_FALLING_EDGE,
+    [BETAFLIGHT_EXTI_TRIGGER_BOTH] = EXINT_TRIGGER_BOTH_EDGE
 #else
 # warning "Unknown CPU"
 #endif
@@ -82,12 +68,9 @@ static uint32_t triggerLookupTable[] = {
 
 // Absorb the difference in IMR and PR assignments to registers
 
-#if defined(STM32H7)
-#define EXTI_REG_IMR (EXTI_D1->IMR1)
-#define EXTI_REG_PR  (EXTI_D1->PR1)
-#elif defined(STM32G4)
-#define EXTI_REG_IMR (EXTI->IMR1)
-#define EXTI_REG_PR  (EXTI->PR1)
+#if defined(AT32F43x)
+#define EXTI_REG_IMR (exint->inten)
+#define EXTI_REG_PR  (exint->intsts)
 #else
 #define EXTI_REG_IMR (EXTI->IMR)
 #define EXTI_REG_PR  (EXTI->PR)
@@ -95,19 +78,9 @@ static uint32_t triggerLookupTable[] = {
 
 void EXTIInit(void)
 {
-#if defined(STM32F1)
-    // enable AFIO for EXTI support
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-#endif
-#if defined(STM32F3) || defined(STM32F4)
+#if defined(AT32F43x)
     /* Enable SYSCFG clock otherwise the EXTI irq handlers are not called */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-#ifdef REMAP_TIM16_DMA
-    SYSCFG_DMAChannelRemapConfig(SYSCFG_DMARemap_TIM16, ENABLE);
-#endif
-#ifdef REMAP_TIM17_DMA
-    SYSCFG_DMAChannelRemapConfig(SYSCFG_DMARemap_TIM17, ENABLE);
-#endif
+	crm_periph_clock_enable(CRM_SCFG_PERIPH_CLOCK, TRUE);
 #endif
     memset(extiChannelRecs, 0, sizeof(extiChannelRecs));
     memset(extiGroupPriority, 0xff, sizeof(extiGroupPriority));
@@ -150,35 +123,32 @@ void EXTIConfig(IO_t io, extiCallbackRec_t *cb, int irqPriority, ioConfig_t conf
 #else
     IOConfigGPIO(io, config);
 
-#if defined(STM32F10X) ||defined(AT32F4)
-    GPIO_EXTILineConfig(IO_GPIO_PortSource(io), IO_GPIO_PinSource(io));
-#elif defined(STM32F303xC)
-    SYSCFG_EXTILineConfig(IO_EXTI_PortSourceGPIO(io), IO_EXTI_PinSource(io));
-#elif defined(STM32F4)
-    SYSCFG_EXTILineConfig(IO_EXTI_PortSourceGPIO(io), IO_EXTI_PinSource(io));
+#if defined(AT32F43x)
+    scfg_exint_line_config(IO_GPIO_PortSource(io), IO_GPIO_PinSource(io));
 #else
 # warning "Unknown CPU"
 #endif
     uint32_t extiLine = IO_EXTI_Line(io);
 
-    EXTI_InitTypeDef EXTIInit;
-    EXTIInit.EXTI_Line = extiLine;
-    EXTIInit.EXTI_Mode = EXTI_Mode_Interrupt;
-    EXTIInit.EXTI_Trigger = triggerLookupTable[trigger];
-    EXTIInit.EXTI_LineCmd = ENABLE;
-    EXTI_Init(&EXTIInit);
+    exint_flag_clear(extiLine);
+
+    exint_init_type exint_init_struct;
+	exint_default_para_init(&exint_init_struct);
+	exint_init_struct.line_enable = TRUE;
+	exint_init_struct.line_mode = EXINT_LINE_INTERRUPUT;
+	exint_init_struct.line_select = extiLine;
+	exint_init_struct.line_polarity = triggerLookupTable[trigger];
+	exint_init(&exint_init_struct);
 
     if (extiGroupPriority[group] > irqPriority) {
-        extiGroupPriority[group] = irqPriority;
+        extiGroupPriority[group] = irqPriority;//for irq > 4
 
-        NVIC_InitTypeDef NVIC_InitStructure;
-        NVIC_InitStructure.NVIC_IRQChannel = extiGroupIRQn[group];
-        NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = NVIC_PRIORITY_BASE(irqPriority);
-        NVIC_InitStructure.NVIC_IRQChannelSubPriority = NVIC_PRIORITY_SUB(irqPriority);
-        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-        NVIC_Init(&NVIC_InitStructure);
+  	  nvic_priority_group_config(NVIC_PRIORITY_GROUPING);
+  	  nvic_irq_enable(extiGroupIRQn[group],
+  			  NVIC_PRIORITY_BASE(irqPriority),
+			  NVIC_PRIORITY_SUB(irqPriority));
+
     }
-#endif
 }
 
 void EXTIRelease(IO_t io)
@@ -198,7 +168,7 @@ void EXTIRelease(IO_t io)
 
 void EXTIEnable(IO_t io)
 {
-#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F4)
     uint32_t extiLine = IO_EXTI_Line(io);
 
     if (!extiLine) {
@@ -221,6 +191,7 @@ void EXTIEnable(IO_t io)
 # error "Unknown CPU"
 #endif
 }
+
 
 
 void EXTIDisable(IO_t io)
@@ -277,16 +248,9 @@ void EXTI_IRQHandler(uint32_t mask)
 
 _EXTI_IRQ_HANDLER(EXTI0_IRQHandler, 0x0001);
 _EXTI_IRQ_HANDLER(EXTI1_IRQHandler, 0x0002);
-#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
 _EXTI_IRQ_HANDLER(EXTI2_IRQHandler, 0x0004);
-#elif defined(STM32F3)
-_EXTI_IRQ_HANDLER(EXTI2_TS_IRQHandler, 0x0004);
-#else
-# warning "Unknown CPU"
-#endif
 _EXTI_IRQ_HANDLER(EXTI3_IRQHandler, 0x0008);
 _EXTI_IRQ_HANDLER(EXTI4_IRQHandler, 0x0010);
 _EXTI_IRQ_HANDLER(EXTI9_5_IRQHandler, 0x03e0);
 _EXTI_IRQ_HANDLER(EXTI15_10_IRQHandler, 0xfc00);
 
-#endif
