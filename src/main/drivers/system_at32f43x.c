@@ -23,7 +23,7 @@
 
 #include "platform.h"
 
-#include "drivers/accgyro/accgyro_mpu.h"
+// #include "drivers/accgyro/accgyro_mpu.h"
 #include "drivers/exti.h"
 #include "drivers/nvic.h"
 #include "drivers/system.h"
@@ -87,46 +87,7 @@ void enableGPIOPowerUsageAndNoiseReductions(void)
 			CRM_GPIOE_PERIPH_CLOCK    |
 			CRM_DMA1_PERIPH_CLOCK     |
 			CRM_DMA2_PERIPH_CLOCK     |
-			CRM_SDIO1_PERIPH_CLOCK    |
-			CRM_QSPI1_PERIPH_CLOCK    |
-			CRM_QSPI2_PERIPH_CLOCK    |
-			CRM_SDIO2_PERIPH_CLOCK    |
-			CRM_TMR3_PERIPH_CLOCK     |
-			CRM_TMR4_PERIPH_CLOCK     |
-			CRM_TMR5_PERIPH_CLOCK     |
-			CRM_TMR6_PERIPH_CLOCK     |
-			CRM_TMR7_PERIPH_CLOCK     |
-			CRM_TMR12_PERIPH_CLOCK    |
-			CRM_TMR13_PERIPH_CLOCK    |
-			CRM_TMR14_PERIPH_CLOCK    |
-			CRM_SPI2_PERIPH_CLOCK     |
-			CRM_SPI3_PERIPH_CLOCK     |
-			CRM_USART2_PERIPH_CLOCK   |
-			CRM_USART3_PERIPH_CLOCK   |
-			CRM_UART4_PERIPH_CLOCK    |
-			CRM_UART5_PERIPH_CLOCK    |
-			CRM_I2C1_PERIPH_CLOCK     |
-			CRM_I2C2_PERIPH_CLOCK     |
-			CRM_I2C3_PERIPH_CLOCK     |
-			CRM_PWC_PERIPH_CLOCK      |
-			CRM_DAC_PERIPH_CLOCK      |
-			CRM_UART7_PERIPH_CLOCK    |
-			CRM_UART8_PERIPH_CLOCK    |
-			CRM_TMR1_PERIPH_CLOCK     |
-			CRM_TMR8_PERIPH_CLOCK     |
-			CRM_USART1_PERIPH_CLOCK   |
-			CRM_USART6_PERIPH_CLOCK   |
-			CRM_ADC1_PERIPH_CLOCK     |
-			CRM_ADC2_PERIPH_CLOCK     |
-			CRM_ADC3_PERIPH_CLOCK     |
-			CRM_SPI1_PERIPH_CLOCK     |
-			CRM_SPI4_PERIPH_CLOCK     |
-			CRM_SCFG_PERIPH_CLOCK     |
-			CRM_TMR9_PERIPH_CLOCK     |
-			CRM_TMR10_PERIPH_CLOCK    |
-			CRM_TMR11_PERIPH_CLOCK    |
-			CRM_TMR20_PERIPH_CLOCK    |
-			CRM_ACC_PERIPH_CLOCK,TRUE);
+			0,TRUE);
 }
 
 bool isMPUSoftReset(void)

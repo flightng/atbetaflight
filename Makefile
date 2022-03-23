@@ -280,7 +280,6 @@ ASFLAGS     = $(ARCH_FLAGS) \
 
 ifeq ($(LD_FLAGS),)
 LD_FLAGS     = -lm \
-              -nostartfiles \
               --specs=nano.specs \
               -lc \
               -lnosys \
@@ -294,7 +293,9 @@ LD_FLAGS     = -lm \
               -Wl,--no-wchar-size-warning \
               -Wl,--print-memory-usage \
               -T$(LD_SCRIPT) \
-               $(EXTRA_LD_FLAGS)
+               $(EXTRA_LD_FLAGS)\
+#			    -nostartfiles \
+
 endif
 
 ###############################################################################

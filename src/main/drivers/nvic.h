@@ -77,9 +77,9 @@
 #define NVIC_PRIO_SPI_DMA                  NVIC_BUILD_PRIORITY(0, 0)
 #define NVIC_PRIO_SDIO_DMA                 NVIC_BUILD_PRIORITY(0, 0)
 
-#ifdef USE_HAL_DRIVER
+#if defined(USE_HAL_DRIVER) || defined(AT32F43x)
 // utility macros to join/split priority
-#define NVIC_PRIORITY_GROUPING NVIC_PRIORITYGROUP_2
+#define NVIC_PRIORITY_GROUPING NVIC_PRIORITY_GROUP_2
 #define NVIC_BUILD_PRIORITY(base,sub) (((((base)<<(4-(7-(NVIC_PRIORITY_GROUPING))))|((sub)&(0x0f>>(7-(NVIC_PRIORITY_GROUPING)))))<<4)&0xf0)
 #define NVIC_PRIORITY_BASE(prio) (((prio)>>(4-(7-(NVIC_PRIORITY_GROUPING))))>>4)
 #define NVIC_PRIORITY_SUB(prio) (((prio)&(0x0f>>(7-(NVIC_PRIORITY_GROUPING))))>>4)

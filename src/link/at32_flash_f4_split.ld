@@ -1,7 +1,7 @@
 /*
 *****************************************************************************
 **
-**  File        : stm32_flash_f4_split.ld
+**  File        : at32_flash_f4_split.ld
 **
 **  Abstract    : Common linker script for STM32 devices.
 **
@@ -20,8 +20,8 @@ __config_start = ORIGIN(FLASH_CONFIG);
 __config_end = ORIGIN(FLASH_CONFIG) + LENGTH(FLASH_CONFIG);
 
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0;      /* required amount of heap  */
-_Min_Stack_Size = 0x800; /* required amount of stack */
+_Min_Heap_Size = 0x200;      /* required amount of heap  */
+_Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Define output sections */
 SECTIONS
@@ -44,7 +44,9 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
     PROVIDE (isr_vector_table_end = .);
-  } >VECTAB AT> FLASH
+  } >FLASH
+
+
 
   /* System memory (read-only bootloader) interrupt vector */
  

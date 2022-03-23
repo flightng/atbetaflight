@@ -140,13 +140,17 @@
 
 #elif defined(AT32F43x)
 
+
 #include "at32f435_437.h"
-#include "at32f435_437_conf.h"
 
 // Chip Unique ID on F103
 #define U_ID_0 (*(uint32_t*)0x1FFFF7E8)
 #define U_ID_1 (*(uint32_t*)0x1FFFF7EC)
 #define U_ID_2 (*(uint32_t*)0x1FFFF7F0)
+
+#ifndef AT32F4
+#define AT32F4
+#endif
 
 #elif defined(SIMULATOR_BUILD)
 

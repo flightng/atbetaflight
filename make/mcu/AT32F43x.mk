@@ -14,7 +14,8 @@ endif
 # for the bsp dir & src 
 STDPERIPH_DIR   = $(ROOT)/lib/main/AT32F43x/drivers/
 STDPERIPH_SRC   = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
-EXCLUDES        = at32f435_437_dvp.c\
+EXCLUDES        = \
+				  at32f435_437_dvp.c\
 				  at32f435_437_can.c\
 				  at32f435_437_xmc.c\
 				  at32f435_437_emac\
@@ -46,7 +47,7 @@ DEVICE_STDPERIPH_SRC := $(DEVICE_STDPERIPH_SRC) \
 endif
 
 ifeq ($(LD_SCRIPT),)
-LD_SCRIPT       = $(LINKER_DIR)/AT32F437xM_FLASH.ld
+LD_SCRIPT       = $(LINKER_DIR)/at32_flash_f43xM.ld
 endif
 
 ARCH_FLAGS      = -std=c99  -mthumb -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -Wdouble-promotion
@@ -70,21 +71,23 @@ DEVICE_FLAGS   += -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
             drivers/usb_io.c
 
 MCU_COMMON_SRC = \
-            drivers/adc_stm32f10x.c \
-            drivers/bus_i2c_stm32f10x.c \
-            drivers/bus_spi_stdperiph.c \
-            drivers/dma.c \
-            drivers/inverter.c \
-            drivers/light_ws2811strip_stdperiph.c \
-            drivers/serial_uart_stdperiph.c \
-            drivers/serial_uart_stm32f10x.c \
-            drivers/system_stm32f10x.c \
-            drivers/timer_stm32f10x.c\
-            drivers/pwm_output_dshot_shared.c \
-			drivers/pwm_output_dshot.c \
-			drivers/dshot_bitbang.c \
-            drivers/dshot_bitbang_decode.c \
-            drivers/dshot_bitbang_stdperiph.c \
+            startup/system_at32f435_437.c\
+            startup/at32f435_437_clock.c\
+            # drivers/adc_stm32f10x.c \
+            # drivers/bus_i2c_stm32f10x.c \
+            # drivers/bus_spi_stdperiph.c \
+            # drivers/dma.c \
+            # drivers/inverter.c \
+            # drivers/light_ws2811strip_stdperiph.c \
+            # drivers/serial_uart_stdperiph.c \
+            # drivers/serial_uart_stm32f10x.c \
+            # drivers/system_stm32f10x.c \
+            # drivers/timer_stm32f10x.c\
+            # drivers/pwm_output_dshot_shared.c \
+			# drivers/pwm_output_dshot.c \
+			# drivers/dshot_bitbang.c \
+            # drivers/dshot_bitbang_decode.c \
+            # drivers/dshot_bitbang_stdperiph.c \
             
             
 
@@ -98,5 +101,5 @@ OPTIMISE_SIZE       :=
 LTO_FLAGS           := $(OPTIMISATION_BASE) $(OPTIMISE_DEFAULT)
 endif
 
-DEVICE_FLAGS += -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING -D__FPU_PRESENT=1 -DUNALIGNED_SUPPORT_DISABLE -DARM_MATH_CM4
+DEVICE_FLAGS +=  -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING  -DUNALIGNED_SUPPORT_DISABLE -DARM_MATH_CM4 
 
