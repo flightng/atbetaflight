@@ -223,10 +223,10 @@ void IOConfigGPIO(IO_t io, ioConfig_t cfg)
 
     gpio_init_type init = {
         .gpio_pins = IO_Pin(io),
-        .gpio_mode_type = (cfg >> 0) & 0x03,
-        .gpio_drive_type = (cfg >> 2) & 0x03,
+        .gpio_mode = (cfg >> 0) & 0x03,
+        .gpio_drive_strength = (cfg >> 2) & 0x03,
         .gpio_out_type = (cfg >> 4) & 0x01,
-        .gpio_pull_type = (cfg >> 5) & 0x03,
+        .gpio_pull = (cfg >> 5) & 0x03,
     };
     gpio_init(IO_GPIO(io), &init);
 }
@@ -250,10 +250,10 @@ void IOConfigGPIOAF(IO_t io, ioConfig_t cfg, uint8_t af)
 
     gpio_init_type init = {
         .gpio_pins = IO_Pin(io),
-        .gpio_mode_type = (cfg >> 0) & 0x03,
-        .gpio_drive_type = (cfg >> 2) & 0x03,
+        .gpio_mode = (cfg >> 0) & 0x03,
+        .gpio_drive_strength = (cfg >> 2) & 0x03,
         .gpio_out_type = (cfg >> 4) & 0x01,
-        .gpio_pull_type = (cfg >> 5) & 0x03,
+        .gpio_pull = (cfg >> 5) & 0x03,
     };
     gpio_init(IO_GPIO(io), &init);
 }

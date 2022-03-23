@@ -69,8 +69,8 @@ static uint32_t triggerLookupTable[] = {
 // Absorb the difference in IMR and PR assignments to registers
 
 #if defined(AT32F43x)
-#define EXTI_REG_IMR (exint->inten)
-#define EXTI_REG_PR  (exint->intsts)
+#define EXTI_REG_IMR (EXINT->inten)
+#define EXTI_REG_PR  (EXINT->intsts)
 #else
 #define EXTI_REG_IMR (EXTI->IMR)
 #define EXTI_REG_PR  (EXTI->PR)
@@ -197,3 +197,4 @@ _EXTI_IRQ_HANDLER(EXTI4_IRQHandler, 0x0010);
 _EXTI_IRQ_HANDLER(EXTI9_5_IRQHandler, 0x03e0);
 _EXTI_IRQ_HANDLER(EXTI15_10_IRQHandler, 0xfc00);
 
+#endif
