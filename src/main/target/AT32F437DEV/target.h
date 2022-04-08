@@ -134,4 +134,4 @@
 #define TARGET_IO_PORTE         BIT(2)
 
 #define USABLE_TIMER_CHANNEL_COUNT 28
-#define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(9) | TIM_N(20) )
+#define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(8) | TIM_N(20) )
