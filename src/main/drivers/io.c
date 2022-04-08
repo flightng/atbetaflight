@@ -244,7 +244,6 @@ void IOConfigGPIOAF(IO_t io, ioConfig_t cfg, uint8_t af)
 
     const rccPeriphTag_t rcc = ioPortDefs[IO_GPIOPortIdx(io)].rcc;
 
-    gpio_pin_mux_config(IO_GPIO(io), IO_GPIO_PinSource(io), af);
 
     RCC_ClockCmd(rcc, ENABLE);
 
@@ -256,6 +255,9 @@ void IOConfigGPIOAF(IO_t io, ioConfig_t cfg, uint8_t af)
         .gpio_pull = (cfg >> 5) & 0x03,
     };
     gpio_init(IO_GPIO(io), &init);
+
+    gpio_pin_mux_config(IO_GPIO(io), IO_GPIO_PinSource(io), af);
+
 }
 
 

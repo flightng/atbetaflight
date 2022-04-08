@@ -38,29 +38,20 @@
 
 // map to base channel (strip N from channel); works only when channel N exists
 #define DEF_TIM_TCH2BTCH(timch) CONCAT(B, timch)
-#define BTCH_TIM1_CH1N BTCH_TIM1_CH1
-#define BTCH_TIM1_CH2N BTCH_TIM1_CH2
-#define BTCH_TIM1_CH3N BTCH_TIM1_CH3
-#ifdef STM32G4
-#define BTCH_TIM1_CH4N BTCH_TIM1_CH4
-#endif
+#define BTCH_TMR1_CH1N BTCH_TMR1_CH1
+#define BTCH_TMR1_CH2N BTCH_TMR1_CH2
+#define BTCH_TMR1_CH3N BTCH_TMR1_CH3
 
-#define BTCH_TIM8_CH1N BTCH_TIM8_CH1
-#define BTCH_TIM8_CH2N BTCH_TIM8_CH2
-#define BTCH_TIM8_CH3N BTCH_TIM8_CH3
+#define BTCH_TMR8_CH1N BTCH_TMR8_CH1
+#define BTCH_TMR8_CH2N BTCH_TMR8_CH2
+#define BTCH_TMR8_CH3N BTCH_TMR8_CH3
 #ifdef STM32G4
 #define BTCH_TIM8_CH4N BTCH_TIM8_CH4
 #endif
 
-#define BTCH_TIM20_CH1N BTCH_TIM20_CH1
-#define BTCH_TIM20_CH2N BTCH_TIM20_CH2
-#define BTCH_TIM20_CH3N BTCH_TIM20_CH3
-
-#define BTCH_TIM13_CH1N BTCH_TIM13_CH1
-#define BTCH_TIM14_CH1N BTCH_TIM14_CH1
-#define BTCH_TIM15_CH1N BTCH_TIM15_CH1
-#define BTCH_TIM16_CH1N BTCH_TIM16_CH1
-#define BTCH_TIM17_CH1N BTCH_TIM17_CH1
+#define BTCH_TMR20_CH1N BTCH_TMR20_CH1
+#define BTCH_TMR20_CH2N BTCH_TMR20_CH2
+#define BTCH_TMR20_CH3N BTCH_TMR20_CH3
 
 // channel table D(chan_n, n_type)
 #define DEF_TIM_CH_GET(ch) CONCAT2(DEF_TIM_CH__, ch)
@@ -77,28 +68,28 @@
 
 // timer table D(tim_n)
 #define DEF_TIM_TIM_GET(tim) CONCAT2(DEF_TIM_TIM__, tim)
-#define DEF_TIM_TIM__TIM_TIM1  D(1)
-#define DEF_TIM_TIM__TIM_TIM2  D(2)
-#define DEF_TIM_TIM__TIM_TIM3  D(3)
-#define DEF_TIM_TIM__TIM_TIM4  D(4)
-#define DEF_TIM_TIM__TIM_TIM5  D(5)
-#define DEF_TIM_TIM__TIM_TIM6  D(6)
-#define DEF_TIM_TIM__TIM_TIM7  D(7)
-#define DEF_TIM_TIM__TIM_TIM8  D(8)
-#define DEF_TIM_TIM__TIM_TIM9  D(9)
-#define DEF_TIM_TIM__TIM_TIM10 D(10)
-#define DEF_TIM_TIM__TIM_TIM11 D(11)
-#define DEF_TIM_TIM__TIM_TIM12 D(12)
-#define DEF_TIM_TIM__TIM_TIM13 D(13)
-#define DEF_TIM_TIM__TIM_TIM14 D(14)
-#define DEF_TIM_TIM__TIM_TIM15 D(15)
-#define DEF_TIM_TIM__TIM_TIM16 D(16)
-#define DEF_TIM_TIM__TIM_TIM17 D(17)
-#define DEF_TIM_TIM__TIM_TIM18 D(18)
-#define DEF_TIM_TIM__TIM_TIM19 D(19)
-#define DEF_TIM_TIM__TIM_TIM20 D(20)
-#define DEF_TIM_TIM__TIM_TIM21 D(21)
-#define DEF_TIM_TIM__TIM_TIM22 D(22)
+#define DEF_TIM_TIM__TIM_TMR1  D(1)
+#define DEF_TIM_TIM__TIM_TMR2  D(2)
+#define DEF_TIM_TIM__TIM_TMR3  D(3)
+#define DEF_TIM_TIM__TIM_TMR4  D(4)
+#define DEF_TIM_TIM__TIM_TMR5  D(5)
+#define DEF_TIM_TIM__TIM_TMR6  D(6)
+#define DEF_TIM_TIM__TIM_TMR7  D(7)
+#define DEF_TIM_TIM__TIM_TMR8  D(8)
+#define DEF_TIM_TIM__TIM_TMR9  D(9)
+#define DEF_TIM_TIM__TIM_TMR10 D(10)
+#define DEF_TIM_TIM__TIM_TMR11 D(11)
+#define DEF_TIM_TIM__TIM_TMR12 D(12)
+#define DEF_TIM_TIM__TIM_TMR13 D(13)
+#define DEF_TIM_TIM__TIM_TMR14 D(14)
+#define DEF_TIM_TIM__TIM_TMR15 D(15)
+#define DEF_TIM_TIM__TIM_TMR16 D(16)
+#define DEF_TIM_TIM__TIM_TMR17 D(17)
+#define DEF_TIM_TIM__TIM_TMR18 D(18)
+#define DEF_TIM_TIM__TIM_TMR19 D(19)
+#define DEF_TIM_TIM__TIM_TMR20 D(20)
+#define DEF_TIM_TIM__TIM_TMR21 D(21)
+#define DEF_TIM_TIM__TIM_TMR22 D(22)
 
 // get record from DMA table
 // DMA table is identical for all targets for consistency, only variant 0 is defined on F1,F3
@@ -139,990 +130,15 @@
 //  Parameters in D(...) are target-specific
 #define DEF_TIM_AF_GET(timch, pin) CONCAT4(DEF_TIM_AF__, pin, __, timch)
 
+//AF
+#define DEF_TIM_AF(timch, pin)                CONCAT(DEF_TIM_AF__, DEF_TIM_AF_GET(timch, pin))
+#define DEF_TIM_AF__D(af_n, tim_n)            GPIO_MUX_ ## af_n  /*GPIO_MUX_1 gpio_mux_sel_type */
+
 // define output type (N-channel)
 #define DEF_TIM_OUTPUT(ch)         CONCAT(DEF_TIM_OUTPUT__, DEF_TIM_CH_GET(ch))
 #define DEF_TIM_OUTPUT__D(chan_n, n_channel) PP_IIF(n_channel, TIMER_OUTPUT_N_CHANNEL, TIMER_OUTPUT_NONE)
 
-//MOD TO AT32F4 ,NO F1 SUPPORT
-
-#if defined(AT32F4)
-
-#define DEF_TIM(tim, chan, pin, flags, out) {                           \
-    tim,                                                                \
-    TIMER_GET_IO_TAG(pin),                                              \
-    DEF_TIM_CHANNEL(CH_ ## chan),                                       \
-    flags,                                                              \
-    (DEF_TIM_OUTPUT(CH_ ## chan) | out),                                \
-    0                                                                   \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_CHANNEL(TCH_## tim ## _ ## chan)                    \
-    )                                                                   \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_CHANNEL(TCH_## tim ## _UP),                         \
-        DEF_TIM_DMA_HANDLER(TCH_## tim ## _UP)                          \
-    )                                                                   \
-    }                                                                    \
-/**/
-
-#define DEF_TIM_CHANNEL(ch)        CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_Channel_ ## chan_n
-
-#define DEF_TIM_DMA_CHANNEL(timch) CONCAT(DEF_TIM_DMA_CHANNEL__, DEF_TIM_DMA_GET(0, timch))
-#define DEF_TIM_DMA_CHANNEL__D(dma_n, chan_n) (dmaResource_t *) DMA ## dma_n ## _Channel ## chan_n
-#define DEF_TIM_DMA_CHANNEL__NONE NULL
-
-#define DEF_TIM_DMA_HANDLER(timch) CONCAT(DEF_TIM_DMA_HANDLER__, DEF_TIM_DMA_GET(0, timch))
-#define DEF_TIM_DMA_HANDLER__D(dma_n, chan_n) DMA ## dma_n ## _CH ## chan_n ## _HANDLER
-#define DEF_TIM_DMA_HANDLER__NONE 0
-
-/* add F1 DMA mappings here */
-// D(dma_n, channel_n)
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    D(1, 2)
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    D(1, 3)
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    D(1, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    D(1, 4)
-
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    D(1, 7)
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    D(1, 1)
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    D(1, 7)
-
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    D(1, 6)
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    NONE
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    D(1, 2)
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    D(1, 3)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    D(1, 1)
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    D(1, 4)
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM5_CH1    D(2, 5)
-#define DEF_TIM_DMA__BTCH_TIM5_CH2    D(2, 4)
-#define DEF_TIM_DMA__BTCH_TIM5_CH3    D(2, 2)
-#define DEF_TIM_DMA__BTCH_TIM5_CH4    D(2, 1)
-
-#define DEF_TIM_DMA__BTCH_TIM6_CH1    NONE
-#define DEF_TIM_DMA__BTCH_TIM6_CH2    NONE
-#define DEF_TIM_DMA__BTCH_TIM6_CH3    NONE
-#define DEF_TIM_DMA__BTCH_TIM6_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM7_CH1    NONE
-#define DEF_TIM_DMA__BTCH_TIM7_CH2    NONE
-#define DEF_TIM_DMA__BTCH_TIM7_CH3    NONE
-#define DEF_TIM_DMA__BTCH_TIM7_CH4    NONE
-
-
-// TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     D(1,5)
-#define DEF_TIM_DMA__BTCH_TIM2_UP     D(1,2)
-#define DEF_TIM_DMA__BTCH_TIM3_UP     D(1,3)
-#define DEF_TIM_DMA__BTCH_TIM4_UP     D(1,7)
-#define DEF_TIM_DMA__BTCH_TIM6_UP     D(2,3)
-#define DEF_TIM_DMA__BTCH_TIM7_UP     D(2,4)
-
-
-#elif defined(STM32F3)
-
-#define DEF_TIM(tim, chan, pin, flags, out) {                           \
-    tim,                                                                \
-    TIMER_GET_IO_TAG(pin),                                              \
-    DEF_TIM_CHANNEL(CH_ ## chan),                                       \
-    flags,                                                              \
-    (DEF_TIM_OUTPUT(CH_ ## chan) | out),                                \
-    DEF_TIM_AF(TCH_## tim ## _ ## chan, pin)                            \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_CHANNEL(TCH_## tim ## _ ## chan)                    \
-    )                                                                   \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_CHANNEL(TCH_## tim ## _UP),                         \
-        DEF_TIM_DMA_HANDLER(TCH_## tim ## _UP)                          \
-    )                                                                   \
-    }                                                                   \
-/**/
-
-#define DEF_TIM_CHANNEL(ch)        CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_Channel_ ## chan_n
-
-#define DEF_TIM_AF(timch, pin)     CONCAT(DEF_TIM_AF__, DEF_TIM_AF_GET(timch, pin))
-#define DEF_TIM_AF__D(af_n) GPIO_AF_ ## af_n
-
-#define DEF_TIM_DMA_CHANNEL(timch) CONCAT(DEF_TIM_DMA_CHANNEL__, DEF_TIM_DMA_GET(0, timch))
-#define DEF_TIM_DMA_CHANNEL__D(dma_n, chan_n) (dmaResource_t *)DMA ## dma_n ## _Channel ## chan_n
-#define DEF_TIM_DMA_CHANNEL__NONE NULL
-
-#define DEF_TIM_DMA_HANDLER(timch) CONCAT(DEF_TIM_DMA_HANDLER__, DEF_TIM_DMA_GET(0, timch))
-#define DEF_TIM_DMA_HANDLER__D(dma_n, chan_n) DMA ## dma_n ## _CH ## chan_n ## _HANDLER
-#define DEF_TIM_DMA_HANDLER__NONE 0
-
-
-/* add the DMA mappings here */
-// D(dma_n, channel_n)
-
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    D(1, 2)
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    D(1, 3)
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    D(1, 4)
-#define DEF_TIM_DMA__BTCH_TIM1_TRIG   D(1, 4)
-#define DEF_TIM_DMA__BTCH_TIM1_COM    D(1, 4)
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    D(1, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    D(1, 1)
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    D(1, 7)
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    D(1, 7)
-
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    NONE
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    D(1, 2)
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    D(1, 3)
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    D(1, 6)
-#define DEF_TIM_DMA__BTCH_TIM3_TRIG   D(1, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    D(1, 1)
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    D(1, 4)
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM15_CH1   D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM15_CH2   NONE
-#define DEF_TIM_DMA__BTCH_TIM15_UP    D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM15_TRIG  D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM15_COM   D(1, 5)
-
-#ifdef REMAP_TIM16_DMA
-#define DEF_TIM_DMA__BTCH_TIM16_CH1   D(1, 6)
-#else
-#define DEF_TIM_DMA__BTCH_TIM16_CH1   D(1, 3)
-#endif
-
-#ifdef REMAP_TIM17_DMA
-#define DEF_TIM_DMA__BTCH_TIM17_CH1   D(1, 7)
-#else
-#define DEF_TIM_DMA__BTCH_TIM17_CH1   D(1, 1)
-#endif
-
-#define DEF_TIM_DMA__BTCH_TIM8_CH3    D(2, 1)
-#define DEF_TIM_DMA__BTCH_TIM8_CH4    D(2, 2)
-#define DEF_TIM_DMA__BTCH_TIM8_TRIG   D(2, 2)
-#define DEF_TIM_DMA__BTCH_TIM8_COM    D(2, 2)
-#define DEF_TIM_DMA__BTCH_TIM8_CH1    D(2, 3)
-#define DEF_TIM_DMA__BTCH_TIM8_CH2    D(2, 5)
-
-// TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     D(1, 5)
-#define DEF_TIM_DMA__BTCH_TIM2_UP     D(1, 2)
-#define DEF_TIM_DMA__BTCH_TIM3_UP     D(1, 3)
-#define DEF_TIM_DMA__BTCH_TIM4_UP     D(1, 7)
-#define DEF_TIM_DMA__BTCH_TIM6_UP     D(2, 3)
-#define DEF_TIM_DMA__BTCH_TIM7_UP     D(2, 4)
-#define DEF_TIM_DMA__BTCH_TIM8_UP     D(2, 1)
-#define DEF_TIM_DMA__BTCH_TIM15_UP    D(1, 5)
-#ifdef REMAP_TIM16_DMA
-#define DEF_TIM_DMA__BTCH_TIM16_UP    D(1, 6)
-#else
-#define DEF_TIM_DMA__BTCH_TIM16_UP    D(1, 3)
-#endif
-#ifdef REMAP_TIM17_DMA
-#define DEF_TIM_DMA__BTCH_TIM17_UP    D(1, 7)
-#else
-#define DEF_TIM_DMA__BTCH_TIM17_UP    D(1, 1)
-#endif
-
-// AF table
-
-#define DEF_TIM_AF__PA0__TCH_TIM2_CH1     D(1)
-#define DEF_TIM_AF__PA1__TCH_TIM2_CH2     D(1)
-#define DEF_TIM_AF__PA2__TCH_TIM2_CH3     D(1)
-#define DEF_TIM_AF__PA3__TCH_TIM2_CH4     D(1)
-#define DEF_TIM_AF__PA5__TCH_TIM2_CH1     D(1)
-#define DEF_TIM_AF__PA6__TCH_TIM16_CH1    D(1)
-#define DEF_TIM_AF__PA7__TCH_TIM17_CH1    D(1)
-#define DEF_TIM_AF__PA12__TCH_TIM16_CH1   D(1)
-#define DEF_TIM_AF__PA13__TCH_TIM16_CH1N  D(1)
-#define DEF_TIM_AF__PA15__TCH_TIM2_CH1    D(1)
-
-#define DEF_TIM_AF__PA4__TCH_TIM3_CH2     D(2)
-#define DEF_TIM_AF__PA6__TCH_TIM3_CH1     D(2)
-#define DEF_TIM_AF__PA7__TCH_TIM3_CH2     D(2)
-#define DEF_TIM_AF__PA15__TCH_TIM8_CH1    D(2)
-
-#define DEF_TIM_AF__PA7__TCH_TIM8_CH1N    D(4)
-
-#define DEF_TIM_AF__PA14__TCH_TIM8_CH2    D(5)
-
-#define DEF_TIM_AF__PA7__TCH_TIM1_CH1N    D(6)
-#define DEF_TIM_AF__PA8__TCH_TIM1_CH1     D(6)
-#define DEF_TIM_AF__PA9__TCH_TIM1_CH2     D(6)
-#define DEF_TIM_AF__PA10__TCH_TIM1_CH3    D(6)
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH1N   D(6)
-#define DEF_TIM_AF__PA12__TCH_TIM1_CH2N   D(6)
-
-#define DEF_TIM_AF__PA1__TCH_TIM15_CH1N   D(9)
-#define DEF_TIM_AF__PA2__TCH_TIM15_CH1    D(9)
-#define DEF_TIM_AF__PA3__TCH_TIM15_CH2    D(9)
-
-#define DEF_TIM_AF__PA9__TCH_TIM2_CH3     D(10)
-#define DEF_TIM_AF__PA10__TCH_TIM2_CH4    D(10)
-#define DEF_TIM_AF__PA11__TCH_TIM4_CH1    D(10)
-#define DEF_TIM_AF__PA12__TCH_TIM4_CH2    D(10)
-#define DEF_TIM_AF__PA13__TCH_TIM4_CH3    D(10)
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH4    D(11)
-
-#define DEF_TIM_AF__PB3__TCH_TIM2_CH2     D(1)
-#define DEF_TIM_AF__PB4__TCH_TIM16_CH1    D(1)
-#define DEF_TIM_AF__PB6__TCH_TIM16_CH1N   D(1)
-#define DEF_TIM_AF__PB7__TCH_TIM17_CH1N   D(1)
-#define DEF_TIM_AF__PB8__TCH_TIM16_CH1    D(1)
-#define DEF_TIM_AF__PB9__TCH_TIM17_CH1    D(1)
-#define DEF_TIM_AF__PB10__TCH_TIM2_CH3    D(1)
-#define DEF_TIM_AF__PB11__TCH_TIM2_CH4    D(1)
-#define DEF_TIM_AF__PB14__TCH_TIM15_CH1   D(1)
-#define DEF_TIM_AF__PB15__TCH_TIM15_CH2   D(1)
-
-#define DEF_TIM_AF__PB0__TCH_TIM3_CH3     D(2)
-#define DEF_TIM_AF__PB1__TCH_TIM3_CH4     D(2)
-#define DEF_TIM_AF__PB4__TCH_TIM3_CH1     D(2)
-#define DEF_TIM_AF__PB5__TCH_TIM3_CH2     D(2)
-#define DEF_TIM_AF__PB6__TCH_TIM4_CH1     D(2)
-#define DEF_TIM_AF__PB7__TCH_TIM4_CH2     D(2)
-#define DEF_TIM_AF__PB8__TCH_TIM4_CH3     D(2)
-#define DEF_TIM_AF__PB9__TCH_TIM4_CH4     D(2)
-#define DEF_TIM_AF__PB15__TCH_TIM15_CH1N  D(2)
-
-#define DEF_TIM_AF__PB5__TCH_TIM8_CH3N    D(3)
-
-#define DEF_TIM_AF__PB0__TCH_TIM8_CH2N    D(4)
-#define DEF_TIM_AF__PB1__TCH_TIM8_CH3N    D(4)
-#define DEF_TIM_AF__PB3__TCH_TIM8_CH1N    D(4)
-#define DEF_TIM_AF__PB4__TCH_TIM8_CH2N    D(4)
-#define DEF_TIM_AF__PB15__TCH_TIM1_CH3N   D(4)
-
-#define DEF_TIM_AF__PB6__TCH_TIM8_CH1     D(5)
-
-#define DEF_TIM_AF__PB0__TCH_TIM1_CH2N    D(6)
-#define DEF_TIM_AF__PB1__TCH_TIM1_CH3N    D(6)
-#define DEF_TIM_AF__PB13__TCH_TIM1_CH1N   D(6)
-#define DEF_TIM_AF__PB14__TCH_TIM1_CH2N   D(6)
-
-#define DEF_TIM_AF__PB5__TCH_TIM17_CH1    D(10)
-#define DEF_TIM_AF__PB7__TCH_TIM3_CH4     D(10)
-#define DEF_TIM_AF__PB8__TCH_TIM8_CH2     D(10)
-#define DEF_TIM_AF__PB9__TCH_TIM8_CH3     D(10)
-
-#define DEF_TIM_AF__PC6__TCH_TIM3_CH1     D(2)
-#define DEF_TIM_AF__PC7__TCH_TIM3_CH2     D(2)
-#define DEF_TIM_AF__PC8__TCH_TIM3_CH3     D(2)
-#define DEF_TIM_AF__PC9__TCH_TIM3_CH4     D(2)
-
-#define DEF_TIM_AF__PC6__TCH_TIM8_CH1     D(4)
-#define DEF_TIM_AF__PC7__TCH_TIM8_CH2     D(4)
-#define DEF_TIM_AF__PC8__TCH_TIM8_CH3     D(4)
-#define DEF_TIM_AF__PC9__TCH_TIM8_CH4     D(4)
-
-#define DEF_TIM_AF__PC10__TCH_TIM8_CH1N   D(4)
-#define DEF_TIM_AF__PC11__TCH_TIM8_CH2N   D(4)
-#define DEF_TIM_AF__PC12__TCH_TIM8_CH3N   D(4)
-#define DEF_TIM_AF__PC13__TCH_TIM8_CH1N   D(4)
-
-#define DEF_TIM_AF__PD3__TCH_TIM2_CH1     D(2)
-#define DEF_TIM_AF__PD4__TCH_TIM2_CH2     D(2)
-#define DEF_TIM_AF__PD6__TCH_TIM2_CH4     D(2)
-#define DEF_TIM_AF__PD7__TCH_TIM2_CH3     D(2)
-
-#define DEF_TIM_AF__PD12__TCH_TIM4_CH1    D(2)
-#define DEF_TIM_AF__PD13__TCH_TIM4_CH2    D(2)
-#define DEF_TIM_AF__PD14__TCH_TIM4_CH3    D(2)
-#define DEF_TIM_AF__PD15__TCH_TIM4_CH4    D(2)
-
-#define DEF_TIM_AF__PD1__TCH_TIM8_CH4     D(4)
-
-#define DEF_TIM_AF__PF9__TCH_TIM15_CH1    D(3)
-#define DEF_TIM_AF__PF10__TCH_TIM15_CH2   D(3)
-
-#elif defined(STM32F4)
-
-#define DEF_TIM(tim, chan, pin, flags, out, dmaopt) {           \
-    tim,                                                        \
-    TIMER_GET_IO_TAG(pin),                                      \
-    DEF_TIM_CHANNEL(CH_ ## chan),                               \
-    flags,                                                      \
-    (DEF_TIM_OUTPUT(CH_ ## chan) | out),                        \
-    DEF_TIM_AF(TIM_ ## tim)                                     \
-    DEF_TIM_DMA_COND(/* add comma */ ,                          \
-        DEF_TIM_DMA_STREAM(dmaopt, TCH_## tim ## _ ## chan),    \
-        DEF_TIM_DMA_CHANNEL(dmaopt, TCH_## tim ## _ ## chan)    \
-    )                                                           \
-    DEF_TIM_DMA_COND(/* add comma */ ,                          \
-        DEF_TIM_DMA_STREAM(0, TCH_## tim ## _UP),               \
-        DEF_TIM_DMA_CHANNEL(0, TCH_## tim ## _UP),              \
-        DEF_TIM_DMA_HANDLER(0, TCH_## tim ## _UP)               \
-    )                                                           \
-}                                                               \
-/**/
-
-#define DEF_TIM_CHANNEL(ch)                   CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_Channel_ ## chan_n
-
-#define DEF_TIM_AF(tim)                       CONCAT(DEF_TIM_AF__, DEF_TIM_TIM_GET(tim))
-#define DEF_TIM_AF__D(tim_n)                  GPIO_AF_TIM ## tim_n
-
-#define DEF_TIM_DMA_CHANNEL(variant, timch) \
-    CONCAT(DEF_TIM_DMA_CHANNEL__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_CHANNEL__D(dma_n, stream_n, chan_n)    DMA_Channel_ ## chan_n
-#define DEF_TIM_DMA_CHANNEL__NONE                          DMA_Channel_0
-
-#define DEF_TIM_DMA_STREAM(variant, timch)                              \
-    CONCAT(DEF_TIM_DMA_STREAM__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_STREAM__D(dma_n, stream_n, chan_n)  (dmaResource_t *)DMA ## dma_n ## _Stream ## stream_n
-#define DEF_TIM_DMA_STREAM__NONE                        NULL
-
-#define DEF_TIM_DMA_HANDLER(variant, timch) \
-    CONCAT(DEF_TIM_DMA_HANDLER__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_HANDLER__D(dma_n, stream_n, chan_n) DMA ## dma_n ## _ST ## stream_n ## _HANDLER
-#define DEF_TIM_DMA_HANDLER__NONE                       0
-
-
-/* F4 Stream Mappings */
-// D(DMAx, Stream, Channel)
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    D(2, 6, 0),D(2, 1, 6),D(2, 3, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    D(2, 6, 0),D(2, 2, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    D(2, 6, 0),D(2, 6, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    D(2, 4, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    D(1, 5, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    D(1, 6, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    D(1, 1, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    D(1, 7, 3),D(1, 6, 3)
-
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    D(1, 4, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    D(1, 5, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    D(1, 7, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    D(1, 2, 5)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    D(1, 0, 2)
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    D(1, 3, 2)
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    D(1, 7, 2)
-
-#define DEF_TIM_DMA__BTCH_TIM5_CH1    D(1, 2, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH2    D(1, 4, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH3    D(1, 0, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH4    D(1, 1, 6),D(1, 3, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM8_CH1    D(2, 2, 0),D(2, 2, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH2    D(2, 2, 0),D(2, 3, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH3    D(2, 2, 0),D(2, 4, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH4    D(2, 7, 7)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM9_CH1    NONE
-#define DEF_TIM_DMA__BTCH_TIM9_CH2    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM10_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM11_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM12_CH1   NONE
-#define DEF_TIM_DMA__BTCH_TIM12_CH2   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM13_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM14_CH1   NONE
-
-// TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     D(2, 5, 6)
-#define DEF_TIM_DMA__BTCH_TIM2_UP     D(1, 7, 3)
-#define DEF_TIM_DMA__BTCH_TIM3_UP     D(1, 2, 5)
-#define DEF_TIM_DMA__BTCH_TIM4_UP     D(1, 6, 2)
-#define DEF_TIM_DMA__BTCH_TIM5_UP     D(1, 0, 6)
-#define DEF_TIM_DMA__BTCH_TIM6_UP     D(1, 1, 7)
-#define DEF_TIM_DMA__BTCH_TIM7_UP     D(1, 4, 1)
-#define DEF_TIM_DMA__BTCH_TIM8_UP     D(2, 1, 7)
-#define DEF_TIM_DMA__BTCH_TIM9_UP     NONE
-#define DEF_TIM_DMA__BTCH_TIM10_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM11_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM12_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM13_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM14_UP    NONE
-
-#elif defined(STM32F7)
-#define DEF_TIM(tim, chan, pin, flags, out, dmaopt) {                   \
-    tim,                                                                \
-    TIMER_GET_IO_TAG(pin),                                              \
-    DEF_TIM_CHANNEL(CH_ ## chan),                                       \
-    flags,                                                              \
-    (DEF_TIM_OUTPUT(CH_ ## chan) | out),                                \
-    DEF_TIM_AF(TCH_## tim ## _ ## chan, pin)                            \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_STREAM(dmaopt, TCH_## tim ## _ ## chan),            \
-        DEF_TIM_DMA_CHANNEL(dmaopt, TCH_## tim ## _ ## chan)            \
-    )                                                                   \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_STREAM(0, TCH_## tim ## _UP),                       \
-        DEF_TIM_DMA_CHANNEL(0, TCH_## tim ## _UP),                      \
-        DEF_TIM_DMA_HANDLER(0, TCH_## tim ## _UP)                       \
-    )                                                                   \
-}                                                                       \
-/**/
-
-#define DEF_TIM_CHANNEL(ch)                   CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_CHANNEL_ ## chan_n
-
-#define DEF_TIM_AF(timch, pin)                CONCAT(DEF_TIM_AF__, DEF_TIM_AF_GET(timch, pin))
-#define DEF_TIM_AF__D(af_n, tim_n)            GPIO_AF ## af_n ## _TIM ## tim_n
-
-#define DEF_TIM_DMA_CHANNEL(variant, timch) \
-    CONCAT(DEF_TIM_DMA_CHANNEL__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_CHANNEL__D(dma_n, stream_n, chan_n)    DMA_CHANNEL_ ## chan_n
-#define DEF_TIM_DMA_CHANNEL__NONE                          DMA_CHANNEL_0
-
-#define DEF_TIM_DMA_STREAM(variant, timch)                              \
-    CONCAT(DEF_TIM_DMA_STREAM__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_STREAM__D(dma_n, stream_n, chan_n)  (dmaResource_t *)DMA ## dma_n ## _Stream ## stream_n
-#define DEF_TIM_DMA_STREAM__NONE                        NULL
-
-#define DEF_TIM_DMA_HANDLER(variant, timch) \
-    CONCAT(DEF_TIM_DMA_HANDLER__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_HANDLER__D(dma_n, stream_n, chan_n) DMA ## dma_n ## _ST ## stream_n ## _HANDLER
-#define DEF_TIM_DMA_HANDLER__NONE                       0
-
-/* F7 Stream Mappings */
-// D(DMAx, Stream, Channel)
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    D(2, 6, 0),D(2, 1, 6),D(2, 3, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    D(2, 6, 0),D(2, 2, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    D(2, 6, 0),D(2, 6, 6)
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    D(2, 4, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    D(1, 5, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    D(1, 6, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    D(1, 1, 3)
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    D(1, 7, 3),D(1, 6, 3)
-
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    D(1, 4, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    D(1, 5, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    D(1, 7, 5)
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    D(1, 2, 5)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    D(1, 0, 2)
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    D(1, 3, 2)
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    D(1, 7, 2)
-
-#define DEF_TIM_DMA__BTCH_TIM5_CH1    D(1, 2, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH2    D(1, 4, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH3    D(1, 0, 6)
-#define DEF_TIM_DMA__BTCH_TIM5_CH4    D(1, 1, 6),D(1, 3, 6)
-
-#define DEF_TIM_DMA__BTCH_TIM8_CH1    D(2, 2, 0),D(2, 2, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH2    D(2, 2, 0),D(2, 3, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH3    D(2, 2, 0),D(2, 4, 7)
-#define DEF_TIM_DMA__BTCH_TIM8_CH4    D(2, 7, 7)
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM9_CH1    NONE
-#define DEF_TIM_DMA__BTCH_TIM9_CH2    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM10_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM11_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM12_CH1   NONE
-#define DEF_TIM_DMA__BTCH_TIM12_CH2   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM13_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM14_CH1   NONE
-
-// TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     D(2, 5, 6)
-#define DEF_TIM_DMA__BTCH_TIM2_UP     D(1, 7, 3)
-#define DEF_TIM_DMA__BTCH_TIM3_UP     D(1, 2, 5)
-#define DEF_TIM_DMA__BTCH_TIM4_UP     D(1, 6, 2)
-#define DEF_TIM_DMA__BTCH_TIM5_UP     D(1, 0, 6)
-#define DEF_TIM_DMA__BTCH_TIM6_UP     D(1, 1, 7)
-#define DEF_TIM_DMA__BTCH_TIM7_UP     D(1, 4, 1)
-#define DEF_TIM_DMA__BTCH_TIM8_UP     D(2, 1, 7)
-#define DEF_TIM_DMA__BTCH_TIM9_UP     NONE
-#define DEF_TIM_DMA__BTCH_TIM10_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM11_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM12_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM13_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM14_UP    NONE
-
-// AF table
-
-// NONE
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH2     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH3     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH4     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH3     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH4     D(3, 8)
-
-//PORTA
-#define DEF_TIM_AF__PA0__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA1__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PA2__TCH_TIM2_CH3     D(1, 2)
-#define DEF_TIM_AF__PA3__TCH_TIM2_CH4     D(1, 2)
-#define DEF_TIM_AF__PA5__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA7__TCH_TIM1_CH1N    D(1, 1)
-#define DEF_TIM_AF__PA8__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__PA9__TCH_TIM1_CH2     D(1, 1)
-#define DEF_TIM_AF__PA10__TCH_TIM1_CH3    D(1, 1)
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH1N   D(1, 1)
-#define DEF_TIM_AF__PA15__TCH_TIM2_CH1    D(1, 2)
-
-#define DEF_TIM_AF__PA0__TCH_TIM5_CH1     D(2, 5)
-#define DEF_TIM_AF__PA1__TCH_TIM5_CH2     D(2, 5)
-#define DEF_TIM_AF__PA2__TCH_TIM5_CH3     D(2, 5)
-#define DEF_TIM_AF__PA3__TCH_TIM5_CH4     D(2, 5)
-#define DEF_TIM_AF__PA6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PA7__TCH_TIM3_CH2     D(2, 3)
-
-#define DEF_TIM_AF__PA2__TCH_TIM9_CH1     D(3, 9)
-#define DEF_TIM_AF__PA3__TCH_TIM9_CH2     D(3, 9)
-#define DEF_TIM_AF__PA5__TCH_TIM8_CH1N    D(3, 8)
-#define DEF_TIM_AF__PA7__TCH_TIM8_CH1N    D(3, 8)
-
-#define DEF_TIM_AF__PA6__TCH_TIM13_CH1    D(9, 13)
-#define DEF_TIM_AF__PA7__TCH_TIM14_CH1    D(9, 14)
-
-//PORTB
-#define DEF_TIM_AF__PB0__TCH_TIM1_CH2N    D(1, 1)
-#define DEF_TIM_AF__PB1__TCH_TIM1_CH3N    D(1, 1)
-#define DEF_TIM_AF__PB3__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PB10__TCH_TIM2_CH3    D(1, 2)
-#define DEF_TIM_AF__PB11__TCH_TIM2_CH4    D(1, 2)
-#define DEF_TIM_AF__PB13__TCH_TIM1_CH1N   D(1, 1)
-#define DEF_TIM_AF__PB14__TCH_TIM1_CH2N   D(1, 1)
-#define DEF_TIM_AF__PB15__TCH_TIM1_CH3N   D(1, 1)
-
-#define DEF_TIM_AF__PB0__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PB1__TCH_TIM3_CH4     D(2, 3)
-#define DEF_TIM_AF__PB4__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PB5__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PB6__TCH_TIM4_CH1     D(2, 4)
-#define DEF_TIM_AF__PB7__TCH_TIM4_CH2     D(2, 4)
-#define DEF_TIM_AF__PB8__TCH_TIM4_CH3     D(2, 4)
-#define DEF_TIM_AF__PB9__TCH_TIM4_CH4     D(2, 4)
-
-#define DEF_TIM_AF__PB0__TCH_TIM8_CH2N    D(3, 8)
-#define DEF_TIM_AF__PB1__TCH_TIM8_CH3N    D(3, 8)
-#define DEF_TIM_AF__PB8__TCH_TIM10_CH1    D(3, 10)
-#define DEF_TIM_AF__PB9__TCH_TIM11_CH1    D(3, 11)
-#define DEF_TIM_AF__PB14__TCH_TIM8_CH2N   D(3, 8)
-#define DEF_TIM_AF__PB15__TCH_TIM8_CH3N   D(3, 8)
-
-#define DEF_TIM_AF__PB14__TCH_TIM12_CH1   D(9, 12)
-#define DEF_TIM_AF__PB15__TCH_TIM12_CH2   D(9, 12)
-
-//PORTC
-#define DEF_TIM_AF__PC6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PC7__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PC8__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PC9__TCH_TIM3_CH4     D(2, 3)
-
-#define DEF_TIM_AF__PC6__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__PC7__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__PC8__TCH_TIM8_CH3     D(3, 8)
-#define DEF_TIM_AF__PC9__TCH_TIM8_CH4     D(3, 8)
-
-//PORTD
-#define DEF_TIM_AF__PD12__TCH_TIM4_CH1    D(2, 4)
-#define DEF_TIM_AF__PD13__TCH_TIM4_CH2    D(2, 4)
-#define DEF_TIM_AF__PD14__TCH_TIM4_CH3    D(2, 4)
-#define DEF_TIM_AF__PD15__TCH_TIM4_CH4    D(2, 4)
-
-//PORTE
-#define DEF_TIM_AF__PE8__TCH_TIM1_CH1N    D(1, 1)
-#define DEF_TIM_AF__PE9__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__PE10__TCH_TIM1_CH2N   D(1, 1)
-#define DEF_TIM_AF__PE11__TCH_TIM1_CH2    D(1, 1)
-#define DEF_TIM_AF__PE12__TCH_TIM1_CH3N   D(1, 1)
-#define DEF_TIM_AF__PE13__TCH_TIM1_CH3    D(1, 1)
-#define DEF_TIM_AF__PE14__TCH_TIM1_CH4    D(1, 1)
-
-#define DEF_TIM_AF__PE5__TCH_TIM9_CH1     D(3, 9)
-#define DEF_TIM_AF__PE6__TCH_TIM9_CH2     D(3, 9)
-
-//PORTF
-#define DEF_TIM_AF__PF6__TCH_TIM10_CH1    D(3, 10)
-#define DEF_TIM_AF__PF7__TCH_TIM11_CH1    D(3, 11)
-
-//PORTH
-#define DEF_TIM_AF__PH10__TCH_TIM5_CH1    D(2, 5)
-#define DEF_TIM_AF__PH11__TCH_TIM5_CH2    D(2, 5)
-#define DEF_TIM_AF__PH12__TCH_TIM5_CH3    D(2, 5)
-
-#define DEF_TIM_AF__PH13__TCH_TIM8_CH1N   D(3, 8)
-#define DEF_TIM_AF__PH14__TCH_TIM8_CH2N   D(3, 8)
-#define DEF_TIM_AF__PH15__TCH_TIM8_CH3N   D(3, 8)
-
-#define DEF_TIM_AF__PH6__TCH_TIM12_CH1    D(9, 12)
-#define DEF_TIM_AF__PH9__TCH_TIM12_CH2    D(9, 12)
-
-//PORTI
-#define DEF_TIM_AF__PI0__TCH_TIM5_CH4     D(2, 5)
-
-#define DEF_TIM_AF__PI2__TCH_TIM8_CH4     D(3, 8)
-#define DEF_TIM_AF__PI5__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__PI6__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__PI7__TCH_TIM8_CH3     D(3, 8)
-
-#elif defined(STM32H7)
-#define DEF_TIM(tim, chan, pin, flags, out, dmaopt, upopt) {            \
-    tim,                                                                \
-    TIMER_GET_IO_TAG(pin),                                              \
-    DEF_TIM_CHANNEL(CH_ ## chan),                                       \
-    flags,                                                              \
-    (DEF_TIM_OUTPUT(CH_ ## chan) | out),                                \
-    DEF_TIM_AF(TCH_## tim ## _ ## chan, pin)                            \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_STREAM(dmaopt, TCH_## tim ## _ ## chan),            \
-        DEF_TIM_DMA_REQUEST(TCH_## tim ## _ ## chan)                    \
-    )                                                                   \
-    DEF_TIM_DMA_COND(/* add comma */ ,                                  \
-        DEF_TIM_DMA_STREAM(upopt, TCH_## tim ## _UP),                   \
-        DEF_TIM_DMA_REQUEST(TCH_## tim ## _UP),                         \
-        DEF_TIM_DMA_HANDLER(upopt, TCH_## tim ## _UP)                   \
-    )                                                                   \
-}                                                                       \
-/**/
-
-#define DEF_TIM_CHANNEL(ch)                   CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_CHANNEL_ ## chan_n
-
-#define DEF_TIM_AF(timch, pin)                CONCAT(DEF_TIM_AF__, DEF_TIM_AF_GET(timch, pin))
-#define DEF_TIM_AF__D(af_n, tim_n)            GPIO_AF ## af_n ## _TIM ## tim_n
-
-#define DEF_TIM_DMA_STREAM(variant, timch)                              \
-    CONCAT(DEF_TIM_DMA_STREAM__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_STREAM__D(dma_n, stream_n)  (dmaResource_t *)DMA ## dma_n ## _Stream ## stream_n
-#define DEF_TIM_DMA_STREAM__NONE                        NULL
-
-// XXX This is awful. There must be some smart way of doing this ...
-#define DEF_TIM_DMA_REQUEST(timch) \
-    CONCAT(DEF_TIM_DMA_REQ__, DEF_TIM_TCH2BTCH(timch))
-
-#define DEF_TIM_DMA_HANDLER(variant, timch) \
-    CONCAT(DEF_TIM_DMA_HANDLER__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_HANDLER__D(dma_n, stream_n) DMA ## dma_n ## _ST ## stream_n ## _HANDLER
-#define DEF_TIM_DMA_HANDLER__NONE                       0
-
-/* H7 Stream Mappings */
-// D(DMAx, Stream)
-
-// H7 has DMAMUX that allow arbitrary assignment of peripherals to streams.
-
-#define DEF_TIM_DMA_FULL \
-    D(1, 0), D(1, 1), D(1, 2), D(1, 3), D(1, 4), D(1, 5), D(1, 6), D(1, 7), \
-    D(2, 0), D(2, 1), D(2, 2), D(2, 3), D(2, 4), D(2, 5), D(2, 6), D(2, 7)
-
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    NONE
-
-#define DEF_TIM_DMA__BTCH_TIM5_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM8_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM12_CH1   NONE
-#define DEF_TIM_DMA__BTCH_TIM12_CH2   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM13_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM14_CH1   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM15_CH1   DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM15_CH2   NONE
-
-#define DEF_TIM_DMA__BTCH_TIM16_CH1   DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM17_CH1   DEF_TIM_DMA_FULL
-
-#if defined(STM32H723xx) || defined(STM32H725xx)
-#define DEF_TIM_DMA__BTCH_TIM23_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM23_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM23_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM23_CH4    DEF_TIM_DMA_FULL
-
-#define DEF_TIM_DMA__BTCH_TIM24_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM24_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM24_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM24_CH4    DEF_TIM_DMA_FULL
-#endif
-
-// TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM6_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM7_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM12_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM13_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM14_UP    NONE
-#define DEF_TIM_DMA__BTCH_TIM15_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM16_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM17_UP    DEF_TIM_DMA_FULL
-
-#if defined(STM32H723xx) || defined(STM32H725xx)
-#define DEF_TIM_DMA__BTCH_TIM23_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM24_UP    DEF_TIM_DMA_FULL
-#endif
-
-// TIMx_CHy request table
-
-// This is not defined in stm32h7xx_hal_timer.h
-#define DMA_REQUEST_NONE 255
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH1    DMA_REQUEST_TIM1_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH2    DMA_REQUEST_TIM1_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH3    DMA_REQUEST_TIM1_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH4    DMA_REQUEST_TIM1_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH1    DMA_REQUEST_TIM2_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH2    DMA_REQUEST_TIM2_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH3    DMA_REQUEST_TIM2_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH4    DMA_REQUEST_TIM2_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH1    DMA_REQUEST_TIM3_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH2    DMA_REQUEST_TIM3_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH3    DMA_REQUEST_TIM3_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH4    DMA_REQUEST_TIM3_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH1    DMA_REQUEST_TIM4_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH2    DMA_REQUEST_TIM4_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH3    DMA_REQUEST_TIM4_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH4    DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH1    DMA_REQUEST_TIM5_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH2    DMA_REQUEST_TIM5_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH3    DMA_REQUEST_TIM5_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH4    DMA_REQUEST_TIM5_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH1    DMA_REQUEST_TIM8_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH2    DMA_REQUEST_TIM8_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH3    DMA_REQUEST_TIM8_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH4    DMA_REQUEST_TIM8_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM12_CH1   DMA_REQUEST_NONE
-#define DEF_TIM_DMA_REQ__BTCH_TIM12_CH2   DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM13_CH1   DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM14_CH1   DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_CH1   DMA_REQUEST_TIM15_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_CH2   DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM16_CH1   DMA_REQUEST_TIM16_CH1
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM17_CH1   DMA_REQUEST_TIM17_CH1
-
-#if defined(STM32H723xx) || defined(STM32H725xx)
-#define DEF_TIM_DMA_REQ__BTCH_TIM23_CH1   DMA_REQUEST_TIM23_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM23_CH2   DMA_REQUEST_TIM23_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM23_CH3   DMA_REQUEST_TIM23_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM23_CH4   DMA_REQUEST_TIM23_CH4
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM24_CH1   DMA_REQUEST_TIM24_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM24_CH2   DMA_REQUEST_TIM24_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM24_CH3   DMA_REQUEST_TIM24_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM24_CH4   DMA_REQUEST_TIM24_CH4
-#endif
-
-// TIM_UP request table
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_UP     DMA_REQUEST_TIM1_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_UP     DMA_REQUEST_TIM2_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_UP     DMA_REQUEST_TIM3_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_UP     DMA_REQUEST_TIM4_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_UP     DMA_REQUEST_TIM5_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM6_UP     DMA_REQUEST_TIM6_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM7_UP     DMA_REQUEST_TIM7_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_UP     DMA_REQUEST_TIM8_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM12_UP    DMA_REQUEST_NONE
-#define DEF_TIM_DMA_REQ__BTCH_TIM13_UP    DMA_REQUEST_NONE
-#define DEF_TIM_DMA_REQ__BTCH_TIM14_UP    DMA_REQUEST_NONE
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_UP    DMA_REQUEST_TIM15_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM16_UP    DMA_REQUEST_TIM16_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM17_UP    DMA_REQUEST_TIM17_UP
-
-#if defined(STM32H723xx) || defined(STM32H725xx)
-#define DEF_TIM_DMA_REQ__BTCH_TIM23_UP    DMA_REQUEST_TIM23_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM24_UP    DMA_REQUEST_TIM24_UP
-#endif
-
-// AF table
-
-// NONE
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH2     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH3     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH4     D(1, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH3     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH4     D(3, 8)
-
-//PORTA
-#define DEF_TIM_AF__PA0__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA1__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PA2__TCH_TIM2_CH3     D(1, 2)
-#define DEF_TIM_AF__PA3__TCH_TIM2_CH4     D(1, 2)
-#define DEF_TIM_AF__PA5__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA7__TCH_TIM1_CH1N    D(1, 1)
-#define DEF_TIM_AF__PA8__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__PA9__TCH_TIM1_CH2     D(1, 1)
-#define DEF_TIM_AF__PA10__TCH_TIM1_CH3    D(1, 1)
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH4    D(1, 1)
-#define DEF_TIM_AF__PA15__TCH_TIM2_CH1    D(1, 2)
-
-#define DEF_TIM_AF__PA0__TCH_TIM5_CH1     D(2, 5)
-#define DEF_TIM_AF__PA1__TCH_TIM5_CH2     D(2, 5)
-#define DEF_TIM_AF__PA2__TCH_TIM5_CH3     D(2, 5)
-#define DEF_TIM_AF__PA3__TCH_TIM5_CH4     D(2, 5)
-#define DEF_TIM_AF__PA6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PA7__TCH_TIM3_CH2     D(2, 3)
-
-#define DEF_TIM_AF__PA5__TCH_TIM8_CH1N    D(3, 8)
-#define DEF_TIM_AF__PA7__TCH_TIM8_CH1N    D(3, 8)
-
-#define DEF_TIM_AF__PA6__TCH_TIM13_CH1    D(9, 13)
-#define DEF_TIM_AF__PA7__TCH_TIM14_CH1    D(9, 14)
-
-#define DEF_TIM_AF__PA1__TCH_TIM15_CH1N   D(4, 15)
-#define DEF_TIM_AF__PA2__TCH_TIM15_CH1    D(4, 15)
-#define DEF_TIM_AF__PA3__TCH_TIM15_CH2    D(4, 15)
-
-//PORTB
-#define DEF_TIM_AF__PB0__TCH_TIM1_CH2N    D(1, 1)
-#define DEF_TIM_AF__PB1__TCH_TIM1_CH3N    D(1, 1)
-#define DEF_TIM_AF__PB3__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PB6__TCH_TIM16_CH1N   D(1, 16)
-#define DEF_TIM_AF__PB7__TCH_TIM17_CH1N   D(1, 17)
-#define DEF_TIM_AF__PB8__TCH_TIM16_CH1    D(1, 16)
-#define DEF_TIM_AF__PB9__TCH_TIM17_CH1    D(1, 17)
-#define DEF_TIM_AF__PB10__TCH_TIM2_CH3    D(1, 2)
-#define DEF_TIM_AF__PB11__TCH_TIM2_CH4    D(1, 2)
-#define DEF_TIM_AF__PB13__TCH_TIM1_CH1N   D(1, 1)
-#define DEF_TIM_AF__PB14__TCH_TIM1_CH2N   D(1, 1)
-#define DEF_TIM_AF__PB15__TCH_TIM1_CH3N   D(1, 1)
-
-#define DEF_TIM_AF__PB0__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PB1__TCH_TIM3_CH4     D(2, 3)
-#define DEF_TIM_AF__PB4__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PB5__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PB6__TCH_TIM4_CH1     D(2, 4)
-#define DEF_TIM_AF__PB7__TCH_TIM4_CH2     D(2, 4)
-#define DEF_TIM_AF__PB8__TCH_TIM4_CH3     D(2, 4)
-#define DEF_TIM_AF__PB9__TCH_TIM4_CH4     D(2, 4)
-
-#define DEF_TIM_AF__PB14__TCH_TIM12_CH1   D(2, 12)
-#define DEF_TIM_AF__PB15__TCH_TIM12_CH2   D(2, 12)
-
-//PORTC
-#define DEF_TIM_AF__PC6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PC7__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PC8__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PC9__TCH_TIM3_CH4     D(2, 3)
-
-#define DEF_TIM_AF__PC6__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__PC7__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__PC8__TCH_TIM8_CH3     D(3, 8)
-#define DEF_TIM_AF__PC9__TCH_TIM8_CH4     D(3, 8)
-
-//PORTD
-#define DEF_TIM_AF__PD12__TCH_TIM4_CH1    D(2, 4)
-#define DEF_TIM_AF__PD13__TCH_TIM4_CH2    D(2, 4)
-#define DEF_TIM_AF__PD14__TCH_TIM4_CH3    D(2, 4)
-#define DEF_TIM_AF__PD15__TCH_TIM4_CH4    D(2, 4)
-
-//PORTE
-#define DEF_TIM_AF__PE8__TCH_TIM1_CH1N    D(1, 1)
-#define DEF_TIM_AF__PE9__TCH_TIM1_CH1     D(1, 1)
-#define DEF_TIM_AF__PE10__TCH_TIM1_CH2N   D(1, 1)
-#define DEF_TIM_AF__PE11__TCH_TIM1_CH2    D(1, 1)
-#define DEF_TIM_AF__PE12__TCH_TIM1_CH3N   D(1, 1)
-#define DEF_TIM_AF__PE13__TCH_TIM1_CH3    D(1, 1)
-#define DEF_TIM_AF__PE14__TCH_TIM1_CH4    D(1, 1)
-
-#define DEF_TIM_AF__PE4__TCH_TIM15_CH1N   D(4, 15)
-#define DEF_TIM_AF__PE5__TCH_TIM15_CH1    D(4, 15)
-#define DEF_TIM_AF__PE6__TCH_TIM15_CH2    D(4, 15)
-
-//PORTF
-#define DEF_TIM_AF__PF6__TCH_TIM16_CH1    D(1, 16)
-#define DEF_TIM_AF__PF7__TCH_TIM17_CH1    D(1, 17)
-#define DEF_TIM_AF__PF8__TCH_TIM16_CH1N   D(1, 16)
-#define DEF_TIM_AF__PF9__TCH_TIM17_CH1N   D(1, 17)
-
-#define DEF_TIM_AF__PF8__TCH_TIM13_CH1N   D(9, 13)
-#define DEF_TIM_AF__PF9__TCH_TIM14_CH1N   D(9, 14)
-
-#if defined(STM32H723xx) || defined(STM32H725xx)
-#define DEF_TIM_AF__PF0__TCH_TIM23_CH1    D(13, 23)
-#define DEF_TIM_AF__PF1__TCH_TIM23_CH2    D(13, 23)
-#define DEF_TIM_AF__PF2__TCH_TIM23_CH3    D(13, 23)
-#define DEF_TIM_AF__PF3__TCH_TIM23_CH4    D(13, 23)
-#define DEF_TIM_AF__PF6__TCH_TIM23_CH1    D(13, 23)
-#define DEF_TIM_AF__PF7__TCH_TIM23_CH2    D(13, 23)
-#define DEF_TIM_AF__PF8__TCH_TIM23_CH3    D(13, 23)
-#define DEF_TIM_AF__PF9__TCH_TIM23_CH4    D(13, 23)
-
-#define DEF_TIM_AF__PF11__TCH_TIM24_CH1    D(14, 24)
-#define DEF_TIM_AF__PF12__TCH_TIM24_CH2    D(14, 24)
-#define DEF_TIM_AF__PF13__TCH_TIM24_CH3    D(14, 24)
-#define DEF_TIM_AF__PF14__TCH_TIM24_CH4    D(14, 24)
-#endif
-
-//PORTH
-#define DEF_TIM_AF__PH6__TCH_TIM12_CH1    D(2, 12)
-#define DEF_TIM_AF__PH9__TCH_TIM12_CH2    D(2, 12)
-#define DEF_TIM_AF__PH10__TCH_TIM5_CH1    D(2, 5)
-#define DEF_TIM_AF__PH11__TCH_TIM5_CH2    D(2, 5)
-#define DEF_TIM_AF__PH12__TCH_TIM5_CH3    D(2, 5)
-#define DEF_TIM_AF__PH13__TCH_TIM8_CH1N   D(3, 8)
-#define DEF_TIM_AF__PH14__TCH_TIM8_CH2N   D(3, 8)
-#define DEF_TIM_AF__PH15__TCH_TIM8_CH3N   D(3, 8)
-
-//PORTI
-#define DEF_TIM_AF__PI0__TCH_TIM5_CH4     D(2, 5)
-
-#define DEF_TIM_AF__PI2__TCH_TIM8_CH4     D(3, 8)
-#define DEF_TIM_AF__PI5__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__PI6__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__PI7__TCH_TIM8_CH3     D(3, 8)
-
-#elif defined(STM32G4)
-
-// Missing from FW1.0.0 library?
-#define GPIO_AF12_TIM1         ((uint8_t)0x0B)  /* TIM1 Alternate Function mapping    */
+#if defined(AT32F43x)
 
 #define DEF_TIM(tim, chan, pin, flags, out, dmaopt, upopt) {            \
     tim,                                                                \
@@ -1140,18 +156,22 @@
         DEF_TIM_DMA_REQUEST(TCH_## tim ## _UP),                         \
         DEF_TIM_DMA_HANDLER(upopt, TCH_## tim ## _UP)                   \
     )                                                                   \
-}                                                                       \
+}
 /**/
 
+//Channel
 #define DEF_TIM_CHANNEL(ch)                   CONCAT(DEF_TIM_CHANNEL__, DEF_TIM_CH_GET(ch))
-#define DEF_TIM_CHANNEL__D(chan_n, n_channel) TIM_CHANNEL_ ## chan_n
+#define DEF_TIM_CHANNEL__D(chan_n, n_channel) chan_n
+/*暂定返回 chan_n ex:1\2\3\4 有可能存在bug，比如N channel 但是目前都没用到N channel
+ * 可以修改为 ((chan_n -1 )*2 + n_channel)
+ * 之后就可以在channelSelect 转换的地方不做计算了
+ * */
 
-#define DEF_TIM_AF(timch, pin)                CONCAT(DEF_TIM_AF__, DEF_TIM_AF_GET(timch, pin))
-#define DEF_TIM_AF__D(af_n, tim_n)            GPIO_AF ## af_n ## _TIM ## tim_n
+
 
 #define DEF_TIM_DMA_CHANNEL(variant, timch)                              \
     CONCAT(DEF_TIM_DMA_CHANNEL__, DEF_TIM_DMA_GET(variant, timch))
-#define DEF_TIM_DMA_CHANNEL__D(dma_n, channel_n)  (dmaResource_t *)DMA ## dma_n ## _Channel ## channel_n
+#define DEF_TIM_DMA_CHANNEL__D(dma_n, channel_n)  (dmaResource_t *)DMA ## dma_n ## _CHANNEL ## channel_n
 #define DEF_TIM_DMA_CHANNEL__NONE                        NULL
 
 // XXX This is awful. There must be some smart way of doing this ...
@@ -1163,259 +183,239 @@
 #define DEF_TIM_DMA_HANDLER__D(dma_n, channel_n) DMA ## dma_n ## _CH ## channel_n ## _HANDLER
 #define DEF_TIM_DMA_HANDLER__NONE                       0
 
-/* G4 Channel Mappings */
+
+/* DMA Channel Mappings */
 // D(DMAx, Stream)
 
-// G4 has DMAMUX that allow arbitrary assignment of peripherals to streams.
+// at32f43x has DMAMUX that allow arbitrary assignment of peripherals to streams.
 
 #define DEF_TIM_DMA_FULL \
     D(1, 1), D(1, 2), D(1, 3), D(1, 4), D(1, 5), D(1, 6), D(1, 7), D(1, 8), \
     D(2, 1), D(2, 2), D(2, 3), D(2, 4), D(2, 5), D(2, 6), D(2, 7), D(2, 8)
 
-#define DEF_TIM_DMA__BTCH_TIM1_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM1_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM2_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR2_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR2_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR2_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR2_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM3_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR3_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR3_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR3_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR3_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM4_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM5_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR5_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR5_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR5_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR5_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM8_CH1    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH2    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH3    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_CH4    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR8_CH1    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR8_CH2    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR8_CH3    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR8_CH4    DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM15_CH1   DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM15_CH2   NONE
+#define DEF_TIM_DMA__BTCH_TMR15_CH1   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR15_CH2   NONE
 
-#define DEF_TIM_DMA__BTCH_TIM16_CH1   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR16_CH1   DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM17_CH1   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR17_CH1   DEF_TIM_DMA_FULL
 
-#define DEF_TIM_DMA__BTCH_TIM20_CH1   DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM20_CH2   DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM20_CH3   DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM20_CH4   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR20_CH1   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR20_CH2   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR20_CH3   DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR20_CH4   DEF_TIM_DMA_FULL
 
 // TIM_UP table
-#define DEF_TIM_DMA__BTCH_TIM1_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM2_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM3_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM4_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM5_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM6_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM7_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM8_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM15_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM16_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM17_UP    DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TIM20_UP    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR2_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR3_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR5_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR6_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR7_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR8_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR15_UP    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR16_UP    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR17_UP    DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR20_UP    DEF_TIM_DMA_FULL
 
 // TIMx_CHy request table
 
 // This is not defined in stm32g7xx_hal_timer.h
 #define DMA_REQUEST_NONE 255
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH1    DMA_REQUEST_TIM1_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH2    DMA_REQUEST_TIM1_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH3    DMA_REQUEST_TIM1_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_CH4    DMA_REQUEST_TIM1_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR1_CH1    DMAMUX_DMAREQ_ID_TMR1_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR1_CH2    DMAMUX_DMAREQ_ID_TMR1_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR1_CH3    DMAMUX_DMAREQ_ID_TMR1_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR1_CH4    DMAMUX_DMAREQ_ID_TMR1_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH1    DMA_REQUEST_TIM2_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH2    DMA_REQUEST_TIM2_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH3    DMA_REQUEST_TIM2_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_CH4    DMA_REQUEST_TIM2_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR2_CH1    DMAMUX_DMAREQ_ID_TMR2_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR2_CH2    DMAMUX_DMAREQ_ID_TMR2_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR2_CH3    DMAMUX_DMAREQ_ID_TMR2_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR2_CH4    DMAMUX_DMAREQ_ID_TMR2_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH1    DMA_REQUEST_TIM3_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH2    DMA_REQUEST_TIM3_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH3    DMA_REQUEST_TIM3_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_CH4    DMA_REQUEST_TIM3_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR3_CH1    DMAMUX_DMAREQ_ID_TMR3_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR3_CH2    DMAMUX_DMAREQ_ID_TMR3_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR3_CH3    DMAMUX_DMAREQ_ID_TMR3_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR3_CH4    DMAMUX_DMAREQ_ID_TMR3_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH1    DMA_REQUEST_TIM4_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH2    DMA_REQUEST_TIM4_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH3    DMA_REQUEST_TIM4_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_CH4    DMA_REQUEST_TIM4_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR4_CH1    DMAMUX_DMAREQ_ID_TMR4_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR4_CH2    DMAMUX_DMAREQ_ID_TMR4_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR4_CH3    DMAMUX_DMAREQ_ID_TMR4_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR4_CH4    DMAMUX_DMAREQ_ID_TMR4_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH1    DMA_REQUEST_TIM5_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH2    DMA_REQUEST_TIM5_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH3    DMA_REQUEST_TIM5_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_CH4    DMA_REQUEST_TIM5_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR5_CH1    DMAMUX_DMAREQ_ID_TMR5_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR5_CH2    DMAMUX_DMAREQ_ID_TMR5_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR5_CH3    DMAMUX_DMAREQ_ID_TMR5_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR5_CH4    DMAMUX_DMAREQ_ID_TMR5_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH1    DMA_REQUEST_TIM8_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH2    DMA_REQUEST_TIM8_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH3    DMA_REQUEST_TIM8_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_CH4    DMA_REQUEST_TIM8_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR8_CH1    DMAMUX_DMAREQ_ID_TMR8_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR8_CH2    DMAMUX_DMAREQ_ID_TMR8_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR8_CH3    DMAMUX_DMAREQ_ID_TMR8_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR8_CH4    DMAMUX_DMAREQ_ID_TMR8_CH4
 
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_CH1   DMA_REQUEST_TIM15_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_CH2   DMA_REQUEST_NONE
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM16_CH1   DMA_REQUEST_TIM16_CH1
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM17_CH1   DMA_REQUEST_TIM17_CH1
-
-#define DEF_TIM_DMA_REQ__BTCH_TIM20_CH1   DMA_REQUEST_TIM20_CH1
-#define DEF_TIM_DMA_REQ__BTCH_TIM20_CH2   DMA_REQUEST_TIM20_CH2
-#define DEF_TIM_DMA_REQ__BTCH_TIM20_CH3   DMA_REQUEST_TIM20_CH3
-#define DEF_TIM_DMA_REQ__BTCH_TIM20_CH4   DMA_REQUEST_TIM20_CH4
+#define DEF_TIM_DMA_REQ__BTCH_TMR20_CH1   DMAMUX_DMAREQ_ID_TMR20_CH1
+#define DEF_TIM_DMA_REQ__BTCH_TMR20_CH2   DMAMUX_DMAREQ_ID_TMR20_CH2
+#define DEF_TIM_DMA_REQ__BTCH_TMR20_CH3   DMAMUX_DMAREQ_ID_TMR20_CH3
+#define DEF_TIM_DMA_REQ__BTCH_TMR20_CH4   DMAMUX_DMAREQ_ID_TMR20_CH4
 
 // TIM_UP request table
-#define DEF_TIM_DMA_REQ__BTCH_TIM1_UP     DMA_REQUEST_TIM1_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM2_UP     DMA_REQUEST_TIM2_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM3_UP     DMA_REQUEST_TIM3_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM4_UP     DMA_REQUEST_TIM4_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM5_UP     DMA_REQUEST_TIM5_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM6_UP     DMA_REQUEST_TIM6_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM7_UP     DMA_REQUEST_TIM7_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM8_UP     DMA_REQUEST_TIM8_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM15_UP    DMA_REQUEST_TIM15_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM16_UP    DMA_REQUEST_TIM16_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM17_UP    DMA_REQUEST_TIM17_UP
-#define DEF_TIM_DMA_REQ__BTCH_TIM20_UP    DMA_REQUEST_TIM20_UP
+#define DEF_TIM_DMA_REQ__BTCH_TMR1_UP     DMAMUX_DMAREQ_ID_TMR1_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR2_UP     DMAMUX_DMAREQ_ID_TMR2_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR3_UP     DMAMUX_DMAREQ_ID_TMR3_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR4_UP     DMAMUX_DMAREQ_ID_TMR4_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR5_UP     DMAMUX_DMAREQ_ID_TMR5_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR8_UP     DMAMUX_DMAREQ_ID_TMR8_OVERFLOW
+#define DEF_TIM_DMA_REQ__BTCH_TMR20_UP    DMAMUX_DMAREQ_ID_TMR20_OVERFLOW
 
-// AF table
+// AF table for timer ,default is GPIO_MUX_1  should be check after debug
 
-//NONE
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH1     D(6, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH2     D(6, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH3     D(6, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM1_CH4     D(6, 1)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH1     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH2     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH3     D(3, 8)
-#define DEF_TIM_AF__NONE__TCH_TIM8_CH4     D(3, 8)
+//NONE d(mux_id, timerid)
+#define DEF_TIM_AF__NONE__TCH_TMR1_CH1     D(1, 1)
+#define DEF_TIM_AF__NONE__TCH_TMR1_CH2     D(1, 1)
+#define DEF_TIM_AF__NONE__TCH_TMR1_CH3     D(1, 1)
+#define DEF_TIM_AF__NONE__TCH_TMR1_CH4     D(1, 1)
+#define DEF_TIM_AF__NONE__TCH_TMR8_CH1     D(1, 8)
+#define DEF_TIM_AF__NONE__TCH_TMR8_CH2     D(1, 8)
+#define DEF_TIM_AF__NONE__TCH_TMR8_CH3     D(1, 8)
+#define DEF_TIM_AF__NONE__TCH_TMR8_CH4     D(1, 8)
 
-//PORTA
-#define DEF_TIM_AF__PA0__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA1__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PA2__TCH_TIM2_CH3     D(1, 2)
-#define DEF_TIM_AF__PA3__TCH_TIM2_CH4     D(1, 2)
-#define DEF_TIM_AF__PA5__TCH_TIM2_CH1     D(1, 2)
-#define DEF_TIM_AF__PA6__TCH_TIM16_CH1    D(1, 16)
-#define DEF_TIM_AF__PA7__TCH_TIM17_CH1    D(1, 17)
-#define DEF_TIM_AF__PA12__TCH_TIM16_CH1   D(1, 16)
-#define DEF_TIM_AF__PA13__TCH_TIM16_CH1N  D(1, 16)
-#define DEF_TIM_AF__PA15__TCH_TIM2_CH1    D(1, 2)
+//PORTA MUX 1
+#define DEF_TIM_AF__PA0__TCH_TMR2_CH1     D(1, 2)
+#define DEF_TIM_AF__PA1__TCH_TMR2_CH2     D(1, 2)
+#define DEF_TIM_AF__PA2__TCH_TMR2_CH3     D(1, 2)
+#define DEF_TIM_AF__PA3__TCH_TMR2_CH4     D(1, 2)
+#define DEF_TIM_AF__PA5__TCH_TMR2_CH1     D(1, 2)
+#define DEF_TIM_AF__PA7__TCH_TMR1_CH1N    D(1, 1)
+#define DEF_TIM_AF__PA8__TCH_TMR1_CH1     D(1, 1)
+#define DEF_TIM_AF__PA9__TCH_TMR1_CH2     D(1, 1)
+#define DEF_TIM_AF__PA10__TCH_TMR1_CH3    D(1, 1)
+#define DEF_TIM_AF__PA11__TCH_TMR1_CH4    D(1, 1)
+#define DEF_TIM_AF__PA15__TCH_TMR2_CH1    D(1, 2)
+//PORTA MUX 2
+#define DEF_TIM_AF__PA0__TCH_TMR5_CH1     D(2, 5)
+#define DEF_TIM_AF__PA1__TCH_TMR5_CH2     D(2, 5)
+#define DEF_TIM_AF__PA2__TCH_TMR5_CH3     D(2, 5)
+#define DEF_TIM_AF__PA3__TCH_TMR5_CH4     D(2, 5)
+#define DEF_TIM_AF__PA6__TCH_TMR3_CH1     D(2, 3)
+#define DEF_TIM_AF__PA7__TCH_TMR3_CH2     D(2, 3)
 
-#define DEF_TIM_AF__PA0__TCH_TIM5_CH1     D(2, 5)
-#define DEF_TIM_AF__PA1__TCH_TIM5_CH2     D(2, 5)
-#define DEF_TIM_AF__PA2__TCH_TIM5_CH3     D(2, 5)
-#define DEF_TIM_AF__PA3__TCH_TIM5_CH4     D(2, 5)
-#define DEF_TIM_AF__PA4__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PA6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PA7__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PA15__TCH_TIM8_CH1     D(2, 8)
+//PORTA MUX 3
+//#define DEF_TIM_AF__PA0__TCH_TMR8_CH1N   D(1, 15)//tmr8_ext
+#define DEF_TIM_AF__PA2__TCH_TMR9_CH1     D(3, 9)
+#define DEF_TIM_AF__PA3__TCH_TMR9_CH2     D(3, 9)
+#define DEF_TIM_AF__PA5__TCH_TMR8_CH1N    D(3, 8)
+#define DEF_TIM_AF__PA7__TCH_TMR8_CH1N    D(3, 8)
 
-#define DEF_TIM_AF__PA7__TCH_TIM8_CH1N    D(4, 8)
 
-#define DEF_TIM_AF__PA14__TCH_TIM8_CH2     D(5, 8)
+//PORTB MUX 1
+#define DEF_TIM_AF__PB0__TCH_TMR1_CH2N     D(1, 1)
+#define DEF_TIM_AF__PB1__TCH_TMR1_CH3N     D(1, 1)
+#define DEF_TIM_AF__PB2__TCH_TMR2_CH4      D(1, 2)
+#define DEF_TIM_AF__PB3__TCH_TMR2_CH2      D(1, 2)
+#define DEF_TIM_AF__PB8__TCH_TMR2_CH1      D(1, 2)
+#define DEF_TIM_AF__PB9__TCH_TMR2_CH2      D(1, 2)
+#define DEF_TIM_AF__PB10__TCH_TMR2_CH3     D(1, 2)
+#define DEF_TIM_AF__PB11__TCH_TMR2_CH4     D(1, 2)
+#define DEF_TIM_AF__PB13__TCH_TMR1_CH1N    D(1, 1)
+#define DEF_TIM_AF__PB14__TCH_TMR1_CH2N    D(1, 1)
+#define DEF_TIM_AF__PB15__TCH_TMR1_CH3N    D(1, 1)
+//PORTB MUX 2
+#define DEF_TIM_AF__PB0__TCH_TMR3_CH3     D(2, 3)
+#define DEF_TIM_AF__PB1__TCH_TMR3_CH4     D(2, 3)
+#define DEF_TIM_AF__PB2__TCH_TMR20_CH1    D(2, 20)
+#define DEF_TIM_AF__PB4__TCH_TMR3_CH1     D(2, 3)
+#define DEF_TIM_AF__PB5__TCH_TMR3_CH2     D(2, 3)
+#define DEF_TIM_AF__PB6__TCH_TMR4_CH1     D(2, 4)
+#define DEF_TIM_AF__PB7__TCH_TMR4_CH2     D(2, 4)
+#define DEF_TIM_AF__PB8__TCH_TMR4_CH3     D(2, 4)
+#define DEF_TIM_AF__PB9__TCH_TMR4_CH4     D(2, 4)
+#define DEF_TIM_AF__PB11__TCH_TMR5_CH4    D(2, 5)
+#define DEF_TIM_AF__PB12__TCH_TMR5_CH1    D(2, 5)
 
-#define DEF_TIM_AF__PA7__TCH_TIM1_CH1N    D(6, 1)
-#define DEF_TIM_AF__PA8__TCH_TIM1_CH1     D(6, 1)
-#define DEF_TIM_AF__PA9__TCH_TIM1_CH2     D(6, 1)
-#define DEF_TIM_AF__PA10__TCH_TIM1_CH3    D(6, 1)
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH1N   D(6, 1)
-#define DEF_TIM_AF__PA12__TCH_TIM1_CH2N   D(6, 1)
+//PORTB MUX 3
+#define DEF_TIM_AF__PB0__TCH_TMR8_CH2N    D(3, 8)
+#define DEF_TIM_AF__PB1__TCH_TMR8_CH3N    D(3, 8)
+#define DEF_TIM_AF__PB8__TCH_TMR10_CH1    D(3, 10)
+#define DEF_TIM_AF__PB9__TCH_TMR11_CH1    D(3, 11)
+#define DEF_TIM_AF__PB14__TCH_TMR8_CH2N   D(3, 8)
+#define DEF_TIM_AF__PB15__TCH_TMR8_CH3N   D(3, 8)
 
-#define DEF_TIM_AF__PA1__TCH_TIM15_CH1N   D(9, 15)
-#define DEF_TIM_AF__PA2__TCH_TIM15_CH1    D(9, 15)
-#define DEF_TIM_AF__PA3__TCH_TIM15_CH2    D(9, 15)
+//PORTC MUX 2
+#define DEF_TIM_AF__PC2__TCH_TMR20_CH2     D(2, 20)
+#define DEF_TIM_AF__PC6__TCH_TMR3_CH1      D(2, 3)
+#define DEF_TIM_AF__PC7__TCH_TMR3_CH2      D(2, 3)
+#define DEF_TIM_AF__PC8__TCH_TMR3_CH3      D(2, 3)
+#define DEF_TIM_AF__PC9__TCH_TMR3_CH4      D(2, 3)
+#define DEF_TIM_AF__PC10__TCH_TMR5_CH2     D(2, 5)
+#define DEF_TIM_AF__PC11__TCH_TMR5_CH3     D(2, 5)
 
-#define DEF_TIM_AF__PA9__TCH_TIM2_CH3     D(10, 2)
-#define DEF_TIM_AF__PA10__TCH_TIM2_CH4    D(10, 2)
-#define DEF_TIM_AF__PA11__TCH_TIM4_CH1    D(10, 4)
-#define DEF_TIM_AF__PA12__TCH_TIM4_CH2    D(10, 4)
-#define DEF_TIM_AF__PA13__TCH_TIM4_CH3    D(10, 4)
+//PORTC MUX 3
 
-#define DEF_TIM_AF__PA11__TCH_TIM1_CH4    D(11, 1)
+#define DEF_TIM_AF__PC4__TCH_TMR9_CH1     D(3, 9)
+#define DEF_TIM_AF__PC5__TCH_TMR9_CH2     D(3, 9)
+#define DEF_TIM_AF__PC6__TCH_TMR8_CH1     D(3, 8)
+#define DEF_TIM_AF__PC7__TCH_TMR8_CH2     D(3, 8)
+#define DEF_TIM_AF__PC8__TCH_TMR8_CH3     D(3, 8)
+#define DEF_TIM_AF__PC9__TCH_TMR8_CH4     D(3, 8)
+#define DEF_TIM_AF__PC12__TCH_TMR11_CH1N  D(3, 11)
 
-//PORTB
-#define DEF_TIM_AF__PB3__TCH_TIM2_CH2     D(1, 2)
-#define DEF_TIM_AF__PB4__TCH_TIM16_CH1    D(1, 16)
-#define DEF_TIM_AF__PB6__TCH_TIM16_CH1N   D(1, 16)
-#define DEF_TIM_AF__PB7__TCH_TIM17_CH1N   D(1, 17)
-#define DEF_TIM_AF__PB8__TCH_TIM16_CH1    D(1, 16)
-#define DEF_TIM_AF__PB9__TCH_TIM17_CH1    D(1, 17)
-#define DEF_TIM_AF__PB10__TCH_TIM2_CH3    D(1, 2)
-#define DEF_TIM_AF__PB11__TCH_TIM2_CH4    D(1, 2)
-#define DEF_TIM_AF__PB14__TCH_TIM15_CH1   D(1, 15)
-#define DEF_TIM_AF__PB15__TCH_TIM15_CH2   D(1, 15)
 
-#define DEF_TIM_AF__PB0__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PB1__TCH_TIM3_CH4     D(2, 3)
-#define DEF_TIM_AF__PB2__TCH_TIM5_CH1     D(2, 5)
-#define DEF_TIM_AF__PB4__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PB5__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PB6__TCH_TIM4_CH1     D(2, 4)
-#define DEF_TIM_AF__PB7__TCH_TIM4_CH2     D(2, 4)
-#define DEF_TIM_AF__PB8__TCH_TIM4_CH3     D(2, 4)
-#define DEF_TIM_AF__PB9__TCH_TIM4_CH4     D(2, 4)
-#define DEF_TIM_AF__PB15__TCH_TIM15_CH1N  D(2, 15)
+//PORTD MUX 2
+#define DEF_TIM_AF__PD12__TCH_TMR4_CH1     D(2, 4)
+#define DEF_TIM_AF__PD13__TCH_TMR4_CH2     D(2, 4)
+#define DEF_TIM_AF__PD14__TCH_TMR4_CH3     D(2, 4)
+#define DEF_TIM_AF__PD15__TCH_TMR4_CH4     D(2, 4)
 
-#define DEF_TIM_AF__PB2__TCH_TIM20_CH1    D(3, 20)
-#define DEF_TIM_AF__PB5__TCH_TIM8_CH3N    D(3, 8)
+//PORTE MUX 1
+#define DEF_TIM_AF__PE1__TCH_TMR1_CH2N    D(1, 1)
+#define DEF_TIM_AF__PE8__TCH_TMR1_CH1N    D(1, 1)
+#define DEF_TIM_AF__PE9__TCH_TMR1_CH1     D(1, 1)
+#define DEF_TIM_AF__PE10__TCH_TMR1_CH2N   D(1, 1)
+#define DEF_TIM_AF__PE11__TCH_TMR1_CH2    D(1, 1)
+#define DEF_TIM_AF__PE12__TCH_TMR1_CH3N   D(1, 1)
+#define DEF_TIM_AF__PE13__TCH_TMR1_CH3    D(1, 1)
+#define DEF_TIM_AF__PE14__TCH_TMR1_CH4    D(1, 1)
 
-#define DEF_TIM_AF__PB0__TCH_TIM8_CH2N    D(4, 8)
-#define DEF_TIM_AF__PB1__TCH_TIM8_CH3N    D(4, 8)
-#define DEF_TIM_AF__PB3__TCH_TIM8_CH1N    D(4, 8)
-#define DEF_TIM_AF__PB4__TCH_TIM8_CH2N    D(4, 8)
-#define DEF_TIM_AF__PB15__TCH_TIM1_CH3N   D(4, 1)
+//PORTE MUX 2
+#define DEF_TIM_AF__PE3__TCH_TMR3_CH1    D(2, 3)
+#define DEF_TIM_AF__PE4__TCH_TMR3_CH2    D(2, 3)
+#define DEF_TIM_AF__PE5__TCH_TMR3_CH3    D(2, 3)
+#define DEF_TIM_AF__PE6__TCH_TMR3_CH4    D(2, 3)
 
-#define DEF_TIM_AF__PB6__TCH_TIM8_CH1     D(5, 8)
-
-#define DEF_TIM_AF__PB0__TCH_TIM1_CH2N    D(6, 1)
-#define DEF_TIM_AF__PB1__TCH_TIM1_CH3N    D(6, 1)
-#define DEF_TIM_AF__PB13__TCH_TIM1_CH1N   D(6, 1)
-#define DEF_TIM_AF__PB14__TCH_TIM1_CH2N   D(6, 1)
-
-#define DEF_TIM_AF__PB5__TCH_TIM17_CH1    D(10, 17)
-#define DEF_TIM_AF__PB7__TCH_TIM3_CH4     D(10, 3)
-#define DEF_TIM_AF__PB8__TCH_TIM8_CH2     D(10, 8)
-#define DEF_TIM_AF__PB9__TCH_TIM8_CH3     D(10, 8)
-
-#define DEF_TIM_AF__PB9__TCH_TIM1_CH3N    D(12, 1)
-
-//PORTC
-#define DEF_TIM_AF__PC12__TCH_TIM5_CH2    D(1, 5)
-
-#define DEF_TIM_AF__PC0__TCH_TIM1_CH1     D(2, 1)
-#define DEF_TIM_AF__PC1__TCH_TIM1_CH2     D(2, 1)
-#define DEF_TIM_AF__PC2__TCH_TIM1_CH3     D(2, 1)
-#define DEF_TIM_AF__PC3__TCH_TIM1_CH4     D(2, 1)
-#define DEF_TIM_AF__PC6__TCH_TIM3_CH1     D(2, 3)
-#define DEF_TIM_AF__PC7__TCH_TIM3_CH2     D(2, 3)
-#define DEF_TIM_AF__PC8__TCH_TIM3_CH3     D(2, 3)
-#define DEF_TIM_AF__PC9__TCH_TIM3_CH4     D(2, 3)
-
-#define DEF_TIM_AF__PC6__TCH_TIM8_CH1     D(4, 8)
-#define DEF_TIM_AF__PC7__TCH_TIM8_CH2     D(4, 8)
-#define DEF_TIM_AF__PC8__TCH_TIM8_CH3     D(4, 8)
-#define DEF_TIM_AF__PC9__TCH_TIM8_CH4     D(4, 8)
-#define DEF_TIM_AF__PC10__TCH_TIM8_CH1N   D(4, 8)
-#define DEF_TIM_AF__PC11__TCH_TIM8_CH2N   D(4, 8)
-#define DEF_TIM_AF__PC12__TCH_TIM8_CH3N   D(4, 8)
-#define DEF_TIM_AF__PC13__TCH_TIM1_CH1N   D(4, 1)
-
-#define DEF_TIM_AF__PC2__TCH_TIM20_CH2    D(6, 20)
-#define DEF_TIM_AF__PC5__TCH_TIM1_CH4N    D(6, 1)
-#define DEF_TIM_AF__PC8__TCH_TIM20_CH3    D(6, 20)
-#define DEF_TIM_AF__PC13__TCH_TIM8_CH4N   D(6, 8)
+//PORTE MUX 3
+#define DEF_TIM_AF__PE5__TCH_TMR9_CH1    D(2, 9)
+#define DEF_TIM_AF__PE6__TCH_TMR9_CH2    D(2, 9)
 
 #endif
 

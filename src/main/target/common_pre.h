@@ -69,9 +69,10 @@
 #endif
 #endif // STM32F4
 
-#ifdef AT32F4
+#ifdef AT32F43x
+#define USE_LED_STRIP
 #define USE_DSHOT
-#define USE_DSHOT_BITBANG
+//#define USE_DSHOT_BITBANG
 #define USE_DSHOT_TELEMETRY
 #define USE_DSHOT_TELEMETRY_STATS
 #define USE_RPM_FILTER

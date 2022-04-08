@@ -250,7 +250,7 @@ typedef enum
   DMAMUX_DMAREQ_ID_TMR8_CH2              = 0x32, /*!< dmamux channel dma request inputs resources: timer8 ch2 */
   DMAMUX_DMAREQ_ID_TMR8_CH3              = 0x33, /*!< dmamux channel dma request inputs resources: timer8 ch3 */
   DMAMUX_DMAREQ_ID_TMR8_CH4              = 0x34, /*!< dmamux channel dma request inputs resources: timer8 ch4 */
-  DMAMUX_DMAREQ_ID_TMR8_UP               = 0x35, /*!< dmamux channel dma request inputs resources: timer8 overflow */
+  DMAMUX_DMAREQ_ID_TMR8_OVERFLOW         = 0x35, /*!< dmamux channel dma request inputs resources: timer8 overflow */
   DMAMUX_DMAREQ_ID_TMR8_TRIG             = 0x36, /*!< dmamux channel dma request inputs resources: timer8 trigger */
   DMAMUX_DMAREQ_ID_TMR8_HALL             = 0x37, /*!< dmamux channel dma request inputs resources: timer8 hall */
   DMAMUX_DMAREQ_ID_TMR2_CH1              = 0x38, /*!< dmamux channel dma request inputs resources: timer2 ch1 */

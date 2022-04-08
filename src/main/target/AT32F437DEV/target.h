@@ -23,6 +23,14 @@
 #define TARGET_BOARD_IDENTIFIER "AT32"
 #define USBD_PRODUCT_STRING     "EMSRAT32F4"
 
+//buttons
+#define USE_BUTTONS
+#define BUTTON_A_PIN            PA0
+#define BUTTON_A_PIN_INVERTED // Active high
+//#define BUTTON_B_PIN            PC13
+//#define BUTTON_B_PIN_INVERTED // Active high
+
+
 #define LED0_PIN                PC13
 #define LED1_PIN                PC14
 
@@ -123,7 +131,7 @@
 #define TARGET_IO_PORTB         0xffff
 #define TARGET_IO_PORTC         0xffff
 #define TARGET_IO_PORTD         0xffff
-#define TARGET_IO_PORTE         0xffff
+#define TARGET_IO_PORTE         BIT(2)
 
 #define USABLE_TIMER_CHANNEL_COUNT 28
-#define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) )
+#define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(9) | TIM_N(20) )

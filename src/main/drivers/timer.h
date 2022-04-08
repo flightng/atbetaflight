@@ -37,12 +37,12 @@
 
 typedef uint16_t captureCompare_t;        // 16 bit on both 103 and 303, just register access must be 32bit sometimes (use timCCR_t)
 
-#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(UNIT_TEST) || defined(SIMULATOR_BUILD)
+#if defined(UNIT_TEST) || defined(SIMULATOR_BUILD)|| defined(AT32F43x)
 typedef uint32_t timCCR_t;
 typedef uint32_t timCCER_t;
 typedef uint32_t timSR_t;
 typedef uint32_t timCNT_t;
-#elif defined(STM32F1) || defined(AT32F43x)
+#elif defined(AT32F403A)
 typedef uint16_t timCCR_t;
 typedef uint16_t timCCER_t;
 typedef uint16_t timSR_t;
@@ -80,55 +80,43 @@ typedef struct timerOvrHandlerRec_s {
 } timerOvrHandlerRec_t;
 
 typedef struct timerDef_s {
-    TIM_TypeDef *TIMx;
+	tmr_type *TIMx;
     rccPeriphTag_t rcc;
     uint8_t inputIrq;
 } timerDef_t;
 
-/*FixME 临时注释
+//for at32f435/7 only
 typedef struct timerHardware_s {
-    TIM_TypeDef *tim;
-    ioTag_t tag;
-    uint8_t channel;
-    timerUsageFlag_e usageFlags;
-    uint8_t output;
-#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F4)
-    uint8_t alternateFunction;
+	tmr_type *tim;
+	ioTag_t tag;
+	uint8_t channel;
+	timerUsageFlag_e usageFlags;
+	uint8_t output;
+#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
+	uint8_t alternateFunction;
 #endif
 
 #if defined(USE_TIMER_DMA)
 
 #if defined(USE_DMA_SPEC)
-#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
-    dmaResource_t *dmaRefConfigured;
-    uint32_t dmaChannelConfigured;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
+	dmaResource_t *dmaRefConfigured; //DMA CHANNEL X BASE
+	uint32_t dmaChannelConfigured; //DMA MUX ID
 #endif
 #else // USE_DMA_SPEC
-    dmaResource_t *dmaRef;
-#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
-    uint32_t dmaChannel; // XXX Can be much smaller (e.g. uint8_t)
+	dmaResource_t *dmaRef;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
+	uint32_t dmaChannel; // XXX Can be much smaller (e.g. uint8_t)
 #endif
 #endif // USE_DMA_SPEC
-    dmaResource_t *dmaTimUPRef;
-#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
-    uint32_t dmaTimUPChannel;
+	dmaResource_t *dmaTimUPRef;
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
+	uint32_t dmaTimUPChannel;
 #endif
-    uint8_t dmaTimUPIrqHandler;
+	uint8_t dmaTimUPIrqHandler;
 #endif
 } timerHardware_t;
-*/
-//for debug at32f4 only
-typedef struct timerHardware_s {
-    TIM_TypeDef *tim;
-    ioTag_t tag;
-    uint8_t channel;
-    timerUsageFlag_e usageFlags;
-    uint8_t output;
-    uint8_t alternateFunction;
-    dmaResource_t *dmaRef;
-    dmaResource_t *dmaTimUPRef;
-    uint8_t dmaTimUPIrqHandler;
-} timerHardware_t;
+
 
 typedef enum {
     TIMER_OUTPUT_NONE      = 0,
@@ -136,28 +124,10 @@ typedef enum {
     TIMER_OUTPUT_N_CHANNEL = (1 << 1),
 } timerFlag_e;
 
-#ifdef STM32F1
-#if defined(STM32F10X_XL) || defined(STM32F10X_HD_VL)
-#define HARDWARE_TIMER_DEFINITION_COUNT 14
-#elif defined(STM32F10X_HD) || defined(STM32F10X_CL)
-#define HARDWARE_TIMER_DEFINITION_COUNT 7
-#else
-#define HARDWARE_TIMER_DEFINITION_COUNT 4
-#endif
-#elif defined(STM32F3)
-#define HARDWARE_TIMER_DEFINITION_COUNT 10
-#elif defined(STM32F411xE)
-#define HARDWARE_TIMER_DEFINITION_COUNT 10
-#elif defined(STM32F4)
-#define HARDWARE_TIMER_DEFINITION_COUNT 14
-#elif defined(STM32F7)
-#define HARDWARE_TIMER_DEFINITION_COUNT 14
-#elif defined(STM32H7)
-#define HARDWARE_TIMER_DEFINITION_COUNT 17
-#define TIMUP_TIMERS ( BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(6) | BIT(7) | BIT(8) | BIT(15) | BIT(16) | BIT(17) )
-#elif defined(STM32G4)
-#define HARDWARE_TIMER_DEFINITION_COUNT 12
-#define TIMUP_TIMERS ( BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(6) | BIT(7) | BIT(8) | BIT(15) | BIT(16) | BIT(17) | BIT(20))
+#if defined(AT32F43x)
+#define HARDWARE_TIMER_DEFINITION_COUNT 15
+//FIXME:: timup_timers 的含义是什么？ 需要确认
+#define TIMUP_TIMERS ( BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(8) | BIT(9) | BIT(10) | BIT(11) | BIT(12) | BIT(13) |BIT(14) | BIT(20))
 #endif
 
 #define MHZ_TO_HZ(x) ((x) * 1000000)
@@ -168,32 +138,8 @@ extern const timerHardware_t timerHardware[];
 
 
 #if defined(USE_TIMER_MGMT)
-#if defined(STM32F3)
-
-#define FULL_TIMER_CHANNEL_COUNT 88
-
-#elif defined(STM32F4)
-
-#if defined(STM32F411xE)
-#define FULL_TIMER_CHANNEL_COUNT 59
-#else
-#define FULL_TIMER_CHANNEL_COUNT 78
-#endif
-
-#elif defined(STM32F7)
-
-#define FULL_TIMER_CHANNEL_COUNT 78
-
-#elif defined(STM32H7)
-
-#define FULL_TIMER_CHANNEL_COUNT 87
-
-#elif defined(STM32G4)
-
-#define FULL_TIMER_CHANNEL_COUNT 93 // XXX Need review
-
-#elif defined(AT32F4)
-#define FULL_TIMER_CHANNEL_COUNT 28 // XXX Need review
+#if defined(AT32F43x)
+#define FULL_TIMER_CHANNEL_COUNT 80 // XXX Need review
 
 #endif
 
@@ -202,26 +148,9 @@ extern const timerHardware_t fullTimerHardware[];
 #define TIMER_CHANNEL_COUNT FULL_TIMER_CHANNEL_COUNT
 #define TIMER_HARDWARE fullTimerHardware
 
-#if defined(STM32F7) || defined(STM32F4) ||defined(AT32F4)
-
-#if defined(STM32F411xE)
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) | TIM_N(9) | TIM_N(10) | TIM_N(11) )
-#else
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) | TIM_N(8) | TIM_N(9) | TIM_N(10) | TIM_N(11) | TIM_N(12) | TIM_N(13) | TIM_N(14) )
-#endif
-
-#elif defined(STM32F3)
-
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(6) | TIM_N(7) | TIM_N(8) | TIM_N(15) | TIM_N(16) | TIM_N(17) )
-
-#elif defined(STM32H7)
-
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) | TIM_N(8) | TIM_N(12) | TIM_N(13) | TIM_N(14) | TIM_N(15) | TIM_N(16) | TIM_N(17) )
-
-#elif defined(STM32G4)
-
-#define USED_TIMERS ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(6) | TIM_N(7) | TIM_N(8) | TIM_N(15) | TIM_N(16) | TIM_N(17) | TIM_N(20) )
-
+#if defined(AT32F43x)
+//FIXME:需要根据LQFP64 针脚可以用的GPIO口，确定一下使用哪些定时器，先定123458
+#define USED_TIMERS ( BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(8) | BIT(20))
 #else
     #error "No timer / channel tag definition found for CPU"
 #endif
@@ -261,7 +190,7 @@ void timerConfigure(const timerHardware_t *timHw, uint16_t period, uint32_t hz);
 //
 // Initialisation
 //
-void timerInit(void);
+void timerInit(void);//必须实现，Init 调用
 void timerStart(void);
 
 //
@@ -269,21 +198,21 @@ void timerStart(void);
 //
 
 void timerChConfigIC(const timerHardware_t *timHw, bool polarityRising, unsigned inputFilterSamples);
-void timerChConfigICDual(const timerHardware_t* timHw, bool polarityRising, unsigned inputFilterSamples);
-void timerChICPolarity(const timerHardware_t *timHw, bool polarityRising);
+//void timerChConfigICDual(const timerHardware_t* timHw, bool polarityRising, unsigned inputFilterSamples);//冗余设计，不需要
+//void timerChICPolarity(const timerHardware_t *timHw, bool polarityRising);//冗余设计，不需要
 volatile timCCR_t* timerChCCR(const timerHardware_t* timHw);
-volatile timCCR_t* timerChCCRLo(const timerHardware_t* timHw);
-volatile timCCR_t* timerChCCRHi(const timerHardware_t* timHw);
-void timerChConfigOC(const timerHardware_t* timHw, bool outEnable, bool stateHigh);
-void timerChConfigGPIO(const timerHardware_t* timHw, ioConfig_t mode);
+//volatile timCCR_t* timerChCCRLo(const timerHardware_t* timHw);//冗余设计，不需要
+//volatile timCCR_t* timerChCCRHi(const timerHardware_t* timHw);//冗余设计，不需要
+//void timerChConfigOC(const timerHardware_t* timHw, bool outEnable, bool stateHigh);//外部无调用
+void timerChConfigGPIO(const timerHardware_t* timHw, ioConfig_t mode);//外部无调用
 
 void timerChCCHandlerInit(timerCCHandlerRec_t *self, timerCCHandlerCallback *fn);
 void timerChOvrHandlerInit(timerOvrHandlerRec_t *self, timerOvrHandlerCallback *fn);
 void timerChConfigCallbacks(const timerHardware_t *channel, timerCCHandlerRec_t *edgeCallback, timerOvrHandlerRec_t *overflowCallback);
-void timerChConfigCallbacksDual(const timerHardware_t *channel, timerCCHandlerRec_t *edgeCallbackLo, timerCCHandlerRec_t *edgeCallbackHi, timerOvrHandlerRec_t *overflowCallback);
-void timerChITConfigDualLo(const timerHardware_t* timHw, FunctionalState newState);
-void timerChITConfig(const timerHardware_t* timHw, FunctionalState newState);
-void timerChClearCCFlag(const timerHardware_t* timHw);
+//void timerChConfigCallbacksDual(const timerHardware_t * channel, timerCCHandlerRec_t *edgeCallbackLo, timerCCHandlerRec_t *edgeCallbackHi, timerOvrHandlerRec_t *overflowCallback);
+//void timerChITConfigDualLo(const timerHardware_t* timHw, FunctionalState newState);
+void timerChITConfig(const timerHardware_t* timHw, FunctionalState newState);//中断配置
+void timerChClearCCFlag(const timerHardware_t* timHw);//清除中断标志
 
 void timerChInit(const timerHardware_t *timHw, channelType_t type, int irqPriority, uint8_t irq);
 
@@ -291,17 +220,17 @@ void timerChInit(const timerHardware_t *timHw, channelType_t type, int irqPriori
 // per-timer
 //
 
-void timerForceOverflow(TIM_TypeDef *tim);
+void timerForceOverflow(tmr_type *tim);
 
-void timerConfigUpdateCallback(const TIM_TypeDef *tim, timerOvrHandlerRec_t *updateCallback);
+void timerConfigUpdateCallback(const tmr_type *tim, timerOvrHandlerRec_t *updateCallback);
 
-uint32_t timerClock(TIM_TypeDef *tim);
+uint32_t timerClock(tmr_type *tim);
 
-void configTimeBase(TIM_TypeDef *tim, uint16_t period, uint32_t hz);  // TODO - just for migration
-void timerReconfigureTimeBase(TIM_TypeDef *tim, uint16_t period, uint32_t hz);
+void configTimeBase(tmr_type *tim, uint16_t period, uint32_t hz);  // TODO - just for migration
+//void timerReconfigureTimeBase(tmr_type *tim, uint16_t period, uint32_t hz); //not need
 
-rccPeriphTag_t timerRCC(TIM_TypeDef *tim);
-uint8_t timerInputIrq(TIM_TypeDef *tim);
+rccPeriphTag_t timerRCC(tmr_type *tim);
+uint8_t timerInputIrq(tmr_type *tim);
 
 #if defined(USE_TIMER_MGMT)
 extern const resourceOwner_t freeOwner;
@@ -317,23 +246,17 @@ const timerHardware_t *timerAllocate(ioTag_t ioTag, resourceOwner_e owner, uint8
 const timerHardware_t *timerGetByTagAndIndex(ioTag_t ioTag, unsigned timerIndex);
 ioTag_t timerioTagGetByUsage(timerUsageFlag_e usageFlag, uint8_t index);
 
-#if defined(USE_HAL_DRIVER)
-TIM_HandleTypeDef* timerFindTimerHandle(TIM_TypeDef *tim);
-HAL_StatusTypeDef TIM_DMACmd(TIM_HandleTypeDef *htim, uint32_t Channel, FunctionalState NewState);
-HAL_StatusTypeDef DMA_SetCurrDataCounter(TIM_HandleTypeDef *htim, uint32_t Channel, uint32_t *pData, uint16_t Length);
-uint16_t timerDmaIndex(uint8_t channel);
-#else
-void timerOCInit(TIM_TypeDef *tim, uint8_t channel, TIM_OCInitTypeDef *init);
-void timerOCPreloadConfig(TIM_TypeDef *tim, uint8_t channel, uint16_t preload);
-#endif
 
-volatile timCCR_t *timerCCR(TIM_TypeDef *tim, uint8_t channel);
+void timerOCInit(tmr_type *tim, uint8_t channel, tmr_output_config_type *init);
+void timerOCPreloadConfig(tmr_type *tim, uint8_t channel, uint16_t preload);
+
+volatile timCCR_t *timerCCR(tmr_type *tim, uint8_t channel);
 uint16_t timerDmaSource(uint8_t channel);
 
-uint16_t timerGetPrescalerByDesiredHertz(TIM_TypeDef *tim, uint32_t hz);
-uint16_t timerGetPrescalerByDesiredMhz(TIM_TypeDef *tim, uint16_t mhz);
-uint16_t timerGetPeriodByPrescaler(TIM_TypeDef *tim, uint16_t prescaler, uint32_t hz);
+uint16_t timerGetPrescalerByDesiredHertz(tmr_type *tim, uint32_t hz);
+uint16_t timerGetPrescalerByDesiredMhz(tmr_type *tim, uint16_t mhz);
+uint16_t timerGetPeriodByPrescaler(tmr_type *tim, uint16_t prescaler, uint32_t hz);
 
 int8_t timerGetNumberByIndex(uint8_t index);
-int8_t timerGetTIMNumber(const TIM_TypeDef *tim);
+int8_t timerGetTIMNumber(const tmr_type *tim);
 uint8_t timerLookupChannelIndex(const uint16_t channel);

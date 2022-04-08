@@ -24,10 +24,10 @@
 
 #ifdef USE_DMA_SPEC
 
-#include "drivers/adc.h"
-#include "drivers/bus_spi.h"
-#include "drivers/serial.h"
-#include "drivers/serial_uart.h"
+//#include "drivers/adc.h"
+//#include "drivers/bus_spi.h"
+//#include "drivers/serial.h"
+//#include "drivers/serial_uart.h"
 #include "drivers/timer_def.h"
 
 #include "pg/timerio.h"
@@ -37,7 +37,7 @@
 typedef struct dmaPeripheralMapping_s {
     dmaPeripheral_e device;
     uint8_t index;
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
     uint8_t dmaRequest;
 #else
     dmaChannelSpec_t channelSpec[MAX_PERIPHERAL_DMA_OPTIONS];
@@ -45,9 +45,9 @@ typedef struct dmaPeripheralMapping_s {
 } dmaPeripheralMapping_t;
 
 typedef struct dmaTimerMapping_s {
-    TIM_TypeDef *tim;
+    tmr_type *tim;
     uint8_t channel;
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
     uint8_t dmaRequest;
 #else
     dmaChannelSpec_t channelSpec[MAX_TIMER_DMA_OPTIONS];
@@ -180,6 +180,164 @@ static const dmaTimerMapping_t dmaTimerMapping[] = {
 #undef REQMAP_TIM
 
 #define DMA(d, c) { DMA_CODE(d, c, 0), (dmaResource_t *)DMA ## d ## _Channel ## c, 0 }
+
+static dmaChannelSpec_t dmaChannelSpec[MAX_PERIPHERAL_DMA_OPTIONS] = {
+    DMA(1, 1),
+    DMA(1, 2),
+    DMA(1, 3),
+    DMA(1, 4),
+    DMA(1, 5),
+    DMA(1, 6),
+    DMA(1, 7),
+    DMA(1, 8),
+    DMA(2, 1),
+    DMA(2, 2),
+    DMA(2, 3),
+    DMA(2, 4),
+    DMA(2, 5),
+    DMA(2, 6),
+    DMA(2, 7),
+    DMA(2, 8),
+};
+
+#undef DMA
+
+#elif defined(AT32F43x)
+
+#define REQMAP_SGL(periph) { DMA_PERIPH_ ## periph, 0, DMA_REQUEST_ ## periph }
+#define REQMAP(periph, device) { DMA_PERIPH_ ## periph, periph ## DEV_ ## device, DMA_REQUEST_ ## periph ## device }
+#define REQMAP_DIR(periph, device, dir) { DMA_PERIPH_ ## periph ## _ ## dir, periph ## DEV_ ## device, DMA_REQUEST_ ## periph ## device ## _ ## dir }
+#define REQMAP_TIMUP(periph, timno) { DMA_PERIPH_TIMUP, timno - 1, DMAMUX_DMAREQ_ID_ ## TMR ## timno ## _OVERFLOW }
+
+// Resolve UART/USART mess, also map UART6 requests to LPUART1 requests
+#define DMA_REQUEST_UART1_RX DMAMUX_DMAREQ_ID_USART1_RX
+#define DMA_REQUEST_UART1_TX DMAMUX_DMAREQ_ID_USART1_TX
+#define DMA_REQUEST_UART2_RX DMAMUX_DMAREQ_ID_USART2_RX
+#define DMA_REQUEST_UART2_TX DMAMUX_DMAREQ_ID_USART2_TX
+#define DMA_REQUEST_UART3_RX DMAMUX_DMAREQ_ID_USART3_RX
+#define DMA_REQUEST_UART3_TX DMAMUX_DMAREQ_ID_USART3_TX
+#define DMA_REQUEST_UART6_RX DMAMUX_DMAREQ_ID_USART6_RX
+#define DMA_REQUEST_UART6_TX DMAMUX_DMAREQ_ID_USART6_TX
+//#define DMA_REQUEST_UART9_RX DMA_REQUEST_LPUART1_RX
+//#define DMA_REQUEST_UART9_TX DMA_REQUEST_LPUART1_TX
+
+// Resolve our preference for MOSI/MISO rather than TX/RX
+#define DMA_REQUEST_SPI1_MOSI DMAMUX_DMAREQ_ID_SPI1_TX
+#define DMA_REQUEST_SPI1_MISO DMAMUX_DMAREQ_ID_SPI1_RX
+#define DMA_REQUEST_SPI2_MOSI DMAMUX_DMAREQ_ID_SPI2_TX
+#define DMA_REQUEST_SPI2_MISO DMAMUX_DMAREQ_ID_SPI2_RX
+#define DMA_REQUEST_SPI3_MOSI DMAMUX_DMAREQ_ID_SPI3_TX
+#define DMA_REQUEST_SPI3_MISO DMAMUX_DMAREQ_ID_SPI3_RX
+#define DMA_REQUEST_SPI4_MOSI DMAMUX_DMAREQ_ID_SPI4_TX
+#define DMA_REQUEST_SPI4_MISO DMAMUX_DMAREQ_ID_SPI4_RX
+
+#define DMA_REQUEST_ADC1 DMAMUX_DMAREQ_ID_ADC1
+#define DMA_REQUEST_ADC2 DMAMUX_DMAREQ_ID_ADC2
+#define DMA_REQUEST_ADC3 DMAMUX_DMAREQ_ID_ADC3
+
+
+/* for debug only */
+//fixme: remove before merge
+#undef USE_ADC
+#undef USE_SPI
+#undef USE_UART
+
+static const dmaPeripheralMapping_t dmaPeripheralMapping[] = {
+#ifdef USE_SPI
+    REQMAP_DIR(SPI, 1, MOSI),
+    REQMAP_DIR(SPI, 1, MISO),
+    REQMAP_DIR(SPI, 2, MOSI),
+    REQMAP_DIR(SPI, 2, MISO),
+    REQMAP_DIR(SPI, 3, MOSI),
+    REQMAP_DIR(SPI, 3, MISO),
+    REQMAP_DIR(SPI, 4, MOSI),
+    REQMAP_DIR(SPI, 4, MISO),
+#endif // USE_SPI
+
+#ifdef USE_ADC
+    REQMAP(ADC, 1),
+    REQMAP(ADC, 2),
+    REQMAP(ADC, 3),
+//    REQMAP(ADC, 4),
+//    REQMAP(ADC, 5),
+#endif
+
+#ifdef USE_UART
+    REQMAP_DIR(UART, 1, TX),
+    REQMAP_DIR(UART, 1, RX),
+    REQMAP_DIR(UART, 2, TX),
+    REQMAP_DIR(UART, 2, RX),
+    REQMAP_DIR(UART, 3, TX),
+    REQMAP_DIR(UART, 3, RX),
+//    REQMAP_DIR(UART, 4, TX),
+//    REQMAP_DIR(UART, 4, RX),
+//    REQMAP_DIR(UART, 5, TX),
+//    REQMAP_DIR(UART, 5, RX),
+    REQMAP_DIR(UART, 6, TX),
+    REQMAP_DIR(UART, 6, RX),
+#endif
+
+#ifdef USE_TIMER
+// Pseudo peripheral for TIMx_UP channel
+    REQMAP_TIMUP(TIMUP, 1),
+    REQMAP_TIMUP(TIMUP, 2),
+    REQMAP_TIMUP(TIMUP, 3),
+    REQMAP_TIMUP(TIMUP, 4),
+    REQMAP_TIMUP(TIMUP, 5),
+    REQMAP_TIMUP(TIMUP, 6),
+    REQMAP_TIMUP(TIMUP, 7),
+    REQMAP_TIMUP(TIMUP, 8),
+//    REQMAP_TIMUP(TIMUP, 15),
+//    REQMAP_TIMUP(TIMUP, 16),
+//    REQMAP_TIMUP(TIMUP, 17),
+    REQMAP_TIMUP(TIMUP, 20),
+#endif
+};
+
+#undef REQMAP_TIMUP
+#undef REQMAP
+#undef REQMAP_SGL
+#undef REQMAP_DIR
+
+#define TC(chan) DEF_TIM_CHANNEL(CH_ ## chan) //Tc 还不能映射
+
+#define REQMAP_TIM(tim, chan) { tim, TC(chan), DMAMUX_DMAREQ_ID_ ## tim ## _ ## chan }
+
+static const dmaTimerMapping_t dmaTimerMapping[] = {
+    REQMAP_TIM(TMR1, CH1),
+    REQMAP_TIM(TMR1, CH2),
+    REQMAP_TIM(TMR1, CH3),
+    REQMAP_TIM(TMR1, CH4),
+    REQMAP_TIM(TMR2, CH1),
+    REQMAP_TIM(TMR2, CH2),
+    REQMAP_TIM(TMR2, CH3),
+    REQMAP_TIM(TMR2, CH4),
+    REQMAP_TIM(TMR3, CH1),
+    REQMAP_TIM(TMR3, CH2),
+    REQMAP_TIM(TMR3, CH3),
+    REQMAP_TIM(TMR3, CH4),
+    REQMAP_TIM(TMR4, CH1),
+    REQMAP_TIM(TMR4, CH2),
+    REQMAP_TIM(TMR4, CH3),
+    REQMAP_TIM(TMR5, CH1),
+    REQMAP_TIM(TMR5, CH2),
+    REQMAP_TIM(TMR5, CH3),
+    REQMAP_TIM(TMR5, CH4),
+    REQMAP_TIM(TMR8, CH1),
+    REQMAP_TIM(TMR8, CH2),
+    REQMAP_TIM(TMR8, CH3),
+    REQMAP_TIM(TMR8, CH4),
+    REQMAP_TIM(TMR20, CH1),
+    REQMAP_TIM(TMR20, CH2),
+    REQMAP_TIM(TMR20, CH3),
+    REQMAP_TIM(TMR20, CH4),
+    // XXX Check non-CH1 for TIM15,16,17 and 20
+};
+
+#undef TC
+#undef REQMAP_TIM
+
+#define DMA(d, c) { DMA_CODE(d, 0, c), (dmaResource_t *) DMA ## d ## _CHANNEL ## c , 0 }
 
 static dmaChannelSpec_t dmaChannelSpec[MAX_PERIPHERAL_DMA_OPTIONS] = {
     DMA(1, 1),
@@ -366,12 +524,6 @@ static dmaChannelSpec_t dmaChannelSpec[MAX_PERIPHERAL_DMA_OPTIONS] = {
 
 #undef DMA
 
-#elif defined(STM32F4) || defined(STM32F7)
-
-#if defined(STM32F4)
-#define DMA(d, s, c) { DMA_CODE(d, s, c), (dmaResource_t *)DMA ## d ## _Stream ## s, DMA_Channel_ ## c }
-#elif defined(STM32F7)
-#define DMA(d, s, c) { DMA_CODE(d, s, c), (dmaResource_t *)DMA ## d ## _Stream ## s, DMA_CHANNEL_ ## c }
 #endif
 
 static const dmaPeripheralMapping_t dmaPeripheralMapping[] = {
@@ -561,13 +713,12 @@ static const dmaTimerMapping_t dmaTimerMapping[] = {
 static void dmaSetupRequest(dmaChannelSpec_t *dmaSpec, uint8_t request)
 {
     // Setup request as channel
-    dmaSpec->channel = request;
+    dmaSpec->dmaMuxId = request;
 
     // Insert DMA request into code
     dmaCode_t code = dmaSpec->code;
-    dmaSpec->code = DMA_CODE(DMA_CODE_CONTROLLER(code), DMA_CODE_STREAM(code), dmaSpec->channel);
+    dmaSpec->code = DMA_CODE(DMA_CODE_CONTROLLER(code), DMA_CODE_STREAM(code), dmaSpec->dmaMuxId);
 }
-#endif
 
 const dmaChannelSpec_t *dmaGetChannelSpecByPeripheral(dmaPeripheral_e device, uint8_t index, int8_t opt)
 {
@@ -577,22 +728,17 @@ const dmaChannelSpec_t *dmaGetChannelSpecByPeripheral(dmaPeripheral_e device, ui
 
     for (unsigned i = 0 ; i < ARRAYLEN(dmaPeripheralMapping) ; i++) {
         const dmaPeripheralMapping_t *periph = &dmaPeripheralMapping[i];
-#if defined(STM32H7) || defined(STM32G4)
+
         if (periph->device == device && periph->index == index) {
             dmaChannelSpec_t *dmaSpec = &dmaChannelSpec[opt];
             dmaSetupRequest(dmaSpec, periph->dmaRequest);
             return dmaSpec;
         }
-#else
-        if (periph->device == device && periph->index == index && periph->channelSpec[opt].ref) {
-            return &periph->channelSpec[opt];
-        }
-#endif
     }
 
     return NULL;
 }
-
+//根据IOtag 查询dma 通道
 dmaoptValue_t dmaoptByTag(ioTag_t ioTag)
 {
 #ifdef USE_TIMER_MGMT
@@ -608,7 +754,7 @@ dmaoptValue_t dmaoptByTag(ioTag_t ioTag)
     return DMA_OPT_UNUSED;
 }
 
-const dmaChannelSpec_t *dmaGetChannelSpecByTimerValue(TIM_TypeDef *tim, uint8_t channel, dmaoptValue_t dmaopt)
+const dmaChannelSpec_t *dmaGetChannelSpecByTimerValue(tmr_type *tim, uint8_t channel, dmaoptValue_t dmaopt)
 {
     if (dmaopt < 0 || dmaopt >= MAX_TIMER_DMA_OPTIONS) {
         return NULL;
@@ -616,7 +762,7 @@ const dmaChannelSpec_t *dmaGetChannelSpecByTimerValue(TIM_TypeDef *tim, uint8_t 
 
     for (unsigned i = 0 ; i < ARRAYLEN(dmaTimerMapping) ; i++) {
         const dmaTimerMapping_t *timerMapping = &dmaTimerMapping[i];
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
         if (timerMapping->tim == tim && timerMapping->channel == channel) {
             dmaChannelSpec_t *dmaSpec = &dmaChannelSpec[dmaopt];
             dmaSetupRequest(dmaSpec, timerMapping->dmaRequest);
@@ -646,10 +792,7 @@ const dmaChannelSpec_t *dmaGetChannelSpecByTimer(const timerHardware_t *timer)
 //fixme: at32f4 启动之后，只有adc 有dma，spi如果启动dma则卡死，说明dma配置不对，需要核查一下这部分的配置和代码
 dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
 {
-#if defined( AT32F4)
-//no op
-	UNUSED(timer);
-#elif defined(STM32H7) || defined(STM32G4)
+#if defined(AT32F43x)
     for (unsigned opt = 0; opt < ARRAYLEN(dmaChannelSpec); opt++) {
         if (timer->dmaRefConfigured == dmaChannelSpec[opt].ref) {
                 return (dmaoptValue_t)opt;
@@ -676,7 +819,7 @@ dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
     return DMA_OPT_UNUSED;
 }
 
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
 // A variant of dmaGetOptionByTimer that looks for matching dmaTimUPRef
 dmaoptValue_t dmaGetUpOptionByTimer(const timerHardware_t *timer)
 {

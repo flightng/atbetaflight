@@ -23,15 +23,16 @@
 #include "platform.h"
 #include "drivers/io.h"
 
-#include "drivers/dma.h"
-#include "drivers/timer.h"
-#include "drivers/timer_def.h"
-//DEF_TIM(tim, chan, pin, flags, out)
-const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
-	DEF_TIM(TIM1, CH1, PA8,  TIM_USE_MOTOR,            0), // PWM9 - OUT1
-	DEF_TIM(TIM1, CH4, PA11, TIM_USE_MOTOR,             0), // PWM10 - OUT2
-	DEF_TIM(TIM4, CH1, PB6,  TIM_USE_MOTOR,             0), // PWM11 - OUT3
-	DEF_TIM(TIM4, CH2, PB7,  TIM_USE_MOTOR,             0), // PWM12 - OUT4
-	DEF_TIM(TIM4, CH3, PB8,  TIM_USE_ANY,             0), // PWM13 - OUT5
-	DEF_TIM(TIM4, CH4, PB9,  TIM_USE_LED,             0), // PWM14 - OUT6
-};
+ #include "drivers/dma.h"
+ #include "drivers/timer.h"
+ #include "drivers/timer_def.h"
+// //DEF_TIM(tim, chan, pin, flags, out)
+ const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
+ 	DEF_TIM(TMR1, CH1, PA8,  TIM_USE_MOTOR, 0,0,0), // PWM9 - OUT1
+ 	DEF_TIM(TMR1, CH4, PA11, TIM_USE_MOTOR, 0,0,0), // PWM10 - OUT2
+ 	DEF_TIM(TMR4, CH1, PB6,  TIM_USE_MOTOR, 0,0,0), // PWM11 - OUT3
+ 	DEF_TIM(TMR4, CH2, PB7,  TIM_USE_MOTOR, 0,0,0), // PWM12 - OUT4
+ 	DEF_TIM(TMR4, CH3, PB8,  TIM_USE_ANY,  0,0,0), // PWM13 - OUT5
+ 	DEF_TIM(TMR4, CH4, PB9,  TIM_USE_LED,  0,0,0), // PWM14 - OUT6
+
+ };

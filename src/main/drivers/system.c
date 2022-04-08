@@ -30,7 +30,7 @@
 #include "drivers/light_led.h"
 #include "drivers/nvic.h"
 #include "drivers/resource.h"
-#include "drivers/sound_beeper.h"
+// #include "drivers/sound_beeper.h"
 
 
 #include "system.h"
@@ -219,12 +219,12 @@ static void indicate(uint8_t count, uint16_t duration)
         while (count--) {
             LED1_TOGGLE;
             LED0_TOGGLE;
-            BEEP_ON;
+            // BEEP_ON;
             delay(duration);
 
             LED1_TOGGLE;
             LED0_TOGGLE;
-            BEEP_OFF;
+            // BEEP_OFF;
             delay(duration);
         }
     }
