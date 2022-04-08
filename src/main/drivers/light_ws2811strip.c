@@ -45,7 +45,7 @@
 
 #include "light_ws2811strip.h"
 
-#include "scheduler/scheduler.h"
+//#include "scheduler/scheduler.h"
 
 #ifdef USE_LEDSTRIP_CACHE_MGMT
 // WS2811_DMA_BUFFER_SIZE is multiples of uint32_t
@@ -144,6 +144,7 @@ void ws2811LedStripEnable(void)
         ws2811UpdateStrip(LED_GRBW, 100);
 
         ws2811Initialised = true;
+
     }
 }
 
@@ -193,7 +194,8 @@ void ws2811UpdateStrip(ledStripFormatRGB_e ledFormat, uint8_t brightness)
 {
     // don't wait - risk of infinite block, just get an update next time round
     if (!ws2811Initialised || ws2811LedDataTransferInProgress) {
-        schedulerIgnoreTaskStateTime();
+    	//fixme: uncomment after debug
+//        schedulerIgnoreTaskStateTime();
         return;
     }
 

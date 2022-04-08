@@ -22,7 +22,7 @@
 
 #ifdef USE_TIMER
 
-#include "drivers/dshot_bitbang.h"
+//#include "drivers/dshot_bitbang.h"
 #include "drivers/io.h"
 #include "timer.h"
 
@@ -106,7 +106,7 @@ const resourceOwner_t *timerGetOwner(const timerHardware_t *timer)
 #if defined(USE_DSHOT_BITBANG)
     return dshotBitbangTimerGetOwner(timer);
 #else
-    return timerOwner;
+//    return timerOwner;
 #endif
 }
 

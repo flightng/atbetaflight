@@ -24,7 +24,6 @@
 #include "rcc_at32f43x_periph.h"
 
 
-typedef enum {DISABLE = 0, ENABLE = !DISABLE} FunctionalState;
 
 #define SET_BIT(REG, BIT)     ((REG) |= (BIT))
 

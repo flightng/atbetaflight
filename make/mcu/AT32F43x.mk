@@ -73,12 +73,15 @@ DEVICE_FLAGS   += -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
 MCU_COMMON_SRC = \
             startup/system_at32f435_437.c\
             startup/at32f435_437_clock.c\
+            drivers/system_at32f43x.c\
+            drivers/light_ws2811strip_at32f43x.c \
+            drivers/timer_atbsp.c\
+            drivers/timer_at32f43x.c\
+            drivers/dma_at32f43x.c\
             # drivers/adc_stm32f10x.c \
             # drivers/bus_i2c_stm32f10x.c \
             # drivers/bus_spi_stdperiph.c \
-            # drivers/dma.c \
-            # drivers/inverter.c \
-            # drivers/light_ws2811strip_stdperiph.c \
+            # drivers/inverter.c \        
             # drivers/serial_uart_stdperiph.c \
             # drivers/serial_uart_stm32f10x.c \
             # drivers/system_stm32f10x.c \
