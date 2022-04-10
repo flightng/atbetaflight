@@ -88,11 +88,7 @@ typedef struct dmaTimerMapping_s {
 #define DMA_REQUEST_ADC3 DMAMUX_DMAREQ_ID_ADC3
 
 
-/* for debug only */
-//fixme: remove before merge
-#undef USE_ADC
-#undef USE_SPI
-#undef USE_UART
+
 
 static const dmaPeripheralMapping_t dmaPeripheralMapping[] = {
 #ifdef USE_SPI
