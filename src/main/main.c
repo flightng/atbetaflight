@@ -23,91 +23,27 @@
 
 #include "platform.h"
 
-// #include "fc/init.h"
+#include "fc/init.h"
 
-// #include "scheduler/scheduler.h"
-#include "drivers/system.h"
-#include "drivers/light_led.h"
-#include "drivers/io.h"
-#include "drivers/exti.h"
+#include "scheduler/scheduler.h"
 
-#include "drivers/buttons.h"
-#include "common/color.h"
-#include "io/ledstrip.h"
-#include "drivers/timer.h"
-#include "drivers/light_ws2811strip.h"
-#include "pg/timerio.h"
-
-void ledstripInit(){
-
-	ws2811LedStripInit(DEFIO_TAG(PA8));
-	setUsedLedCount(32);
-	ws2811LedStripEnable();
-
-}
-
-
-
-void init(void){
-    systemInit();
-    IOInitGlobal();
-
-    statusLedConfig_t statusLedConfig={
-        .ioTags={
-            DEFIO_TAG(PD13),
-            DEFIO_TAG(PD14)
-        },
-        .inversion=0
-    };
-    // initialize IO (needed for all IO operations)
-    ledInit(&statusLedConfig);
-    LED0_ON;
-
-//    EXTIInit();
-    
-    buttonsInit();
-
-    LED1_ON;
-
-    timerInit();  // timer must be initialized before any channel is allocated
-
-
-    timerIOConfig_t timerConfig={
-    		.ioTag=DEFIO_TAG(PA8),
-			.index=1,
-			.dmaopt=0
-    };
-    timerIOConfig_SystemArray[1]=timerConfig; //配置对应定时器
-    ledstripInit();
-}
+void run(void);
 
 int main(void)
 {
     init();
 
-    uint32_t count=0;
+    run();
 
-    hsvColor_t hsvColors[]={
-    		{0,100,100},
-			{120,100,100},
-			{240,100,100},
-			{0,0,100}
-    };
-
-  
-    // blink led
-    while(1){
-    	if(buttonAPressed()){
-    		indicateFailure(1,1);
-    		setStripColor(&hsvColors[count]);
-    		//Ws2812 use  LED_GRB
-    		ws2811UpdateStrip(LED_GRB,100);
-    		//for dbg only
-    		count+=1;
-        	if (count>3) count=0;
-
-    	}
-    }
     return 0;
 }
 
+void FAST_CODE run(void)
+{
+    while (true) {
+        scheduler();
+#ifdef SIMULATOR_BUILD
+        delayMicroseconds_real(50); // max rate 20kHz
+#endif
+    }
+}
