@@ -35,7 +35,7 @@
 #include "drivers/bus_i2c.h"
 #include "drivers/bus_i2c_impl.h"
 
-#define I2C_TIMEOUT                      0xFFFFFFF
+#define I2C_TIMEOUT                      10
 
 #ifdef USE_I2C_DEVICE_1
 void I2C1_ERR_IRQHandler(void)

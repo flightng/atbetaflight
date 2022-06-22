@@ -20,7 +20,7 @@
 
 #pragma once
 
-#define TARGET_BOARD_IDENTIFIER "AT32"
+#define TARGET_BOARD_IDENTIFIER "AT32F437"
 #define USBD_PRODUCT_STRING     "EMSRAT32F4"
 
 //buttons
@@ -31,8 +31,10 @@
 #define BUTTON_B_PIN_INVERTED // Active high
 
 
-#define LED0_PIN                PC13
-#define LED1_PIN                PC14
+#define LED0_PIN                PD13
+#define LED1_PIN                PD14
+#define LED2_PIN                PD15
+
 
 #define USE_BEEPER
 #define BEEPER_PIN              PB2
@@ -118,7 +120,7 @@
 
 #define VBAT_ADC_PIN            PB0
 #define CURRENT_METER_ADC_PIN   PB1
-//#define RSSI_ADC_PIN            PA0
+#define RSSI_ADC_PIN            PA0
 
 #define USE_ESCSERIAL
 
