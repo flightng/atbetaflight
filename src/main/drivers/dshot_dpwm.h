@@ -71,7 +71,7 @@ motorDevice_t *dshotPwmDevInit(const struct motorDevConfig_s *motorConfig, uint1
 #define DSHOT_DMA_BUFFER_ATTRIBUTE // None
 #endif
 
-#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
 #define DSHOT_DMA_BUFFER_UNIT uint32_t
 #else
 #define DSHOT_DMA_BUFFER_UNIT uint8_t
@@ -92,7 +92,7 @@ extern DSHOT_DMA_BUFFER_UNIT dshotBurstDmaBuffer[MAX_DMA_TIMERS][DSHOT_DMA_BUFFE
 #endif
 
 typedef struct {
-    TIM_TypeDef *timer;
+    tmr_type *timer;
 #if defined(USE_DSHOT)
     uint16_t outputPeriod;
 #if defined(USE_DSHOT_DMAR)
@@ -129,7 +129,7 @@ typedef struct motorDmaOutput_s {
     LL_DMA_InitTypeDef    dmaInitStruct;
     uint32_t llChannel;
 #else
-    DMA_InitTypeDef   dmaInitStruct;
+    dma_init_type   dmaInitStruct;
 #endif
 
 #ifdef USE_DSHOT_TELEMETRY
@@ -141,8 +141,8 @@ typedef struct motorDmaOutput_s {
     LL_TIM_OC_InitTypeDef ocInitStruct;
     LL_TIM_IC_InitTypeDef icInitStruct;
 #else
-    TIM_OCInitTypeDef ocInitStruct;
-    TIM_ICInitTypeDef icInitStruct;
+    tmr_output_config_type ocInitStruct;
+    tmr_input_config_type icInitStruct;
 #endif
 
 #endif // USE_DSHOT_TELEMETRY

@@ -43,7 +43,7 @@ struct timerHardware_s;
 
 typedef struct {
     volatile timCCR_t *ccr;
-    TIM_TypeDef       *tim;
+    tmr_type       *tim;
 } timerChannel_t;
 
 typedef struct {

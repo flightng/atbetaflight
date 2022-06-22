@@ -38,7 +38,7 @@
 #include "pg/bus_spi.h"
 
 const spiHardware_t spiHardware[] = {
-#ifdef AT32F4
+#ifdef STM32F1
     // Remapping is not supported and corresponding lines are commented out.
     // There also is some errata that may prevent these assignments from working:
     // http://www.st.com/content/ccc/resource/technical/document/errata_sheet/7d/02/75/64/17/fc/4d/fd/CD00190234.pdf/files/CD00190234.pdf/jcr:content/translations/en.CD00190234.pdf
@@ -460,6 +460,75 @@ const spiHardware_t spiHardware[] = {
         },
         .rcc = RCC_APB11(SPI3),
         //.dmaIrqHandler = DMA1_ST7_HANDLER,
+    },
+#endif
+#ifdef AT32F4
+    {
+        .device = SPIDEV_1,
+        .reg = SPI1,
+        .sckPins = {
+            { DEFIO_TAG_E(PA5), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB3), GPIO_MUX_5 },
+        },
+        .misoPins = {
+            { DEFIO_TAG_E(PA6), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB4), GPIO_MUX_5 },
+        },
+        .mosiPins = {
+            { DEFIO_TAG_E(PA7), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB5), GPIO_MUX_5 },
+        },
+        .rcc = RCC_APB2(SPI1),
+        //.dmaIrqHandler = DMA2_ST3_HANDLER,
+    },
+    {
+        .device = SPIDEV_2,
+        .reg = SPI2,
+        .sckPins = {
+            // { DEFIO_TAG_E(PA9), GPIO_MUX_5 },pa9 used for uart1_tx
+            { DEFIO_TAG_E(PB13), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB10), GPIO_MUX_5 },
+        },
+        .misoPins = {
+            { DEFIO_TAG_E(PA12), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB14), GPIO_MUX_5 },
+        },
+        .mosiPins = {
+            { DEFIO_TAG_E(PA10), GPIO_MUX_5 }, 
+            { DEFIO_TAG_E(PB15), GPIO_MUX_5 },
+        },
+        .rcc = RCC_APB1(SPI2),
+    },
+    {
+        .device = SPIDEV_3,
+        .reg = SPI3,
+        .sckPins = {
+            { DEFIO_TAG_E(PB3), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PC10), GPIO_MUX_6 },
+        },
+        .misoPins = {
+            { DEFIO_TAG_E(PB4), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PC11), GPIO_MUX_6 },
+        },
+        .mosiPins = {
+            { DEFIO_TAG_E(PB5), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PC12), GPIO_MUX_6 },
+        },
+        .rcc = RCC_APB1(SPI3),
+    },
+    {
+        .device = SPIDEV_4,
+        .reg = SPI4,
+        .sckPins = {
+            { DEFIO_TAG_E(PB7), GPIO_MUX_6 },
+        },
+        .misoPins = {
+            { DEFIO_TAG_E(PB8), GPIO_MUX_6 },
+        },
+        .mosiPins = {
+            { DEFIO_TAG_E(PB9), GPIO_MUX_6 },
+        },
+        .rcc = RCC_APB2(SPI4),
     },
 #endif
 };

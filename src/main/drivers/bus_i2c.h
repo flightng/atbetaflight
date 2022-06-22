@@ -39,7 +39,7 @@ typedef enum I2CDevice {
 
 #if defined(STM32F1) || defined(STM32F3)
 #define I2CDEV_COUNT 2
-#elif defined(STM32F4)
+#elif defined(STM32F4) || defined(AT32F43x)
 #define I2CDEV_COUNT 3
 #elif defined(STM32F7)
 #define I2CDEV_COUNT 4
@@ -54,6 +54,7 @@ typedef enum I2CDevice {
 // I2C device address range in 7-bit address mode
 #define I2C_ADDR7_MIN       8
 #define I2C_ADDR7_MAX       119
+
 
 struct i2cConfig_s;
 void i2cHardwareConfigure(const struct i2cConfig_s *i2cConfig);

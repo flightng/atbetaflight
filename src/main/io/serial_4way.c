@@ -107,11 +107,11 @@ inline bool isMcuConnected(void)
 
 inline bool isEscHi(uint8_t selEsc)
 {
-    return (IORead(escHardware[selEsc].io) != Bit_RESET);
+    return (IORead(escHardware[selEsc].io) != 0);
 }
 inline bool isEscLo(uint8_t selEsc)
 {
-    return (IORead(escHardware[selEsc].io) == Bit_RESET);
+    return (IORead(escHardware[selEsc].io) == 0);
 }
 
 inline void setEscHi(uint8_t selEsc)

@@ -71,7 +71,7 @@ motorDmaOutput_t *getMotorDmaOutput(uint8_t index)
     return &dmaMotors[index];
 }
 
-uint8_t getTimerIndex(TIM_TypeDef *timer)
+uint8_t getTimerIndex(tmr_type *timer)
 {
     for (int i = 0; i < dmaMotorTimerCount; i++) {
         if (dmaMotorTimers[i].timer == timer) {
@@ -211,7 +211,8 @@ FAST_CODE_NOINLINE bool pwmStartDshotMotorUpdate(void)
 #ifdef USE_FULL_LL_DRIVER
             LL_EX_TIM_DisableIT(dmaMotors[i].timerHardware->tim, dmaMotors[i].timerDmaSource);
 #else
-            TIM_DMACmd(dmaMotors[i].timerHardware->tim, dmaMotors[i].timerDmaSource, DISABLE);
+//            TIM_DMACmd(dmaMotors[i].timerHardware->tim, dmaMotors[i].timerDmaSource, DISABLE);
+            tmr_dma_request_enable(dmaMotors[i].timerHardware->tim, dmaMotors[i].timerDmaSource, FALSE);
 #endif
 
             uint16_t value = 0xffff;

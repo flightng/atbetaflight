@@ -109,7 +109,7 @@ typedef struct timerHardware_s {
 	uint32_t dmaChannel; // XXX Can be much smaller (e.g. uint8_t)
 #endif
 #endif // USE_DMA_SPEC
-	dmaResource_t *dmaTimUPRef;
+	dmaResource_t *dmaTimUPRef;  //for dma burst
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
 	uint32_t dmaTimUPChannel;
 #endif

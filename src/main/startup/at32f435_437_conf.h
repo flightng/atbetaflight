@@ -29,6 +29,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+#ifndef NULL
+#ifdef __cplusplus
+#define NULL         0
+#else
+#define NULL         ((void *) 0)
+#endif
+#endif
   
 /**
   * @brief in the following line adjust the value of high speed exernal crystal (hext)

@@ -78,6 +78,10 @@ uint8_t eepromData[EEPROM_SIZE];
 # elif defined(STM32G4)
 #  define FLASH_PAGE_SIZE                 ((uint32_t)0x800) // 2K page
 // SIMULATOR
+# elif defined(AT32F437ZMT7)
+# define FLASH_PAGE_SIZE ((uint32_t)0x1000) //4k sectors
+# elif defined(AT32F437ZGT7)
+#  define FLASH_PAGE_SIZE                 ((uint32_t)0x800) // 2K page sectors
 # elif defined(SIMULATOR_BUILD)
 #  define FLASH_PAGE_SIZE                 (0x400)
 # else
@@ -101,6 +105,8 @@ void config_streamer_start(config_streamer_t *c, uintptr_t base, int size)
 #elif defined(CONFIG_IN_FLASH) || defined(CONFIG_IN_FILE)
 #if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
         HAL_FLASH_Unlock();
+#elif defined(AT32F43x)
+        flash_unlock();
 #else
         FLASH_Unlock();
 #endif
@@ -111,7 +117,7 @@ void config_streamer_start(config_streamer_t *c, uintptr_t base, int size)
 #if defined(CONFIG_IN_RAM) || defined(CONFIG_IN_FILE) || defined(CONFIG_IN_EXTERNAL_FLASH)
     // NOP
 #elif defined(CONFIG_IN_FLASH)
-#if defined(STM32F10X) || defined(AT32F4)
+#if defined(STM32F10X)
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
 #elif defined(STM32F303)
     FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPERR);
@@ -123,6 +129,8 @@ void config_streamer_start(config_streamer_t *c, uintptr_t base, int size)
     // NOP
 #elif defined(STM32G4)
     // NOP
+#elif defined(AT32F43x)
+    flash_flag_clear(FLASH_ODF_FLAG|FLASH_PRGMERR_FLAG|FLASH_EPPERR_FLAG);
 #elif defined(UNIT_TEST) || defined(SIMULATOR_BUILD)
     // NOP
 #else
@@ -363,8 +371,9 @@ static void getFLASHSectorForEEPROM(uint32_t *bank, uint32_t *sector)
         }
     }
 }
-#endif
+
 #endif // CONFIG_IN_FLASH
+#endif
 
 // FIXME the return values are currently magic numbers
 static int write_word(config_streamer_t *c, config_streamer_buffer_align_type_t *buffer)
@@ -504,6 +513,29 @@ static int write_word(config_streamer_t *c, config_streamer_buffer_align_type_t 
     if (status != HAL_OK) {
         return -2;
     }
+#elif defined(AT32F43x)
+
+	if (c->address % FLASH_PAGE_SIZE == 0) {//make sure word align
+//
+//		   FLASH_EraseInitTypeDef EraseInitStruct = {
+//			   .TypeErase     = FLASH_TYPEERASE_PAGES,
+//			   .NbPages       = 1
+//		   };
+//		   getFLASHSectorForEEPROM(c->address, &EraseInitStruct.Banks, &EraseInitStruct.Page);
+//		   uint32_t SECTORError;
+//		   const HAL_StatusTypeDef status = HAL_FLASHEx_Erase(&EraseInitStruct, &SECTORError);
+		const flash_status_type status =flash_sector_erase(c->address);
+		   if (status != FLASH_OPERATE_DONE) {
+			   return -1;
+		   }
+	   }
+
+//	   const HAL_StatusTypeDef status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, c->address, (uint64_t)*buffer);
+	   const flash_status_type status= flash_word_program(c->address,(uint32_t)*buffer);
+	   if (status != FLASH_OPERATE_DONE) {
+		   return -2;
+	   }
+
 #else // !STM32H7 && !STM32F7 && !STM32G4
     if (c->address % FLASH_PAGE_SIZE == 0) {
 #if defined(STM32F4)
@@ -569,6 +601,8 @@ int config_streamer_finish(config_streamer_t *c)
 #elif defined(CONFIG_IN_FLASH)
 #if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
         HAL_FLASH_Lock();
+#elif defined(AT32F43x)
+        flash_lock();
 #else
         FLASH_Lock();
 #endif

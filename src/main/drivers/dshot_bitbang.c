@@ -66,7 +66,7 @@ dshotBitbangStatus_e bbStatus;
 #define BB_OUTPUT_BUFFER_ATTRIBUTE DMA_RW_AXI __attribute__((aligned(32)))
 #define BB_INPUT_BUFFER_ATTRIBUTE  DMA_RW_AXI __attribute__((aligned(32)))
 #else
-#if defined(STM32F4)  || defined(AT32F4)
+#if defined(STM32F4)  || defined(AT32F43x)
 #define BB_OUTPUT_BUFFER_ATTRIBUTE
 #define BB_INPUT_BUFFER_ATTRIBUTE
 #elif defined(STM32F7)
@@ -119,13 +119,18 @@ const timerHardware_t bbTimerHardware[] = {
     DEF_TIM(TIM1,  CH2, NONE,  TIM_USE_NONE, 0, 1, 0),
     DEF_TIM(TIM1,  CH3, NONE,  TIM_USE_NONE, 0, 2, 0),
     DEF_TIM(TIM1,  CH4, NONE,  TIM_USE_NONE, 0, 3, 0),
-#elif defined(AT32F4)
 
-	DEF_TIM(TIM2,  CH1, NONE,  TIM_USE_NONE, 0),
-	DEF_TIM(TIM2,  CH2, NONE,  TIM_USE_NONE, 0),
-	DEF_TIM(TIM2,  CH3, NONE,  TIM_USE_NONE, 0),
-	DEF_TIM(TIM2,  CH4, NONE,  TIM_USE_NONE, 0),
-
+#elif defined(AT32F43x)
+	//FIXME: 这里dmaopt 设置为0 1 2 3 可能存在问题，另外at32f435/7 dma支持任意tmr
+	//后面代码里dma 部分需要重点看下dmamux 的设置
+    DEF_TIM(TMR8,  CH1, NONE,  TIM_USE_NONE, 0, 0, 0),
+    DEF_TIM(TMR8,  CH2, NONE,  TIM_USE_NONE, 0, 1, 0),
+    DEF_TIM(TMR8,  CH3, NONE,  TIM_USE_NONE, 0, 2, 0),
+    DEF_TIM(TMR8,  CH4, NONE,  TIM_USE_NONE, 0, 3, 0),
+    DEF_TIM(TMR1,  CH1, NONE,  TIM_USE_NONE, 0, 0, 0),
+    DEF_TIM(TMR1,  CH2, NONE,  TIM_USE_NONE, 0, 1, 0),
+    DEF_TIM(TMR1,  CH3, NONE,  TIM_USE_NONE, 0, 2, 0),
+    DEF_TIM(TMR1,  CH4, NONE,  TIM_USE_NONE, 0, 3, 0),
 
 #else
 #error MCU dependent code required
@@ -203,7 +208,7 @@ static void bbOutputDataClear(uint32_t *buffer)
 
 // bbPacer management
 
-static bbPacer_t *bbFindMotorPacer(TIM_TypeDef *tim)
+static bbPacer_t *bbFindMotorPacer(tmr_type  *tim)
 {
     for (int i = 0; i < MAX_MOTOR_PACERS; i++) {
 
@@ -309,6 +314,9 @@ static void bbSetupDma(bbPort_t *bbPort)
 
     dmaSetHandler(dmaIdentifier, bbDMAIrqHandler, NVIC_BUILD_PRIORITY(2, 1), (uint32_t)bbPort);
 
+    //setup dmamux for at32f43x
+    dmaMuxEnable(dmaIdentifier,bbPort->dmaMuxId);
+
     bbDMA_ITConfig(bbPort);
 }
 
@@ -322,7 +330,7 @@ FAST_IRQ_HANDLER void bbDMAIrqHandler(dmaChannelDescriptor_t *descriptor)
 
     bbTIM_DMACmd(bbPort->timhw->tim, bbPort->dmaSource, DISABLE);
 
-    if (DMA_GET_FLAG_STATUS(descriptor, DMA_IT_TEIF)) {
+    if (DMA_GET_FLAG_STATUS(descriptor, DMA_IT_TEIF)) {//dma error
         while (1) {};
     }
 
@@ -439,14 +447,13 @@ static bool bbMotorConfig(IO_t io, uint8_t motorIndex, motorPwmProtocolTypes_e p
 #ifdef USE_DMA_SPEC
             const dmaChannelSpec_t *dmaChannelSpec = dmaGetChannelSpecByTimerValue(timhw->tim, timhw->channel, dmaGetOptionByTimer(timhw));
             bbPort->dmaResource = dmaChannelSpec->ref;
-#ifndef AT32F4
-            bbPort->dmaChannel = dmaChannelSpec->channel;
-#endif
+            //dma mux id need reg
+            bbPort->dmaMuxId = dmaChannelSpec->dmaMuxId;//DMA_CODE_REQUEST(dmaChannelSpec->code);
+
 #else
             bbPort->dmaResource = timhw->dmaRef;
-#ifndef AT32F4
-            bbPort->dmaChannel = timhw->dmaChannel;
-#endif
+//            bbPort->dmaChannel = timhw->dmaChannel;//no channel
+            bbPort->dmaMuxId = timhw->dmaChannelConfigured;
 #endif
         }
 
@@ -527,12 +534,13 @@ static bool bbUpdateStart(void)
                 }
             }
             if (!invalidated) {
+            	//only stm32F7/H7
                 SCB_InvalidateDCache_by_Addr((uint32_t *)bbMotors[motorIndex].bbPort->portInputBuffer,
                                              DSHOT_BB_PORT_IP_BUF_CACHE_ALIGN_BYTES);
             }
 #endif
 
-#ifdef STM32F4
+#if defined(STM32F4) || defined(AT32F4)
             uint32_t value = decode_bb_bitband(
                 bbMotors[motorIndex].bbPort->portInputBuffer,
                 bbMotors[motorIndex].bbPort->portInputCount - bbDMA_Count(bbMotors[motorIndex].bbPort),
@@ -776,7 +784,9 @@ motorDevice_t *dshotBitbangDevInit(const motorDevConfig_t *motorConfig, uint8_t 
 #if defined(STM32F4) || defined(STM32F3)
         bbMotors[motorIndex].iocfg = IO_CONFIG(GPIO_Mode_OUT, GPIO_Speed_50MHz, GPIO_OType_PP, bbPuPdMode);
 #elif defined(STM32F7) || defined(STM32G4) || defined(STM32H7)
-        bbMotors[motorIndex].iocfg = IO_CONFIG(GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, bbPuPdMode);
+        bbMotors[motorIndex].iocfg = IO_CONFIG(GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_VERY_HIGH, bbPuPdMode);
+#elif defined(AT32F43x)
+        bbMotors[motorIndex].iocfg = IO_CONFIG(GPIO_MODE_OUTPUT , GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL ,bbPuPdMode);
 #endif
 
         IOInit(io, OWNER_MOTOR, RESOURCE_INDEX(motorIndex));

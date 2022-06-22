@@ -60,6 +60,32 @@ const uint32_t mcoDividers[MCO_DIVIDER_COUNT] = {
     RCC_MCO_DIV16,
 };
 #endif
+#ifdef AT32F4
+
+// Notes
+// - MCO output stability
+// MCO output should not be too high. 50Mhz max
+// For example
+// for PLL = 288 CLKOUTDIV1 SET TO 2 CLKOUTDIV2 = 4 ,MCO= 288/2/4= 36mHZ
+//
+// - MCO frequency can be more flexible if PLLR is made configurable.
+
+const uint32_t mcoSources[MCO_SOURCE_COUNT] = {
+		CRM_CLKOUT1_HICK , /*!< output high speed internal clock to clkout1 pin */
+		CRM_CLKOUT1_LEXT ,/*!< output low speed external crystal to clkout1 pin */
+		CRM_CLKOUT1_HEXT ,/*!< output high speed external crystal to clkout1 pin */
+		CRM_CLKOUT1_PLL
+
+};
+
+const uint32_t mcoDividers[MCO_DIVIDER_COUNT] = {
+		 CRM_CLKOUT_DIV1_1,
+		 CRM_CLKOUT_DIV1_2,
+		 CRM_CLKOUT_DIV1_3,
+		 CRM_CLKOUT_DIV1_4,
+		 CRM_CLKOUT_DIV1_5
+};
+#endif
 
 void mcoConfigure(MCODevice_e device, const mcoConfig_t *config)
 {
@@ -104,8 +130,9 @@ void mcoConfigure(MCODevice_e device, const mcoConfig_t *config)
 
     io = IOGetByTag(DEFIO_TAG_E(PA8));
     IOInit(io, OWNER_MCO, 1);
-    RCC_MCOConfig(config->source);
-
+    IOConfigGPIOAF(io, IO_CONFIG(GPIO_MODE_MUX, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL, GPIO_PULL_NONE), GPIO_MUX_0);
+	crm_clkout_div_set(CRM_CLKOUT_INDEX_1,mcoDividers[config->divider],CRM_CLKOUT_DIV2_4);
+	crm_clock_out1_set(mcoSources[config->source]);
 #else
 #error Unsupported MCU
 #endif

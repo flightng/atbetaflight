@@ -54,7 +54,7 @@
 
 static inputFilteringMode_e inputFilteringMode;
 
-void pwmICConfig(TIM_TypeDef *tim, uint8_t channel, uint16_t polarity);
+void pwmICConfig(tmr_type *tim, uint8_t channel, uint16_t polarity);
 
 typedef enum {
     INPUT_MODE_PPM,
@@ -300,7 +300,7 @@ static void pwmEdgeCallback(timerCCHandlerRec_t *cbRec, captureCompare_t capture
 #if defined(USE_HAL_DRIVER)
         pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TIM_ICPOLARITY_FALLING);
 #else
-        pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TIM_ICPolarity_Falling);
+        pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TMR_INPUT_FALLING_EDGE);
 #endif
     } else {
         pwmInputPort->fall = capture;
@@ -314,7 +314,7 @@ static void pwmEdgeCallback(timerCCHandlerRec_t *cbRec, captureCompare_t capture
 #if defined(USE_HAL_DRIVER)
         pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TIM_ICPOLARITY_RISING);
 #else
-        pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TIM_ICPolarity_Rising);
+        pwmICConfig(timerHardwarePtr->tim, timerHardwarePtr->channel, TMR_INPUT_RISING_EDGE);
 #endif
         pwmInputPort->missedEvents = 0;
     }
@@ -343,6 +343,33 @@ void pwmICConfig(TIM_TypeDef *tim, uint8_t channel, uint16_t polarity)
     HAL_TIM_IC_Start_IT(Handle,channel);
 }
 #else
+#if defined(AT32F43x)
+
+void pwmICConfig(tmr_type *tim, uint8_t channel, uint16_t polarity)
+{
+	tmr_input_config_type tmr_ic_init_structure;
+
+    tmr_input_default_para_init(&tmr_ic_init_structure);
+	tmr_ic_init_structure.input_filter_value = 0;
+	tmr_ic_init_structure.input_channel_select = channel;
+	tmr_ic_init_structure.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
+	tmr_ic_init_structure.input_polarity_select = polarity;//TMR_INPUT_RISING_EDGE;
+
+	tmr_pwm_input_config(tim, &tmr_ic_init_structure, TMR_CHANNEL_INPUT_DIV_1);
+
+	/* select the tmr3 input trigger: C2IF2 */
+	tmr_trigger_input_select(tim, TMR_SUB_INPUT_SEL_C2DF2);
+
+	/* select the sub mode: reset mode */
+	tmr_sub_mode_select(tim, TMR_SUB_RESET_MODE);
+
+	/* enable the sub sync mode */
+	tmr_sub_sync_mode_set(tim, TRUE);
+
+
+}
+
+#else
 void pwmICConfig(TIM_TypeDef *tim, uint8_t channel, uint16_t polarity)
 {
     TIM_ICInitTypeDef TIM_ICInitStructure;
@@ -361,6 +388,7 @@ void pwmICConfig(TIM_TypeDef *tim, uint8_t channel, uint16_t polarity)
 
     TIM_ICInit(tim, &TIM_ICInitStructure);
 }
+#endif// end not at32f43x
 #endif
 
 void pwmRxInit(const pwmConfig_t *pwmConfig)
@@ -399,7 +427,7 @@ void pwmRxInit(const pwmConfig_t *pwmConfig)
 #if defined(USE_HAL_DRIVER)
         pwmICConfig(timer->tim, timer->channel, TIM_ICPOLARITY_RISING);
 #else
-        pwmICConfig(timer->tim, timer->channel, TIM_ICPolarity_Rising);
+        pwmICConfig(timer->tim, timer->channel, TMR_INPUT_RISING_EDGE);
 #endif
 
     }
@@ -408,7 +436,7 @@ void pwmRxInit(const pwmConfig_t *pwmConfig)
 #define FIRST_PWM_PORT 0
 
 #ifdef USE_PWM_OUTPUT
-void ppmAvoidPWMTimerClash(TIM_TypeDef *pwmTimer)
+void ppmAvoidPWMTimerClash(tmr_type *pwmTimer)
 {
     pwmOutputPort_t *motors = pwmGetMotors();
     for (int motorIndex = 0; motorIndex < MAX_SUPPORTED_MOTORS; motorIndex++) {
@@ -416,7 +444,7 @@ void ppmAvoidPWMTimerClash(TIM_TypeDef *pwmTimer)
             continue;
         }
 
-        ppmCountDivisor = timerClock(pwmTimer) / (pwmTimer->PSC + 1);
+        ppmCountDivisor = timerClock(pwmTimer) / (pwmTimer->div + 1);
         return;
     }
 }
@@ -457,7 +485,7 @@ void ppmRxInit(const ppmConfig_t *ppmConfig)
 #if defined(USE_HAL_DRIVER)
     pwmICConfig(timer->tim, timer->channel, TIM_ICPOLARITY_RISING);
 #else
-    pwmICConfig(timer->tim, timer->channel, TIM_ICPolarity_Rising);
+    pwmICConfig(timer->tim, timer->channel, TMR_INPUT_RISING_EDGE);
 #endif
 }
 

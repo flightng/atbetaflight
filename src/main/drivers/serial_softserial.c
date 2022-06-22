@@ -123,7 +123,9 @@ static void serialEnableCC(softSerial_t *softSerial)
 #ifdef USE_HAL_DRIVER
     TIM_CCxChannelCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_ENABLE);
 #else
-    TIM_CCxCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_Enable);
+//    TIM_CCxCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_Enable);
+      tmr_channel_enable(softSerial->timerHardware->tim, (softSerial->timerHardware->channel-1)*2, TRUE);
+
 #endif
 }
 
@@ -161,7 +163,10 @@ static void serialInputPortDeActivate(softSerial_t *softSerial)
 #ifdef USE_HAL_DRIVER
     TIM_CCxChannelCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_DISABLE);
 #else
-    TIM_CCxCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_Disable);
+//    TIM_CCxCmd(softSerial->timerHardware->tim, softSerial->timerHardware->channel, TIM_CCx_Disable);
+
+    tmr_channel_enable(softSerial->timerHardware->tim, (softSerial->timerHardware->channel-1)*2, FALSE);
+
 #endif
 
     IOConfigGPIO(softSerial->rxIO, IOCFG_IN_FLOATING);
@@ -512,7 +517,8 @@ void onSerialRxPinChange(timerCCHandlerRec_t *cbRec, captureCompare_t capture)
 #ifdef USE_HAL_DRIVER
         __HAL_TIM_SetCounter(self->timerHandle, __HAL_TIM_GetAutoreload(self->timerHandle) / 2);
 #else
-        TIM_SetCounter(self->timerHardware->tim, self->timerHardware->tim->ARR / 2);
+//        TIM_SetCounter(self->timerHardware->tim, self->timerHardware->tim->ARR / 2);
+        tmr_counter_value_set(self->timerHardware->tim, self->timerHardware->tim->pr / 2);
 #endif
 
         // For a mono-timer full duplex configuration, this may clobber the

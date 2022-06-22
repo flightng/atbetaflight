@@ -44,6 +44,12 @@
 #define SPI_IO_AF_MOSI_CFG      IO_CONFIG(GPIO_Mode_AF_PP,       GPIO_Speed_50MHz)
 #define SPI_IO_AF_MISO_CFG      IO_CONFIG(GPIO_Mode_IN_FLOATING, GPIO_Speed_50MHz)
 #define SPI_IO_CS_CFG           IO_CONFIG(GPIO_Mode_Out_PP,      GPIO_Speed_50MHz)
+#elif defined(AT32F43x)
+#define SPI_IO_AF_CFG           IO_CONFIG(GPIO_MODE_MUX, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL , GPIO_PULL_NONE)
+#define SPI_IO_AF_SCK_CFG_HIGH  IO_CONFIG(GPIO_MODE_MUX, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL ,  GPIO_PULL_UP)
+#define SPI_IO_AF_SCK_CFG_LOW   IO_CONFIG(GPIO_MODE_MUX, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL ,  GPIO_PULL_DOWN)
+#define SPI_IO_AF_MISO_CFG      IO_CONFIG(GPIO_MODE_MUX, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL ,  GPIO_PULL_UP)
+#define SPI_IO_CS_CFG           IO_CONFIG(GPIO_MODE_OUTPUT, GPIO_DRIVE_STRENGTH_STRONGER, GPIO_OUTPUT_PUSH_PULL , GPIO_PULL_NONE)
 #endif
 
 // De facto standard mode
@@ -88,6 +94,8 @@ typedef enum SPIDevice {
 #define SPI_DEV_TO_CFG(x)   ((x) + 1)
 
 // Work around different check routines in the libraries for different MCU types
+
+//貌似这两个宏定义并没有被用到，
 #if defined(STM32H7)
 #define CHECK_SPI_RX_DATA_AVAILABLE(instance) LL_SPI_IsActiveFlag_RXWNE(instance)
 #define SPI_RX_DATA_REGISTER(base) ((base)->RXDR)
@@ -107,8 +115,8 @@ bool spiInit(SPIDevice device);
 void spiInitBusDMA();
 
 
-SPIDevice spiDeviceByInstance(SPI_TypeDef *instance);
-SPI_TypeDef *spiInstanceByDevice(SPIDevice device);
+SPIDevice spiDeviceByInstance(spi_type *instance);
+spi_type *spiInstanceByDevice(SPIDevice device);
 
 // BusDevice API
 

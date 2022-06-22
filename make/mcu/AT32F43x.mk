@@ -18,10 +18,15 @@ EXCLUDES        = \
 				  at32f435_437_dvp.c\
 				  at32f435_437_can.c\
 				  at32f435_437_xmc.c\
-				  at32f435_437_emac\
+				  at32f435_437_emac
+				  
+				  
 				  
 STARTUP_SRC     = startup_at32f435_437.S
 STDPERIPH_SRC   := $(filter-out ${EXCLUDES}, $(STDPERIPH_SRC))
+
+#I2C_APPLICATION_DIR=$(ROOT)/lib/main/AT32F43x/i2c_application_library
+#I2C_APPLICATION_SRC=$(notdir $(wildcard $(I2C_APPLICATION_DIR)/*.c))
 
 # Search path and source files for the bsp cmsis sources
 VPATH           := $(VPATH):$(ROOT)/lib/main/AT32F43x/cmsis/cm4/core_support/
@@ -29,20 +34,27 @@ VPATH           := $(VPATH):$(ROOT)/lib/main/AT32F43x/cmsis/cm4/core_support/
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
                    $(STDPERIPH_DIR)/inc \
                    $(ROOT)/lib/main/AT32F43x/cmsis/cm4/core_support \
-                   $(ROOT)/lib/main/AT32F43x/cmsis/cm4/
+                   $(ROOT)/lib/main/AT32F43x/cmsis/cm4/ \
+                   #$(I2C_APPLICATION_DIR)\
+                   
 
-DEVICE_STDPERIPH_SRC = $(STDPERIPH_SRC)
+DEVICE_STDPERIPH_SRC = $(STDPERIPH_SRC)\
+					# $(I2C_APPLICATION_SRC)
 
 #fixme: vcp & support later 
 ifneq ($(filter VCP, $(FEATURES)),)
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
-                   $(USBFS_DIR)/inc \
-                   $(ROOT)/src/main/vcp
+                   $(USBFS_DIR)/inc\
+                   $(ROOT)/lib/main/AT32F43x/usbd_class/cdc/\
+                  
 
-VPATH           := $(VPATH):$(USBFS_DIR)/src
+VPATH           := $(VPATH):$(USBFS_DIR)/src\
 
 DEVICE_STDPERIPH_SRC := $(DEVICE_STDPERIPH_SRC) \
-                        $(USBPERIPH_SRC)
+                        $(USBFS_DIR)/src/usb_core.c\
+                        $(USBFS_DIR)/src/usbd_core.c\
+                        $(USBFS_DIR)/src/usbd_int.c\
+                        $(USBFS_DIR)/src/usbd_sdr.c\
 
 endif
 
@@ -56,19 +68,14 @@ ARCH_FLAGS      = -std=c99  -mthumb -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=
 ifeq ($(DEVICE_FLAGS),)
 DEVICE_FLAGS    = -DAT32F437ZMT7
 endif
-DEVICE_FLAGS   += -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
+DEVICE_FLAGS   += -DUSE_ATBSP_DRIVER -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
 
 
-#VCP_SRC = \
-            vcp/hw_config.c \
-            vcp/stm32_it.c \
-            vcp/usb_desc.c \
-            vcp/usb_endp.c \
-            vcp/usb_istr.c \
-            vcp/usb_prop.c \
-            vcp/usb_pwr.c \
-            drivers/serial_usb_vcp.c \
+VCP_SRC = 	$(ROOT)/lib/main/AT32F43x/usbd_class/cdc/cdc_class.c\
+			$(ROOT)/lib/main/AT32F43x/usbd_class/cdc/cdc_desc.c\
+            drivers/serial_usb_vcp_at32f43x.c \
             drivers/usb_io.c
+            
 
 MCU_COMMON_SRC = \
             startup/system_at32f435_437.c\
@@ -78,19 +85,23 @@ MCU_COMMON_SRC = \
             drivers/timer_atbsp.c\
             drivers/timer_at32f43x.c\
             drivers/dma_at32f43x.c\
-            # drivers/adc_stm32f10x.c \
-            # drivers/bus_i2c_stm32f10x.c \
-            # drivers/bus_spi_stdperiph.c \
-            # drivers/inverter.c \        
-            # drivers/serial_uart_stdperiph.c \
-            # drivers/serial_uart_stm32f10x.c \
-            # drivers/system_stm32f10x.c \
-            # drivers/timer_stm32f10x.c\
-            # drivers/pwm_output_dshot_shared.c \
-			# drivers/pwm_output_dshot.c \
-			# drivers/dshot_bitbang.c \
-            # drivers/dshot_bitbang_decode.c \
-            # drivers/dshot_bitbang_stdperiph.c \
+            drivers/i2c_application.c\
+            drivers/bus_i2c_atbsp_init.c \
+            drivers/bus_i2c_atbsp.c\
+			drivers/bus_spi_at32bsp.c\
+            drivers/inverter.c \
+            drivers/serial_uart_at32bsp.c\
+            drivers/serial_uart_at32f43x.c\
+            drivers/pwm_output_dshot_shared.c \
+			drivers/pwm_output_dshot.c \
+			drivers/dshot_bitbang.c \
+            drivers/dshot_bitbang_decode.c \
+            drivers/dshot_bitbang_at32bsp.c \
+            drivers/accgyro/accgyro_mpu.c \
+            drivers/persistent.c\
+            drivers/camera_control_atbsp.c\
+            drivers/adc_at32f43x.c \
+
             
             
 
