@@ -467,17 +467,18 @@ const spiHardware_t spiHardware[] = {
         .device = SPIDEV_1,
         .reg = SPI1,
         .sckPins = {
-            { DEFIO_TAG_E(PA5), GPIO_MUX_5 },
-            { DEFIO_TAG_E(PB3), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PA5) },
+            { DEFIO_TAG_E(PB3) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PA6), GPIO_MUX_5 },
-            { DEFIO_TAG_E(PB4), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PA6) },
+            { DEFIO_TAG_E(PB4) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PA7), GPIO_MUX_5 },
-            { DEFIO_TAG_E(PB5), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PA7) },
+            { DEFIO_TAG_E(PB5) },
         },
+		.af=GPIO_MUX_5,
         .rcc = RCC_APB2(SPI1),
         //.dmaIrqHandler = DMA2_ST3_HANDLER,
     },
@@ -486,48 +487,51 @@ const spiHardware_t spiHardware[] = {
         .reg = SPI2,
         .sckPins = {
             // { DEFIO_TAG_E(PA9), GPIO_MUX_5 },pa9 used for uart1_tx
-            { DEFIO_TAG_E(PB13), GPIO_MUX_5 },
-            { DEFIO_TAG_E(PB10), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PB13) },
+            { DEFIO_TAG_E(PB10) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PA12), GPIO_MUX_5 },
-            { DEFIO_TAG_E(PB14), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PA12) },
+            { DEFIO_TAG_E(PB14) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PA10), GPIO_MUX_5 }, 
-            { DEFIO_TAG_E(PB15), GPIO_MUX_5 },
+            { DEFIO_TAG_E(PA10) },
+            { DEFIO_TAG_E(PB15) },
         },
+		.af= GPIO_MUX_5,
         .rcc = RCC_APB1(SPI2),
     },
     {
         .device = SPIDEV_3,
         .reg = SPI3,
         .sckPins = {
-            { DEFIO_TAG_E(PB3), GPIO_MUX_6 },
-            { DEFIO_TAG_E(PC10), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB3) },
+            { DEFIO_TAG_E(PC10) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PB4), GPIO_MUX_6 },
-            { DEFIO_TAG_E(PC11), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB4) },
+            { DEFIO_TAG_E(PC11) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PB5), GPIO_MUX_6 },
-            { DEFIO_TAG_E(PC12), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB5) },
+            { DEFIO_TAG_E(PC12) },
         },
+		.af= GPIO_MUX_6,
         .rcc = RCC_APB1(SPI3),
     },
     {
         .device = SPIDEV_4,
         .reg = SPI4,
         .sckPins = {
-            { DEFIO_TAG_E(PB7), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB7) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PB8), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB8) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PB9), GPIO_MUX_6 },
+            { DEFIO_TAG_E(PB9) },
         },
+		.af= GPIO_MUX_6,
         .rcc = RCC_APB2(SPI4),
     },
 #endif
