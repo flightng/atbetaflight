@@ -125,15 +125,25 @@ uint32_t dmaGetChannel(const uint8_t channel);
 #define DMA_CLEAR_FLAG(d, flag) d->dma->clr = (flag << d->flagsShift)
 #define DMA_GET_FLAG_STATUS(d, flag) (d->dma->sts & (flag << d->flagsShift))
 
+/*
+(#) DMA_IT_FEIFx  : specifies the interrupt source for the  FIFO Mode Transfer Error event.
+(#) DMA_IT_DMEIFx : specifies the interrupt source for the Direct Mode Transfer Error event.
+(#) DMA_IT_TEIFx  : specifies the interrupt source for the Transfer Error event.
+(#) DMA_IT_HTIFx  : specifies the interrupt source for the Half-Transfer Complete event.
+(#) DMA_IT_TCIFx  : specifies the interrupt source for the a Transfer Complete event.
+*/
 #define DMA_IT_TCIF         ((uint32_t)0x00000002)
 #define DMA_IT_HTIF         ((uint32_t)0x00000004)
 #define DMA_IT_TEIF         ((uint32_t)0x00000008)
+
+#define DMA_IT_DMEIF        ((uint32_t)0x00000004) // at32 has no direct mode transfer mode
+#define DMA_IT_FEIF         ((uint32_t)0x00000001) //at32 has no fifo  mode
 
 
 // Macros to avoid direct register and register bit access
 
 #define DMA_CCR_EN 1 // Not defined anywhere ...
-#define IS_DMA_ENABLED(reg) (((DMA_ARCH_TYPE *)(reg))->ctrl_bit->chen & DMA_CCR_EN)
+#define IS_DMA_ENABLED(reg) (((DMA_ARCH_TYPE *)(reg))->ctrl_bit.chen & DMA_CCR_EN)
 
 //这个和具体的端口结合宏定义，不应该在dma里实现
 //#define DMAx_SetMemoryAddress(reg, address) ((DMA_ARCH_TYPE *)(reg))->CMAR = (uint32_t)&s->port.txBuffer[s->port.txBufferTail]
@@ -160,7 +170,7 @@ void dmaMuxEnable(dmaIdentifier_e identifier, uint32_t dmaMuxId);
 #define xDMA_Init(dmaResource, initStruct) dma_init((DMA_ARCH_TYPE *)(dmaResource), initStruct)
 #define xDMA_DeInit(dmaResource) dma_reset((DMA_ARCH_TYPE *)(dmaResource))
 #define xDMA_Cmd(dmaResource, newState)  dma_channel_enable((DMA_ARCH_TYPE *)(dmaResource), newState)
-#define xDMA_ITConfig(dmaResource, flags, newState) dma_interrupt_enable((DMA_ARCH_TYPE *)(dmaResource), flags, newState)
+#define xDMA_ITConfig(dmaResource, flags, newState)	dma_interrupt_enable((DMA_ARCH_TYPE *)(dmaResource), flags, newState)
 #define xDMA_GetCurrDataCounter(dmaResource) dma_data_number_get((DMA_ARCH_TYPE *)(dmaResource))
 #define xDMA_SetCurrDataCounter(dmaResource, count) dma_data_number_set((DMA_ARCH_TYPE *)(dmaResource), count)
 #define xDMA_GetFlagStatus(dmaResource, flags) dma_flag_get((DMA_ARCH_TYPE *)(dmaResource), flags)

@@ -24,7 +24,7 @@
 
 #if defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32G4)
 #define MAX_SPI_PIN_SEL 2
-#elif defined(STM32F7)
+#elif defined(STM32F7)||defined(AT32F43x)
 #define MAX_SPI_PIN_SEL 4
 #elif defined(STM32H7)
 #define MAX_SPI_PIN_SEL 5
@@ -36,14 +36,14 @@
 
 typedef struct spiPinDef_s {
     ioTag_t pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
     uint8_t af;
 #endif
 } spiPinDef_t;
 
 typedef struct spiHardware_s {
     SPIDevice device;
-    SPI_TypeDef *reg;
+    spi_type  *reg;
     spiPinDef_t sckPins[MAX_SPI_PIN_SEL];
     spiPinDef_t misoPins[MAX_SPI_PIN_SEL];
     spiPinDef_t mosiPins[MAX_SPI_PIN_SEL];
@@ -59,7 +59,7 @@ typedef struct spiHardware_s {
 extern const spiHardware_t spiHardware[];
 
 typedef struct SPIDevice_s {
-    SPI_TypeDef *dev;
+    spi_type *dev;
     ioTag_t sck;
     ioTag_t miso;
     ioTag_t mosi;
@@ -68,7 +68,7 @@ typedef struct SPIDevice_s {
     uint8_t misoAF;
     uint8_t mosiAF;
 #else
-    uint8_t af;
+    uint8_t af;//at32f437 同一组SPI的GPIO复用都是同一个AF，如GPIO_MUX5、GPIO_MUX6
 #endif
 #if defined(HAL_SPI_MODULE_ENABLED)
     SPI_HandleTypeDef hspi;

@@ -27,8 +27,8 @@
 #define USE_BUTTONS
 #define BUTTON_A_PIN            PA0
 #define BUTTON_A_PIN_INVERTED // Active high
-//#define BUTTON_B_PIN            PC13
-//#define BUTTON_B_PIN_INVERTED // Active high
+#define BUTTON_B_PIN            PC13
+#define BUTTON_B_PIN_INVERTED // Active high
 
 
 #define LED0_PIN                PC13
@@ -77,8 +77,7 @@
 
 #define USE_BARO
 #define USE_BARO_BMP280
-#define USE_BARO_MS5611
-#define USE_BARO_BMP085
+//#define USE_BARO_MS5611
 
 // *************** UART *****************************
 #define USE_VCP
@@ -112,7 +111,7 @@
 #define MAX7456_SPI_INSTANCE    SPI2
 #define MAX7456_SPI_CS_PIN      PB12
 
-// *************** ADC *****************************
+// *************** ADC 暂不支持*****************************
 #define USE_ADC
 #define ADC_INSTANCE         ADC1  // Default added
 #define ADC1_DMA_OPT            0  // DMA 2 Stream 0 Channel 0

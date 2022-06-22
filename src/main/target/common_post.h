@@ -418,7 +418,4 @@ extern uint8_t __config_end;
 #undef USE_GPS_PLUS_CODES
 #endif
 
-//回头再看怎么解决
-#if defined(AT32F4)
-#undef USE_CAMERA_CONTROL
-#endif
+

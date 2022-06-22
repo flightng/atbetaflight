@@ -46,7 +46,7 @@ static uint8_t spiRegisteredDeviceCount = 0;
 spiDevice_t spiDevice[SPIDEV_COUNT];
 busDevice_t spiBusDevice[SPIDEV_COUNT];
 
-SPIDevice spiDeviceByInstance(SPI_TypeDef *instance)
+SPIDevice spiDeviceByInstance(spi_type *instance)
 {
 #ifdef USE_SPI_DEVICE_1
     if (instance == SPI1) {
@@ -87,7 +87,7 @@ SPIDevice spiDeviceByInstance(SPI_TypeDef *instance)
     return SPIINVALID;
 }
 
-SPI_TypeDef *spiInstanceByDevice(SPIDevice device)
+spi_type *spiInstanceByDevice(SPIDevice device)
 {
     if (device == SPIINVALID || device >= SPIDEV_COUNT) {
         return NULL;
@@ -347,10 +347,12 @@ uint8_t spiReadRegMsk(const extDevice_t *dev, uint8_t reg)
 
 uint16_t spiCalculateDivider(uint32_t freq)
 {
-#if defined(STM32F4) || defined(STM32G4) || defined(STM32F7)|| defined(AT32F4)
+#if defined(STM32F4) || defined(STM32G4) || defined(STM32F7)
     uint32_t spiClk = SystemCoreClock / 2;
 #elif defined(STM32H7)
     uint32_t spiClk = 100000000;
+#elif defined(AT32F43x)
+    uint32_t spiClk = system_core_clock / 2;
 #else
 #error "Base SPI clock not defined for this architecture"
 #endif
@@ -366,10 +368,14 @@ uint16_t spiCalculateDivider(uint32_t freq)
 
 uint32_t spiCalculateClock(uint16_t spiClkDivisor)
 {
-#if defined(STM32F4) || defined(STM32G4) || defined(STM32F7)|| defined(AT32F4)
+#if defined(STM32F4) || defined(STM32G4) || defined(STM32F7)
     uint32_t spiClk = SystemCoreClock / 2;
 #elif defined(STM32H7)
     uint32_t spiClk = 100000000;
+#elif defined (AT32F43x)
+    uint32_t spiClk = system_core_clock / 2;
+
+
 #else
 #error "Base SPI clock not defined for this architecture"
 #endif
@@ -586,6 +592,8 @@ void spiInitBusDMA()
 #endif
 
                 dmaEnable(dmaTxIdentifier);
+                //dma mux enable
+                dmaMuxEnable(dmaTxIdentifier,dmaTxChannelSpec->dmaMuxId);
 
                 break;
             }
@@ -622,6 +630,8 @@ void spiInitBusDMA()
 #endif
 
                 dmaEnable(dmaRxIdentifier);
+                //enable dma mux
+                dmaMuxEnable(dmaRxIdentifier,dmaRxChannelSpec->dmaMuxId);
 
                 break;
             }

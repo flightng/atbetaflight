@@ -56,6 +56,10 @@ typedef struct uartPort_s {
     dmaResource_t *txDMAResource;
     uint32_t rxDMAChannel;
     uint32_t txDMAChannel;
+#if defined (AT32F43x)
+    uint32_t rxDmaMuxId;
+    uint32_t txDmaMuxId;
+#endif
 
     uint32_t rxDMAIrq;
     uint32_t txDMAIrq;
@@ -70,7 +74,7 @@ typedef struct uartPort_s {
     // All USARTs can also be used as UART, and we use them only as UART.
     UART_HandleTypeDef Handle;
 #endif
-    USART_TypeDef *USARTx;
+    usart_type *USARTx;
     bool txDMAEmpty;
 } uartPort_t;
 

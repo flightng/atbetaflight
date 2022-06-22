@@ -47,7 +47,7 @@ static void gyroResetCommonDeviceConfig(gyroDeviceConfig_t *devconf, ioTag_t ext
 #endif
 
 #ifdef USE_SPI_GYRO
-static void gyroResetSpiDeviceConfig(gyroDeviceConfig_t *devconf, SPI_TypeDef *instance, ioTag_t csnTag, ioTag_t extiTag, uint8_t alignment, sensorAlignment_t customAlignment)
+static void gyroResetSpiDeviceConfig(gyroDeviceConfig_t *devconf, spi_type *instance, ioTag_t csnTag, ioTag_t extiTag, uint8_t alignment, sensorAlignment_t customAlignment)
 {
     devconf->busType = BUS_TYPE_SPI;
     devconf->spiBus = SPI_DEV_TO_CFG(spiDeviceByInstance(instance));

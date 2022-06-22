@@ -48,7 +48,7 @@ typedef struct busDevice_s {
     busType_e busType;
     union {
         struct busSpi_s {
-            SPI_TypeDef *instance;
+        	spi_type *instance;
             uint16_t speed;
             bool leadingEdge;
         } spi;
@@ -69,8 +69,8 @@ typedef struct busDevice_s {
     LL_DMA_InitTypeDef          *initTx;
     LL_DMA_InitTypeDef          *initRx;
 #else
-    DMA_InitTypeDef             *initTx;
-    DMA_InitTypeDef             *initRx;
+    dma_init_type             *initTx;
+    dma_init_type             *initRx;
 #endif
 #endif // UNIT_TEST
     struct busSegment_s* volatile curSegment;
@@ -99,8 +99,8 @@ typedef struct extDevice_s {
     LL_DMA_InitTypeDef          initTx;
     LL_DMA_InitTypeDef          initRx;
 #else
-    DMA_InitTypeDef             initTx;
-    DMA_InitTypeDef             initRx;
+    dma_init_type             initTx;
+    dma_init_type             initRx;
 #endif
 #endif // UNIT_TEST
     // Support disabling DMA on a per device basis

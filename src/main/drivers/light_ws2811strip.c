@@ -45,7 +45,7 @@
 
 #include "light_ws2811strip.h"
 
-//#include "scheduler/scheduler.h"
+#include "scheduler/scheduler.h"
 
 #ifdef USE_LEDSTRIP_CACHE_MGMT
 // WS2811_DMA_BUFFER_SIZE is multiples of uint32_t

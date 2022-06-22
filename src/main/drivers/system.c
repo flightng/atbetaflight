@@ -306,3 +306,12 @@ void unusedPinsInit(void)
 {
     IOTraversePins(unusedPinInit);
 }
+
+
+void usb_delay_us(uint32_t nus){
+	delay(nus);
+}
+void usb_delay_ms(uint32_t ms){
+	delay(ms*1000);
+}
+

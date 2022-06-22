@@ -22,7 +22,7 @@
 
 #ifdef USE_TIMER
 
-//#include "drivers/dshot_bitbang.h"
+#include "drivers/dshot_bitbang.h"
 #include "drivers/io.h"
 #include "timer.h"
 

@@ -886,6 +886,7 @@ void timerOCInit(tmr_type *tim, uint8_t channel, tmr_output_config_type *init)
 {
 
 	tmr_output_channel_config(tim,TIM_CH_TO_SELCHANNEL(channel),init);
+	tmr_channel_value_set(tim,TIM_CH_TO_SELCHANNEL(channel),0);//for defualt channel oc value , may cause bug
 }
 //tmr_output_channel_buffer_enable
 void timerOCPreloadConfig(tmr_type *tim, uint8_t channel, uint16_t preload)

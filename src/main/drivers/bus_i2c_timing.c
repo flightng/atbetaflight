@@ -24,6 +24,7 @@
 
 /*
  * Compute SCLDEL, SDADEL, SCLH and SCLL for TIMINGR register according to reference manuals.
+ * 计算 SCLD SDAD  SCLH SCLL 在不同通讯速率下的 CLKCTRL 寄存器的值，盲猜at32可用，目前暂时未使用，直接使用的默认值
  */
 static void i2cClockComputeRaw(uint32_t pclkFreq, int i2cFreqKhz, int presc, int dfcoeff,
                             uint8_t *scldel, uint8_t *sdadel, uint16_t *sclh, uint16_t *scll)

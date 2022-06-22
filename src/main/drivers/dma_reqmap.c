@@ -288,6 +288,7 @@ const dmaChannelSpec_t *dmaGetChannelSpecByTimer(const timerHardware_t *timer)
 }
 
 // dmaGetOptionByTimer is called by pgResetFn_timerIOConfig to find out dmaopt for pre-configured timer.
+// dshot-bitbang.c
 dmaoptValue_t dmaGetOptionByTimer(const timerHardware_t *timer)
 {
 #if defined(AT32F43x)

@@ -92,6 +92,19 @@
 #define UART_TX_BUFFER_SIZE     256
 #endif
 #endif
+#elif defined(AT32F4)
+#define UARTDEV_COUNT_MAX 8  // UART1~5 + UART9 (Implemented with LPUART1)
+#define UARTHARDWARE_MAX_PINS 5
+#ifndef UART_RX_BUFFER_SIZE
+#define UART_RX_BUFFER_SIZE     128
+#endif
+#ifndef UART_TX_BUFFER_SIZE
+#ifdef USE_MSP_DISPLAYPORT
+#define UART_TX_BUFFER_SIZE     1280
+#else
+#define UART_TX_BUFFER_SIZE     256
+#endif
+#endif
 #else
 #error unknown MCU family
 #endif
@@ -168,24 +181,30 @@
 
 typedef struct uartPinDef_s {
     ioTag_t pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
     uint8_t af;
 #endif
 } uartPinDef_t;
 
 typedef struct uartHardware_s {
     UARTDevice_e device;    // XXX Not required for full allocation
-    USART_TypeDef* reg;
+    usart_type * reg;
 
 #ifdef USE_DMA
     dmaResource_t *txDMAResource;
     dmaResource_t *rxDMAResource;
-    // For H7 and G4, {tx|rx}DMAChannel are DMAMUX input index for  peripherals (DMA_REQUEST_xxx); H7:RM0433 Table 110, G4:RM0440 Table 80.
+    // For H7 and G4  , {tx|rx}DMAChannel are DMAMUX input index for  peripherals (DMA_REQUEST_xxx); H7:RM0433 Table 110, G4:RM0440 Table 80.
     // For F4 and F7, these are 32-bit channel identifiers (DMA_CHANNEL_x)
-#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+    // For at32f435/7 DmaChannel is the dmamux ,need to call dmamuxenable using dmamuxid  
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) 
     uint32_t txDMAChannel;
     uint32_t rxDMAChannel;
 #endif
+#if defined(AT32F43x)
+    uint32_t txDMAMuxId;//for dmaspec->dmamux  and using dmaMuxEnable(dmax,muxid)
+    uint32_t rxDMAMuxId;
+#endif 
+
 #endif // USE_DMA
 
     uartPinDef_t rxPins[UARTHARDWARE_MAX_PINS];
@@ -197,10 +216,11 @@ typedef struct uartHardware_s {
     uint8_t af;
 #endif
 
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) 
     uint8_t txIrq;
     uint8_t rxIrq;
 #else
+    //at32f43x using single irqn 
     uint8_t irqn;
 #endif
     uint8_t txPriority;
@@ -251,6 +271,9 @@ void uartDmaIrqHandler(dmaChannelDescriptor_t* descriptor);
 #elif defined(STM32F1) || defined(STM32F4)
 #define UART_REG_RXD(base) ((base)->DR)
 #define UART_REG_TXD(base) ((base)->DR)
+#elif defined(AT32F43x)
+#define UART_REG_RXD(base) ((base)->dt)
+#define UART_REG_TXD(base) ((base)->dt)
 #endif
 
 #define UART_BUFFER(type, n, rxtx) type volatile uint8_t uart ## n ## rxtx ## xBuffer[UART_ ## rxtx ## X_BUFFER_SIZE]

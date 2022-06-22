@@ -4745,7 +4745,7 @@ static void cliStatus(const char *cmdName, char *cmdline)
 
     // MCU type, clock, vrefint, core temperature
 
-    cliPrintf("MCU %s Clock=%dMHz", getMcuTypeById(getMcuTypeId()), (SystemCoreClock / 1000000));
+    cliPrintf("MCU %s Clock=%dMHz", getMcuTypeById(getMcuTypeId()), (system_core_clock / 1000000));
 
 #if defined(STM32F4) || defined(STM32G4)
     // Only F4 and G4 is capable of switching between HSE/HSI (for now)

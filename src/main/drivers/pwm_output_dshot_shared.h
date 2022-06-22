@@ -43,7 +43,7 @@ FAST_DATA_ZERO_INIT extern dshotDMAHandlerCycleCounters_t dshotDMAHandlerCycleCo
 
 #endif
 
-uint8_t getTimerIndex(TIM_TypeDef *timer);
+uint8_t getTimerIndex(tmr_type *timer);
 motorDmaOutput_t *getMotorDmaOutput(uint8_t index);
 void dshotEnableChannels(uint8_t motorCount);
 
