@@ -367,6 +367,10 @@ void spiInternalStopDMA (const extDevice_t *dev)
     	xDMA_Cmd(streamRegsTx,DISABLE);
     	xDMA_Cmd(streamRegsRx,DISABLE);
 
+    	DMA_CLEAR_FLAG(dmaTx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
+    	DMA_CLEAR_FLAG(dmaRx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
+
+
 
 //        SPI_I2S_DMACmd(instance, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
         spi_i2s_dma_transmitter_enable(instance,FALSE);
@@ -386,6 +390,7 @@ void spiInternalStopDMA (const extDevice_t *dev)
 
         // Disable stream
     	xDMA_Cmd(streamRegsTx,DISABLE);
+
 
         // SPI_I2S_DMACmd(instance, SPI_I2S_DMAReq_Tx, DISABLE);
         spi_i2s_dma_transmitter_enable(instance,FALSE);
