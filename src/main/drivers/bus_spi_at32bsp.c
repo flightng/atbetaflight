@@ -415,7 +415,7 @@ void spiSequenceStart(const extDevice_t *dev)
     if (dev->busType_u.spi.leadingEdge != bus->busType_u.spi.leadingEdge) {
         // Switch SPI clock polarity/phase
         // instance->CR1 &= ~(SPI_CPOL_High | SPI_CPHA_2Edge);
-        
+        //fixme: 这里是否是漏写了？
 
         // Apply setting
         if (dev->busType_u.spi.leadingEdge) {
