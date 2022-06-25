@@ -34,6 +34,9 @@
 #define LED0_PIN                PD13
 #define LED1_PIN                PD14
 #define LED2_PIN                PD15
+#define LED0_INVERTED
+#define LED1_INVERTED
+#define LED2_INVERTED
 
 
 #define USE_BEEPER
@@ -62,10 +65,8 @@
 #define USE_GYRO
 #define USE_GYRO_SPI_MPU6500
 #define GYRO_1_ALIGN            CW180_DEG
-#define USE_GYRO_SPI_MPU6000
 
 #define USE_ACC
-#define USE_ACC_SPI_MPU6000
 #define USE_ACC_SPI_MPU6500
 
 // *************** Baro **************************

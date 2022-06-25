@@ -303,7 +303,8 @@ static uint32_t usbVcpAvailable(const serialPort_t *instance)
 {
     UNUSED(instance);
 
-    return ((APP_Rx_ptr_in - APP_Rx_ptr_out  ) + (-((int)(APP_Rx_ptr_out >= APP_Rx_ptr_in)) & APP_RX_DATA_SIZE)) - 1;
+//    return ((APP_Rx_ptr_in - APP_Rx_ptr_out  ) + (-((int)(APP_Rx_ptr_out >= APP_Rx_ptr_in)) & APP_RX_DATA_SIZE)) - 1;
+    return (APP_Rx_ptr_in - APP_Rx_ptr_out  );
 }
 
 //读取1 字节数据
@@ -317,14 +318,15 @@ static uint8_t usbVcpRead(serialPort_t *instance)
 //检查缓存是否非空，如空，增加一次读取
    if(APP_Rx_ptr_out == APP_Rx_ptr_in){
 	   APP_Rx_ptr_out=0;
-	   APP_Rx_ptr_in=usb_vcp_get_rxdata(&otg_core_struct,APP_Rx_Buffer);// usb 每次 最大64 字节，不会溢出
+
+	   APP_Rx_ptr_in=usb_vcp_get_rxdata(&otg_core_struct.dev,APP_Rx_Buffer);// usb 每次 最大64 字节，不会溢出
 	   if(APP_Rx_ptr_in==0)
 	   {
 		   //没有读到数据,返回一个0 ，避免返回上次的脏数据
 		   return 0;
 	   }
    }
-    return APP_Rx_Buffer[APP_Rx_ptr_out++];
+    return APP_Rx_Buffer[APP_Rx_ptr_out++];//内存越界
 }
 
 //写数据需要实现
@@ -337,9 +339,9 @@ static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
     }
 
     uint32_t start = millis();
-    uint8_t *p = data;
+    const uint8_t *p = data;
     while (count > 0) {
-        uint32_t txed = usb_vcp_send_data(&otg_core_struct, p, count);
+        uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
         count -= txed;
         p += txed;
 
@@ -365,7 +367,7 @@ static bool usbVcpFlush(vcpPort_t *port)
     uint32_t start = millis();
     uint8_t *p = port->txBuf;
     while (count > 0) {
-        uint32_t txed = usb_vcp_send_data(&otg_core_struct, p, count);
+        uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
         count -= txed;
         p += txed;
 
