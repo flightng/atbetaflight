@@ -41,7 +41,7 @@
 
 #define USE_BEEPER
 #define BEEPER_PIN              PB2
-#define BEEPER_INVERTED
+//#define BEEPER_INVERTED
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
 #define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_OFF
@@ -94,6 +94,18 @@
 #define USE_UART2
 #define UART2_RX_PIN            PA3
 #define UART2_TX_PIN            PA2
+
+#define USE_UART3
+#define UART3_RX_PIN            PB11
+#define UART3_TX_PIN            PB10
+
+#define USE_UART4
+#define UART4_RX_PIN            PC11
+#define UART4_TX_PIN            PC10
+
+#define USE_UART5
+#define UART5_RX_PIN            PB5
+#define UART5_TX_PIN            PB6
 
 #define USE_SOFTSERIAL1
 #define USE_SOFTSERIAL2
