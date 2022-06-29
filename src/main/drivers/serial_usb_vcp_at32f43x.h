@@ -22,11 +22,13 @@
 
 #include "drivers/serial.h"
 
+#define APP_TX_DATA_SIZE 2048
+
 typedef struct {
     serialPort_t port;
 
     // Buffer used during bulk writes.
-    uint8_t txBuf[20];
+    uint8_t txBuf[APP_TX_DATA_SIZE];
     uint8_t txAt;
     // Set if the port is in bulk write mode and can buffer.
     bool buffering;
@@ -38,7 +40,7 @@ typedef struct {
     APP RX is the circular buffer for data that is transmitted from the APP (host)
     to the USB device (flight controller).
 */
-#define APP_RX_DATA_SIZE  256
+#define APP_RX_DATA_SIZE  2048
 static uint8_t APP_Rx_Buffer[APP_RX_DATA_SIZE]; //接收buffer，将usb的批量读入，转为 usbvcpRead 的逐位读出
 static uint32_t APP_Rx_ptr_out = 0; //serail 读出 ,后指针
 static uint32_t APP_Rx_ptr_in = 0; //usb 读入，前指针

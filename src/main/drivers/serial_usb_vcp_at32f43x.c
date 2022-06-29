@@ -303,22 +303,37 @@ static uint32_t usbVcpAvailable(const serialPort_t *instance)
 {
     UNUSED(instance);
 
-//    return ((APP_Rx_ptr_in - APP_Rx_ptr_out  ) + (-((int)(APP_Rx_ptr_out >= APP_Rx_ptr_in)) & APP_RX_DATA_SIZE)) - 1;
-    return (APP_Rx_ptr_in - APP_Rx_ptr_out  );
+    uint32_t available=0;
+
+    available=APP_Rx_ptr_in-APP_Rx_ptr_out;
+    if(available ==0){//是否还有没copy到缓存里的
+        cdc_struct_type *pcdc = (cdc_struct_type *)otg_core_struct.dev.class_handler->pdata;
+		if(pcdc->g_rx_completed == 1){
+			available=pcdc->g_rxlen;
+		}
+    }
+    return available;
 }
+
+/*
+ * vcp  中断接收转缓存、逐个读取的问题
+ * 1、要考虑com口会不断的发数据过来， 缓存用尽怎么办
+ * 2、如何判断当前缓存大小？
+ * 3、如何逐个字符读取？
+ * 目前vcp 无法完整处理、回复主要是这里的问题
+ *
+ *
+ */
 
 //读取1 字节数据
 static uint8_t usbVcpRead(serialPort_t *instance)
 {
     UNUSED(instance);
 
-/*关于rx buffer 的使用
-* 无法使用循环buffer ， 因为循环buffer 需要逐一写，所以，不用循环，就用完直接全部回起始
-*/
 //检查缓存是否非空，如空，增加一次读取
-   if(APP_Rx_ptr_out == APP_Rx_ptr_in){
+   if ((APP_Rx_ptr_in==0)||(APP_Rx_ptr_out == APP_Rx_ptr_in)){
 	   APP_Rx_ptr_out=0;
-
+	   memset(APP_Rx_Buffer,0,APP_RX_DATA_SIZE);
 	   APP_Rx_ptr_in=usb_vcp_get_rxdata(&otg_core_struct.dev,APP_Rx_Buffer);// usb 每次 最大64 字节，不会溢出
 	   if(APP_Rx_ptr_in==0)
 	   {
@@ -326,29 +341,32 @@ static uint8_t usbVcpRead(serialPort_t *instance)
 		   return 0;
 	   }
    }
-    return APP_Rx_Buffer[APP_Rx_ptr_out++];//内存越界
+    return APP_Rx_Buffer[APP_Rx_ptr_out++];//
 }
 
 //写数据需要实现
 static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
 {
-    UNUSED(instance);
 
     if (!(usbIsConnected() && usbIsConfigured())) {
         return;
     }
 
-    uint32_t start = millis();
-    const uint8_t *p = data;
-    while (count > 0) {
-        uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
-        count -= txed;
-        p += txed;
+    //先写到缓冲区里
+    vcpPort_t *port = container_of(instance, vcpPort_t, port);
 
-        if (millis() - start > USB_TIMEOUT) {
-            break;
-        }
+    const uint8_t *p = data;
+
+    for(int i=0;i< count; i++){
+    	if(port->txAt > APP_TX_DATA_SIZE)//may cause a bug
+    		break;
+
+        port->txBuf[port->txAt++]=p[i];
     }
+
+
+
+
 }
 //flash 缓冲区
 static bool usbVcpFlush(vcpPort_t *port)
@@ -364,18 +382,10 @@ static bool usbVcpFlush(vcpPort_t *port)
         return false;
     }
 
-    uint32_t start = millis();
     uint8_t *p = port->txBuf;
-    while (count > 0) {
-        uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
-        count -= txed;
-        p += txed;
+    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
 
-        if (millis() - start > USB_TIMEOUT) {
-            break;
-        }
-    }
-    return count == 0;
+    return txed == SUCCESS;
 }
 
 //写数据 不需要修改
