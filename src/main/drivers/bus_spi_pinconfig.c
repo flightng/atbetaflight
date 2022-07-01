@@ -573,7 +573,7 @@ void spiPinConfigure(const spiPinConfig_t *pConfig)
         if (pDev->sck && pDev->miso && pDev->mosi) {
             pDev->dev = hw->reg;
 #if !(defined(STM32F7) || defined(STM32H7) || defined(STM32G4))
-            pDev->af = hw->af;
+            pDev->af = hw->af; //at32 默认都是同一个af
 #endif
             pDev->rcc = hw->rcc;
             pDev->leadingEdge = false; // XXX Should be part of transfer context
