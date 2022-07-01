@@ -333,7 +333,6 @@ static uint8_t usbVcpRead(serialPort_t *instance)
 //检查缓存是否非空，如空，增加一次读取
    if ((APP_Rx_ptr_in==0)||(APP_Rx_ptr_out == APP_Rx_ptr_in)){
 	   APP_Rx_ptr_out=0;
-	   memset(APP_Rx_Buffer,0,APP_RX_DATA_SIZE);
 	   APP_Rx_ptr_in=usb_vcp_get_rxdata(&otg_core_struct.dev,APP_Rx_Buffer);// usb 每次 最大64 字节，不会溢出
 	   if(APP_Rx_ptr_in==0)
 	   {
@@ -344,17 +343,17 @@ static uint8_t usbVcpRead(serialPort_t *instance)
     return APP_Rx_Buffer[APP_Rx_ptr_out++];//
 }
 
-//写数据到vpc 需要实现
-static void usbVcpWrite(serialPort_t *instance, const void *data, int count)
+//写buffer数据到vpc 需要实现
+static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
 {
 
+	UNUSED(instance);
     if (!(usbIsConnected() && usbIsConfigured())) {
         return;
     }
 
-    //先写到缓冲区里
     //这里有bug， 调用write 的时候是写到了缓存里，如果缓存满了仍然未发送，则会内存溢出死机，比如在Cli 初始化时，设置serialWriteBufShim
-    //修改函数名为usbVcpWrite，写入的时候直接发送到usb vcp
+    //重新理解函数名， 为想serial 写入一个缓存块，直接走vcp发出去
 //    vcpPort_t *port = container_of(instance, vcpPort_t, port);
 //
 //    const uint8_t *p = data;
@@ -364,7 +363,8 @@ static void usbVcpWrite(serialPort_t *instance, const void *data, int count)
 //    		break;// cli 的时候这里出了bug
 //        port->txBuf[port->txAt++]=p[i];
 //}
-    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, data, count);
+    uint8_t *p = data;
+    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
 //for debug
     if (txed==SUCCESS){
     	//no
@@ -392,8 +392,8 @@ static bool usbVcpFlush(vcpPort_t *port)
     return txed == SUCCESS;
 }
 
-//写数据到 buffer
-static void usbVcpWriteBuf(serialPort_t *instance, uint8_t c)
+//写char数据到 buffer
+static void usbVcpWrite(serialPort_t *instance, uint8_t c)
 {
     vcpPort_t *port = container_of(instance, vcpPort_t, port);
 
@@ -426,7 +426,7 @@ static void usbVcpEndWrite(serialPort_t *instance)
 
 static const struct serialPortVTable usbVTable[] = {
     {
-        .serialWrite = usbVcpWrite,
+        .serialWrite = usbVcpWrite,//write char
         .serialTotalRxWaiting = usbVcpAvailable,
         .serialTotalTxFree = usbTxBytesFree,     //Fixme: find the replace
         .serialRead = usbVcpRead,
@@ -435,7 +435,7 @@ static const struct serialPortVTable usbVTable[] = {
         .setMode = usbVcpSetMode,
         .setCtrlLineStateCb = usbVcpSetCtrlLineStateCb,     //Fixme: serial passthougth
         .setBaudRateCb = usbVcpSetBaudRateCb,     //Fixme: serial passthougth
-        .writeBuf = usbVcpWriteBuf,
+        .writeBuf = usbVcpWriteBuf, //write buffer
         .beginWrite = usbVcpBeginWrite,
         .endWrite = usbVcpEndWrite
     }
