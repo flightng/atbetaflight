@@ -289,25 +289,18 @@ void spiInternalStartDMA(const extDevice_t *dev)
         /* Use the Rx interrupt as this occurs once the SPI operation is complete whereas the Tx interrupt
          * occurs earlier when the Tx FIFO is empty, but the SPI operation is still in progress
          */
+
+
         xDMA_ITConfig(streamRegsRx, DMA_IT_TCIF, ENABLE);
 
         // Update streams
         xDMA_Init(streamRegsTx, dev->bus->initTx);
         xDMA_Init(streamRegsRx, dev->bus->initRx);
 
-        /* Note from AN4031
-         *
-         * If the user enables the used peripheral before the corresponding DMA stream, a “FEIF”
-         * (FIFO Error Interrupt Flag) may be set due to the fact the DMA is not ready to provide
-         * the first required data to the peripheral (in case of memory-to-peripheral transfer).
-         */
-
         // Enable streams
         xDMA_Cmd(streamRegsTx, ENABLE);
         xDMA_Cmd(streamRegsRx, ENABLE);
-
         //fixme: ENABLE DMAMUX ? should check dmamuxen regs in debug
-
         /* Enable the SPI DMA Tx & Rx requests */
 //        SPI_I2S_DMACmd(dev->bus->busType_u.spi.instance, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, ENABLE);
         spi_i2s_dma_transmitter_enable(dev->bus->busType_u.spi.instance,TRUE);
@@ -324,21 +317,14 @@ void spiInternalStartDMA(const extDevice_t *dev)
 //        xDMA_DeInit(streamRegsTx);
         xDMA_Cmd(streamRegsTx, DISABLE);
 
-
-        xDMA_ITConfig(streamRegsTx, DMA_IT_TCIF, ENABLE);
-
         // Update stream
         xDMA_Init(streamRegsTx, dev->bus->initTx);
 
-        /* Note from AN4031
-         *
-         * If the user enables the used peripheral before the corresponding DMA stream, a “FEIF”
-         * (FIFO Error Interrupt Flag) may be set due to the fact the DMA is not ready to provide
-         * the first required data to the peripheral (in case of memory-to-peripheral transfer).
-         */
-
         // Enable stream
         xDMA_Cmd(streamRegsTx, ENABLE);
+
+        xDMA_ITConfig(streamRegsTx, DMA_IT_TCIF, ENABLE);
+
 
         /* Enable the SPI DMA Tx request */
 //        SPI_I2S_DMACmd(dev->bus->busType_u.spi.instance, SPI_I2S_DMAReq_Tx, ENABLE);
@@ -387,6 +373,7 @@ void spiInternalStopDMA (const extDevice_t *dev)
 
         // Disable stream
     	xDMA_Cmd(streamRegsTx,DISABLE);
+    	DMA_CLEAR_FLAG(dmaTx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
 
 
         // SPI_I2S_DMACmd(instance, SPI_I2S_DMAReq_Tx, DISABLE);

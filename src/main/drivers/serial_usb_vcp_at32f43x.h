@@ -22,7 +22,7 @@
 
 #include "drivers/serial.h"
 
-#define APP_TX_DATA_SIZE 2048
+#define APP_TX_DATA_SIZE 64
 
 typedef struct {
     serialPort_t port;

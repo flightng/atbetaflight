@@ -344,8 +344,8 @@ static uint8_t usbVcpRead(serialPort_t *instance)
     return APP_Rx_Buffer[APP_Rx_ptr_out++];//
 }
 
-//写数据需要实现
-static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
+//写数据到vpc 需要实现
+static void usbVcpWrite(serialPort_t *instance, const void *data, int count)
 {
 
     if (!(usbIsConnected() && usbIsConfigured())) {
@@ -353,18 +353,22 @@ static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
     }
 
     //先写到缓冲区里
-    vcpPort_t *port = container_of(instance, vcpPort_t, port);
-
-    const uint8_t *p = data;
-
-    for(int i=0;i< count; i++){
-    	if(port->txAt > APP_TX_DATA_SIZE)//may cause a bug
-    		break;
-
-        port->txBuf[port->txAt++]=p[i];
+    //这里有bug， 调用write 的时候是写到了缓存里，如果缓存满了仍然未发送，则会内存溢出死机，比如在Cli 初始化时，设置serialWriteBufShim
+    //修改函数名为usbVcpWrite，写入的时候直接发送到usb vcp
+//    vcpPort_t *port = container_of(instance, vcpPort_t, port);
+//
+//    const uint8_t *p = data;
+//
+//    for(int i=0;i< count; i++){
+//    	if(port->txAt >=  ARRAYLEN(port->txBuf))//may cause a bug
+//    		break;// cli 的时候这里出了bug
+//        port->txBuf[port->txAt++]=p[i];
+//}
+    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, data, count);
+//for debug
+    if (txed==SUCCESS){
+    	//no
     }
-
-
 
 
 }
@@ -388,8 +392,8 @@ static bool usbVcpFlush(vcpPort_t *port)
     return txed == SUCCESS;
 }
 
-//写数据 不需要修改
-static void usbVcpWrite(serialPort_t *instance, uint8_t c)
+//写数据到 buffer
+static void usbVcpWriteBuf(serialPort_t *instance, uint8_t c)
 {
     vcpPort_t *port = container_of(instance, vcpPort_t, port);
 
