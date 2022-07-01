@@ -82,8 +82,8 @@ mcuTypeId_e getMcuTypeId(void)
     return MCU_TYPE_G474;
 #elif defined(AT32F403a)
     return MCU_TYPE_AT32F403A;
-#elif defined(AT32F43xx)
-    return MCU_TYPE_AT32F43X
+#elif defined(AT32F43x)
+    return MCU_TYPE_AT32F43X;
 #else
     return MCU_TYPE_UNKNOWN;
 #endif
