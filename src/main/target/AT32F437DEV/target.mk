@@ -12,7 +12,7 @@ TARGET_SRC = \
             drivers/max7456.c \
             drivers/vtx_rtc6705.c \
             drivers/vtx_rtc6705_soft_spi.c \
-            drivers/rx/expresslrs_driver.c \
+            drivers/rx/expresslrs_driver_atbsp.c \
             drivers/rx/rx_sx127x.c \
             drivers/rx/rx_sx1280.c \
             rx/expresslrs_telemetry.c \
