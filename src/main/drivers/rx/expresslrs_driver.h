@@ -24,7 +24,11 @@
 
 #pragma once
 
+#ifdef USE_ATBSP_DRIVER
+void expressLrsInitialiseTimer(tmr_type *timer, timerOvrHandlerRec_t *timerUpdateCb);
+#else
 void expressLrsInitialiseTimer(TIM_TypeDef *timer, timerOvrHandlerRec_t *timerUpdateCb);
+#endif
 void expressLrsTimerEnableIRQs(void);
 void expressLrsUpdateTimerInterval(uint16_t intervalUs);
 void expressLrsUpdatePhaseShift(int32_t newPhaseShift);
