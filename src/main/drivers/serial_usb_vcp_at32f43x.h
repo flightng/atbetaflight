@@ -22,25 +22,37 @@
 
 #include "drivers/serial.h"
 
-#define APP_TX_DATA_SIZE 64
 
 typedef struct {
     serialPort_t port;
 
     // Buffer used during bulk writes.
-    uint8_t txBuf[APP_TX_DATA_SIZE];
+    uint8_t txBuf[20];
     uint8_t txAt;
     // Set if the port is in bulk write mode and can buffer.
     bool buffering;
 } vcpPort_t;
 
+#define APP_TX_DATA_SIZE 4096
+#define APP_TX_BLOCK_SIZE 512
+
+
+volatile uint8_t UserTxBuffer[APP_TX_DATA_SIZE];/* Received Data over UART (CDC interface) are stored in this buffer */
+uint32_t BuffLength;
+volatile uint32_t UserTxBufPtrIn = 0;/* Increment this pointer or roll it back to
+                               start address when data are received over USART */
+volatile uint32_t UserTxBufPtrOut = 0; /* Increment this pointer or roll it back to
+                                 start address when data are sent over USB */
+
+tmr_type * usbTxTmr= TMR8;
+#define  CDC_POLLING_INTERVAL 5
 
 
 /*
     APP RX is the circular buffer for data that is transmitted from the APP (host)
     to the USB device (flight controller).
 */
-#define APP_RX_DATA_SIZE  2048
+#define APP_RX_DATA_SIZE  4096
 static uint8_t APP_Rx_Buffer[APP_RX_DATA_SIZE]; //接收buffer，将usb的批量读入，转为 usbvcpRead 的逐位读出
 static uint32_t APP_Rx_ptr_out = 0; //serail 读出 ,后指针
 static uint32_t APP_Rx_ptr_in = 0; //usb 读入，前指针
