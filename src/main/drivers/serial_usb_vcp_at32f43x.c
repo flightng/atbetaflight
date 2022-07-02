@@ -26,6 +26,7 @@
 #ifdef USE_VCP
 
 #include "build/build_config.h"
+#include "build/atomic.h"
 
 #include "common/utils.h"
 
@@ -46,6 +47,9 @@
 
 #include "serial.h"
 #include "serial_usb_vcp_at32f43x.h"
+#include "nvic.h"
+#include "at32f435_437_tmr.h"
+
 
 
 #define USB_TIMEOUT  50
@@ -223,7 +227,129 @@ void OTG_WKUP_HANDLER(void)
 #endif
 
 
+/********************************************
+ * copy from cdc part
+ */
 
+
+uint32_t CDC_Send_FreeBytes(void)
+{
+    /*
+        return the bytes free in the circular buffer
+
+        functionally equivalent to:
+        (APP_Rx_ptr_out > APP_Rx_ptr_in ? APP_Rx_ptr_out - APP_Rx_ptr_in : APP_RX_DATA_SIZE - APP_Rx_ptr_in + APP_Rx_ptr_in)
+        but without the impact of the condition check.
+    */
+    uint32_t freeBytes;
+
+    ATOMIC_BLOCK(NVIC_BUILD_PRIORITY(6, 0)) {
+        freeBytes = ((UserTxBufPtrOut - UserTxBufPtrIn) + (-((int)(UserTxBufPtrOut <= UserTxBufPtrIn)) & APP_TX_DATA_SIZE)) - 1;
+    }
+
+    return freeBytes;
+}
+
+/**
+ * @brief  CDC_Send_DATA
+ *         CDC received data to be send over USB IN endpoint are managed in
+ *         this function.
+ * @param  ptrBuffer: Buffer of data to be sent
+ * @param  sendLength: Number of data to be sent (in bytes)
+ * @retval Bytes sent
+ */
+uint32_t CDC_Send_DATA(const uint8_t *ptrBuffer, uint32_t sendLength)
+{
+    for (uint32_t i = 0; i < sendLength; i++) {
+        while (CDC_Send_FreeBytes() == 0) {
+            // block until there is free space in the ring buffer
+            delay(1);
+        }
+        ATOMIC_BLOCK(NVIC_BUILD_PRIORITY(6, 0)) { // Paranoia
+            UserTxBuffer[UserTxBufPtrIn] = ptrBuffer[i];
+            UserTxBufPtrIn = (UserTxBufPtrIn + 1) % APP_TX_DATA_SIZE;
+        }
+    }
+    return sendLength;
+}
+
+void TxTimerConfig(void){
+	  /* Initialize TIMx peripheral as follow:
+	       + Period = CDC_POLLING_INTERVAL*1000 - 1  every 5ms
+	       + Prescaler = ((SystemCoreClock/2)/10000) - 1
+	       + ClockDivision = 0
+	       + Counter direction = Up
+	  */
+	//timer, period, perscaler
+	tmr_base_init(usbTxTmr,(CDC_POLLING_INTERVAL - 1),((system_core_clock/2)/1000 - 1));
+	//TMR_CLOCK_DIV1 = 0X00 NO DIV
+	tmr_clock_source_div_set(usbTxTmr,TMR_CLOCK_DIV1);
+	//COUNT UP
+	tmr_cnt_dir_set(usbTxTmr,TMR_COUNT_UP);
+
+	tmr_period_buffer_enable(usbTxTmr,TRUE);
+
+	tmr_interrupt_enable(usbTxTmr, TMR_OVF_INT, TRUE);
+
+	nvic_irq_enable(TMR8_OVF_TMR13_IRQn,NVIC_PRIORITY_BASE(NVIC_PRIO_TIMER), NVIC_PRIORITY_SUB(NVIC_PRIO_TIMER));
+
+	tmr_counter_enable(usbTxTmr,TRUE);
+
+
+}
+
+
+/**
+  * @brief  TIM period elapsed callback
+  * @param  htim: TIM handle
+  * @retval None
+  */
+void TMR8_OVF_TMR13_IRQHandler()
+{
+
+    uint32_t buffsize;
+    static uint32_t lastBuffsize = 0;
+
+    cdc_struct_type *pcdc = (cdc_struct_type *)otg_core_struct.dev.class_handler->pdata;
+
+    if (pcdc->g_tx_completed == 1) {
+        // endpoint has finished transmitting previous block
+        if (lastBuffsize) {
+            bool needZeroLengthPacket = lastBuffsize % 64 == 0;
+
+            // move the ring buffer tail based on the previous succesful transmission
+            UserTxBufPtrOut += lastBuffsize;
+            if (UserTxBufPtrOut == APP_TX_DATA_SIZE) {
+                UserTxBufPtrOut = 0;
+            }
+            lastBuffsize = 0;
+
+            if (needZeroLengthPacket) {
+            	usb_vcp_send_data(&otg_core_struct.dev, (uint8_t*)&UserTxBuffer[UserTxBufPtrOut], 0);
+                return;
+            }
+        }
+        if (UserTxBufPtrOut != UserTxBufPtrIn) {
+            if (UserTxBufPtrOut > UserTxBufPtrIn) { /* Roll-back */
+                buffsize = APP_TX_DATA_SIZE - UserTxBufPtrOut;
+            } else {
+                buffsize = UserTxBufPtrIn - UserTxBufPtrOut;
+            }
+            if (buffsize > APP_TX_BLOCK_SIZE) {
+                buffsize = APP_TX_BLOCK_SIZE;
+            }
+
+            uint32_t txed=usb_vcp_send_data(&otg_core_struct.dev,(uint8_t*)&UserTxBuffer[UserTxBufPtrOut], buffsize);
+            if (txed==SUCCESS) {
+                lastBuffsize = buffsize;
+            }
+        }
+    }
+    tmr_flag_clear(usbTxTmr,TMR_OVF_FLAG);
+}
+
+
+/************************************************************/
 
 
 //是否插入
@@ -344,34 +470,34 @@ static uint8_t usbVcpRead(serialPort_t *instance)
 }
 
 //写buffer数据到vpc 需要实现
+
+//这里有bug， 调用write 的时候是写到了缓存里，如果缓存满了仍然未发送，则会内存溢出死机，比如在Cli 初始化时，设置serialWriteBufShim
+//重新理解函数名， 为想serial 写入一个缓存块，直接走vcp发出去
+//但是这样修改仍然有问题，在msp 的处理中，报文头、数据、crc 3个包被分3次发送，导致接收方无法一次性接收、校验
+
+
+
 static void usbVcpWriteBuf(serialPort_t *instance, const void *data, int count)
 {
+    UNUSED(instance);
 
-	UNUSED(instance);
     if (!(usbIsConnected() && usbIsConfigured())) {
         return;
     }
 
-    //这里有bug， 调用write 的时候是写到了缓存里，如果缓存满了仍然未发送，则会内存溢出死机，比如在Cli 初始化时，设置serialWriteBufShim
-    //重新理解函数名， 为想serial 写入一个缓存块，直接走vcp发出去
-//    vcpPort_t *port = container_of(instance, vcpPort_t, port);
-//
-//    const uint8_t *p = data;
-//
-//    for(int i=0;i< count; i++){
-//    	if(port->txAt >=  ARRAYLEN(port->txBuf))//may cause a bug
-//    		break;// cli 的时候这里出了bug
-//        port->txBuf[port->txAt++]=p[i];
-//}
-    uint8_t *p = data;
-    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
-//for debug
-    if (txed==SUCCESS){
-    	//no
+    uint32_t start = millis();
+    const uint8_t *p = data;
+    while (count > 0) {
+        uint32_t txed = CDC_Send_DATA(p, count);
+        count -= txed;
+        p += txed;
+
+        if (millis() - start > USB_TIMEOUT) {
+            break;
+        }
     }
-
-
 }
+
 //flash 缓冲区
 static bool usbVcpFlush(vcpPort_t *port)
 {
@@ -386,13 +512,19 @@ static bool usbVcpFlush(vcpPort_t *port)
         return false;
     }
 
-    uint8_t *p = port->txBuf;
-    uint32_t txed = usb_vcp_send_data(&otg_core_struct.dev, p, count);
+    uint32_t start = millis();
+   uint8_t *p = port->txBuf;
+   while (count > 0) {
+	   uint32_t txed = CDC_Send_DATA(p, count);
+	   count -= txed;
+	   p += txed;
 
-    return txed == SUCCESS;
+	   if (millis() - start > USB_TIMEOUT) {
+		   break;
+	   }
+   }
+   return count == 0;
 }
-
-//写char数据到 buffer
 static void usbVcpWrite(serialPort_t *instance, uint8_t c)
 {
     vcpPort_t *port = container_of(instance, vcpPort_t, port);
@@ -403,20 +535,18 @@ static void usbVcpWrite(serialPort_t *instance, uint8_t c)
     }
 }
 
-//启动写数据 不需要修改
 static void usbVcpBeginWrite(serialPort_t *instance)
 {
     vcpPort_t *port = container_of(instance, vcpPort_t, port);
     port->buffering = true;
 }
-//发送缓冲区空闲大小
+
 static uint32_t usbTxBytesFree(const serialPort_t *instance)
 {
     UNUSED(instance);
-    //Fixme: return the bytes free in the circular buffer
-    return 255;
+    return CDC_Send_FreeBytes();
 }
-//停止写入 不需要修改
+
 static void usbVcpEndWrite(serialPort_t *instance)
 {
     vcpPort_t *port = container_of(instance, vcpPort_t, port);
@@ -435,7 +565,7 @@ static const struct serialPortVTable usbVTable[] = {
         .setMode = usbVcpSetMode,
         .setCtrlLineStateCb = usbVcpSetCtrlLineStateCb,     //Fixme: serial passthougth
         .setBaudRateCb = usbVcpSetBaudRateCb,     //Fixme: serial passthougth
-        .writeBuf = usbVcpWriteBuf, //write buffer
+        .writeBuf =  usbVcpWriteBuf, //write buffer
         .beginWrite = usbVcpBeginWrite,
         .endWrite = usbVcpEndWrite
     }
@@ -477,6 +607,10 @@ serialPort_t *usbVcpOpen(void)
 
     s = &vcpPort;
     s->port.vTable = usbVTable;
+
+
+    //CONFIG TX TIMER
+    TxTimerConfig();
 
     return (serialPort_t *)s;
 }
