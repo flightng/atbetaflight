@@ -26,13 +26,13 @@
  #include "drivers/dma.h"
  #include "drivers/timer.h"
  #include "drivers/timer_def.h"
-// //DEF_TIM(tim, chan, pin, flags, out)
+// //DEF_TIM(tim, chan, pin, flags, out,dmaopt,upopt) dmaopt是 timer_def 中用第几个dma的设置
  const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
- 	DEF_TIM(TMR1, CH1, PA8,  TIM_USE_ANY |TIM_USE_LED, 0,0,0), // PWM9 - OUT1
+ 	DEF_TIM(TMR1, CH1, PA8,  TIM_USE_ANY |TIM_USE_LED, 0,7,0), // PWM9 - OUT1
 // 	DEF_TIM(TMR1, CH4, PA11, TIM_USE_MOTOR, 0,0,0), // PWM10 - OUT2
- 	DEF_TIM(TMR4, CH1, PB6,  TIM_USE_MOTOR, 0,0,0), // PWM11 - OUT3
- 	DEF_TIM(TMR4, CH2, PB7,  TIM_USE_MOTOR, 0,0,0), // PWM12 - OUT4
- 	DEF_TIM(TMR4, CH3, PB8,  TIM_USE_MOTOR,  0,0,0), // PWM13 - OUT5
- 	DEF_TIM(TMR4, CH4, PB9,  TIM_USE_MOTOR,  0,0,0), // PWM14 - OUT6
+ 	DEF_TIM(TMR4, CH1, PB6,  TIM_USE_MOTOR, 0,13,0), // PWM11 - OUT3
+ 	DEF_TIM(TMR4, CH2, PB7,  TIM_USE_MOTOR, 0,12,0), // PWM12 - OUT4
+ 	DEF_TIM(TMR4, CH3, PB8,  TIM_USE_MOTOR,  0,11,0), // PWM13 - OUT5
+ 	DEF_TIM(TMR4, CH4, PB9,  TIM_USE_MOTOR,  0,10,0), // PWM14 - OUT6
 
  };

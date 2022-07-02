@@ -190,8 +190,8 @@
 // at32f43x has DMAMUX that allow arbitrary assignment of peripherals to streams.
 
 #define DEF_TIM_DMA_FULL \
-    D(1, 1), D(1, 2), D(1, 3), D(1, 4), D(1, 5), D(1, 6), D(1, 7), D(1, 8), \
-    D(2, 1), D(2, 2), D(2, 3), D(2, 4), D(2, 5), D(2, 6), D(2, 7), D(2, 8)
+    D(1, 1), D(1, 2), D(1, 3), D(1, 4), D(1, 5), D(1, 6), D(1, 7), \
+    D(2, 1), D(2, 2), D(2, 3), D(2, 4), D(2, 5), D(2, 6), D(2, 7)
 
 #define DEF_TIM_DMA__BTCH_TMR1_CH1    DEF_TIM_DMA_FULL
 #define DEF_TIM_DMA__BTCH_TMR1_CH2    DEF_TIM_DMA_FULL
@@ -236,10 +236,10 @@
 #define DEF_TIM_DMA__BTCH_TMR20_CH4   DEF_TIM_DMA_FULL
 
 // TIM_UP table
-#define DEF_TIM_DMA__BTCH_TMR1_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR1_UP     D(2,7)
 #define DEF_TIM_DMA__BTCH_TMR2_UP     DEF_TIM_DMA_FULL
 #define DEF_TIM_DMA__BTCH_TMR3_UP     DEF_TIM_DMA_FULL
-#define DEF_TIM_DMA__BTCH_TMR4_UP     DEF_TIM_DMA_FULL
+#define DEF_TIM_DMA__BTCH_TMR4_UP     D(2,1)
 #define DEF_TIM_DMA__BTCH_TMR5_UP     DEF_TIM_DMA_FULL
 #define DEF_TIM_DMA__BTCH_TMR6_UP     DEF_TIM_DMA_FULL
 #define DEF_TIM_DMA__BTCH_TMR7_UP     DEF_TIM_DMA_FULL
