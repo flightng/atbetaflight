@@ -34,6 +34,12 @@
     
 #include "at32f435_437.h"
 
+#include <string.h>
+#include "drivers/system.h"
+#include "platform.h"
+#include "drivers/persistent.h"
+
+
 /** @addtogroup AT32F435_437_system_private_defines
   * @{
   */
@@ -63,6 +69,8 @@ unsigned int system_core_clock           = HICK_VALUE; /*!< system clock frequen
   */
 void SystemInit (void)
 {
+  initialiseMemorySections();
+
 #if defined (__FPU_USED) && (__FPU_USED == 1U)
   SCB->CPACR |= ((3U << 10U * 2U) |         /* set cp10 full access */
                  (3U << 11U * 2U)  );       /* set cp11 full access */
