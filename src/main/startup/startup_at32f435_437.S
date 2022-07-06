@@ -36,6 +36,12 @@ defined in linker script */
 .word  _sbss
 /* end address for the .bss section. defined in linker script */
 .word  _ebss
+/*add by shanggl for fast_data_zero_init */
+/* start address for the .fastram_bss section. defined in linker script */
+.word  _sfastram_bss
+/* end address for the .fastram_bss section. defined in linker script */
+.word  _efastram_bss
+
 /* stack used for SystemInit_ExtMemCtl; always internal RAM used */
 
 /**
@@ -51,6 +57,10 @@ defined in linker script */
   .weak  Reset_Handler
   .type  Reset_Handler, %function
 Reset_Handler:
+/* custom init */
+  ldr   sp, =_estack      /* set stack pointer */
+
+  bl persistentObjectInit
 
 /* Copy the data segment initializers from flash to SRAM */
   movs  r1, #0
@@ -79,6 +89,20 @@ LoopFillZerobss:
   ldr  r3, = _ebss
   cmp  r2, r3
   bcc  FillZerobss
+
+
+  ldr  r2, =_sfastram_bss
+  b  LoopFillZerofastram_bss
+/* Zero fill the fastram_bss segment. */
+FillZerofastram_bss:
+  movs  r3, #0
+  str  r3, [r2], #4
+
+LoopFillZerofastram_bss:
+  ldr  r3, = _efastram_bss
+  cmp  r2, r3
+  bcc  FillZerofastram_bss
+
 
 /* Call the clock system intitialization function.*/
   bl  SystemInit

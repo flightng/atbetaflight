@@ -161,6 +161,7 @@ SECTIONS
   _sfastram_idata = LOADADDR(.fastram_data);
 
   /* Initialized FAST_DATA section for unsuspecting developers */
+  /* init in startup/system_at32f43x.c */
   .fastram_data :
   {
     . = ALIGN(4);
@@ -172,14 +173,18 @@ SECTIONS
     _efastram_data = .;        /* define a global symbol at data end */
   } >FASTRAM AT> FLASH1
 
+/* define FAST_DATA_ZERO_INIT part  Initialized in startup_at23f435_437_.S */
   . = ALIGN(4);
   .fastram_bss (NOLOAD) :
   {
-    __fastram_bss_start__ = .;
+    _sfastram_bss = .;
+    __fastram_bss_start__ = _sfastram_bss;
     *(.fastram_bss)
     *(SORT_BY_ALIGNMENT(.fastram_bss*))
+
     . = ALIGN(4);
-    __fastram_bss_end__ = .;
+    _efastram_bss = .;
+    __fastram_bss_end__ = _efastram_bss;
   } >FASTRAM
 
   .persistent_data (NOLOAD) :

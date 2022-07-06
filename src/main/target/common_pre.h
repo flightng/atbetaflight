@@ -69,8 +69,8 @@
 #endif
 #endif // STM32F4
 
-#ifdef AT32F43x
-#define USE_LED_STRIP
+#ifdef AT32F4
+#define USE_FAST_DATA
 #define USE_DSHOT
 #define USE_DSHOT_BITBANG
 #define USE_DSHOT_TELEMETRY
@@ -236,7 +236,7 @@
 #define STATIC_DMA_DATA_AUTO        static DMA_DATA
 #endif
 
-#if defined(STM32F4) || defined (STM32H7)
+#if defined(STM32F4) || defined (STM32H7) || defined(AT32F43x)
 // Data in RAM which is guaranteed to not be reset on hot reboot
 #define PERSISTENT                  __attribute__ ((section(".persistent_data"), aligned(4)))
 #endif
