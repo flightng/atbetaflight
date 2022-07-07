@@ -211,7 +211,7 @@ void usb_low_power_wakeup_config(void)
   exint_init_struct.line_polarity = EXINT_TRIGGER_RISING_EDGE;
   exint_init(&exint_init_struct);
 
-  nvic_irq_enable(OTG_WKUP_IRQ, 0, 0);
+  nvic_irq_enable(OTG_WKUP_IRQ, NVIC_PRIORITY_BASE(NVIC_PRIO_USB_WUP), NVIC_PRIORITY_SUB(NVIC_PRIO_USB_WUP));
 }
 
 /**
@@ -281,7 +281,7 @@ void TxTimerConfig(void){
 	       + Counter direction = Up
 	  */
 	//timer, period, perscaler
-	tmr_base_init(usbTxTmr,(CDC_POLLING_INTERVAL - 1),((system_core_clock/2)/1000 - 1));
+	tmr_base_init(usbTxTmr,(CDC_POLLING_INTERVAL - 1),((system_core_clock/2)/10000 - 1));
 	//TMR_CLOCK_DIV1 = 0X00 NO DIV
 	tmr_clock_source_div_set(usbTxTmr,TMR_CLOCK_DIV1);
 	//COUNT UP
@@ -291,7 +291,7 @@ void TxTimerConfig(void){
 
 	tmr_interrupt_enable(usbTxTmr, TMR_OVF_INT, TRUE);
 
-	nvic_irq_enable(TMR8_OVF_TMR13_IRQn,NVIC_PRIORITY_BASE(NVIC_PRIO_TIMER), NVIC_PRIORITY_SUB(NVIC_PRIO_TIMER));
+	nvic_irq_enable(TMR8_OVF_TMR13_IRQn,NVIC_PRIORITY_BASE(NVIC_PRIO_USB), NVIC_PRIORITY_SUB(NVIC_PRIO_USB));
 
 	tmr_counter_enable(usbTxTmr,TRUE);
 
@@ -591,8 +591,8 @@ serialPort_t *usbVcpOpen(void)
      /* select usb 48m clcok source */
      usb_clock48m_select(USB_CLK_HEXT);
 
-     /* enable otgfs irq */
-     nvic_irq_enable(OTG_IRQ, 0, 0);
+     /* enable otgfs irq,不能设置太高的优先级，会干扰spi 的dma中断通信 */
+     nvic_irq_enable(OTG_IRQ, NVIC_PRIORITY_BASE(NVIC_PRIO_USB), NVIC_PRIORITY_SUB(NVIC_PRIO_USB));
 
      usbGenerateDisconnectPulse();
 

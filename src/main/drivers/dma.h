@@ -132,12 +132,12 @@ uint32_t dmaGetChannel(const uint8_t channel);
 (#) DMA_IT_HTIFx  : specifies the interrupt source for the Half-Transfer Complete event.
 (#) DMA_IT_TCIFx  : specifies the interrupt source for the a Transfer Complete event.
 */
-#define DMA_IT_TCIF         ((uint32_t)0x00000002)
-#define DMA_IT_HTIF         ((uint32_t)0x00000004)
-#define DMA_IT_TEIF         ((uint32_t)0x00000008)
+#define DMA_IT_GLOB         ((uint32_t)0x00000001) // channel global interput flag
+#define DMA_IT_TCIF         ((uint32_t)0x00000002) // channel full transport flag
+#define DMA_IT_HTIF         ((uint32_t)0x00000004) // channel half transport flag
+#define DMA_IT_TEIF         ((uint32_t)0x00000008) // channel transport error flag
 
 #define DMA_IT_DMEIF        ((uint32_t)0x00000004) // at32 has no direct mode transfer mode
-#define DMA_IT_FEIF         ((uint32_t)0x00000001) //at32 has no fifo  mode
 
 
 // Macros to avoid direct register and register bit access
