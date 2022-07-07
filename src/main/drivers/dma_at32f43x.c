@@ -98,7 +98,7 @@ void dmaSetHandler(dmaIdentifier_e identifier, dmaCallbackHandlerFuncPtr callbac
     enableDmaClock(index);
     dmaDescriptors[index].irqHandlerCallback = callback;
     dmaDescriptors[index].userParam = userParam;
-    nvic_priority_group_config(NVIC_PRIORITY_GROUP_2);
+//    nvic_priority_group_config(NVIC_PRIORITY_GROUPING);
     nvic_irq_enable(dmaDescriptors[index].irqN, NVIC_PRIORITY_BASE(priority), NVIC_PRIORITY_SUB(priority));
 }
 #endif

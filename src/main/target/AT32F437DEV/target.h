@@ -46,7 +46,7 @@
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
 #define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_OFF
 
-// *************** Gyro & ACC **********************
+// *************** SPI **********************
 #define USE_SPI
 #define USE_SPI_DEVICE_1
 
@@ -67,7 +67,9 @@
 #define SPI3_SCK_PIN            PB3
 #define SPI3_MISO_PIN           PB4
 #define SPI3_MOSI_PIN           PB5
+#define SPI3_NSS_PIN 			PB2
 
+// *************** Gyro & ACC **********************
 
 #define USE_EXTI
 #define USE_GYRO_EXTI
@@ -88,33 +90,41 @@
 
 //#define GYRO_CONFIG_USE_GYRO_DEFAULT GYRO_CONFIG_USE_GYRO_1
 
-
+// *************** OSD *****************************
 
 #define USE_MAX7456
-#define MAX7456_SPI_INSTANCE   SPI2
-#define MAX7456_SPI_CS_PIN     SPI2_NSS_PIN
+#define MAX7456_SPI_INSTANCE    SPI2
+#define MAX7456_SPI_CS_PIN      SPI2_NSS_PIN
+
+
+/********************BLACKBOX***********************/
+#define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
+#define USE_FLASHFS
+#define USE_FLASH_M25P16
+#define FLASH_CS_PIN            SPI3_NSS_PIN
+#define FLASH_SPI_INSTANCE      SPI3
 
 
 // ***************ELRS **************************
 
 
-#define USE_RX_SPI
-#define RX_SPI_INSTANCE        SPI3
-#define RX_SPI_LED_INVERTED
-
-#define RX_SPI_DEFAULT_PROTOCOL RX_SPI_EXPRESSLRS
-
-#define USE_RX_EXPRESSLRS
-#define USE_RX_EXPRESSLRS_TELEMETRY
-#define USE_RX_SX1280
-#define RX_CHANNELS_AETR
-#define RX_SPI_BIND_PIN        PC3
-#define RX_NSS_PIN             PA15
-#define RX_SPI_LED_PIN         PC12
-#define RX_SPI_EXTI_PIN        PC13
-#define RX_EXPRESSLRS_SPI_RESET_PIN      PC2
-#define RX_EXPRESSLRS_SPI_BUSY_PIN       PA13
-#define RX_EXPRESSLRS_TIMER_INSTANCE     TMR5
+//#define USE_RX_SPI
+//#define RX_SPI_INSTANCE        SPI3
+//#define RX_SPI_LED_INVERTED
+//
+//#define RX_SPI_DEFAULT_PROTOCOL RX_SPI_EXPRESSLRS
+//
+//#define USE_RX_EXPRESSLRS
+//#define USE_RX_EXPRESSLRS_TELEMETRY
+//#define USE_RX_SX1280
+//#define RX_CHANNELS_AETR
+//#define RX_SPI_BIND_PIN        PC3
+//#define RX_NSS_PIN             PA15
+//#define RX_SPI_LED_PIN         PC12
+//#define RX_SPI_EXTI_PIN        PC13
+//#define RX_EXPRESSLRS_SPI_RESET_PIN      PC2
+//#define RX_EXPRESSLRS_SPI_BUSY_PIN       PA13
+//#define RX_EXPRESSLRS_TIMER_INSTANCE     TMR5
 
 
 // *************** Baro **************************
@@ -122,8 +132,8 @@
 
 #define USE_I2C_DEVICE_1
 #define I2C_DEVICE              (I2CDEV_1)
-#define I2C1_SCL                PB8        // SCL pad
-#define I2C1_SDA                PB9        // SDA pad
+#define I2C1_SCL                PC6        // SCL pad
+#define I2C1_SDA                PC7        // SDA pad
 #define BARO_I2C_INSTANCE       (I2CDEV_1)
 
 #define USE_BARO
@@ -161,15 +171,7 @@
 #define SERIALRX_PROVIDER       SERIALRX_CRSF
 #define SERIALRX_UART           SERIAL_PORT_USART2
 
-// *************** OSD *****************************
-#define USE_SPI_DEVICE_2
-#define SPI2_SCK_PIN            PB13
-#define SPI2_MISO_PIN           PB14
-#define SPI2_MOSI_PIN           PB15
 
-#define USE_MAX7456
-#define MAX7456_SPI_INSTANCE    SPI2
-#define MAX7456_SPI_CS_PIN      SPI2_NSS_PIN
 
 // *************** ADC *****************************
 #define USE_ADC
