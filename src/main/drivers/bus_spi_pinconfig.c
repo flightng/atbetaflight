@@ -505,7 +505,7 @@ const spiHardware_t spiHardware[] = {
         .device = SPIDEV_3,
         .reg = SPI3,
         .sckPins = {
-            { DEFIO_TAG_E(PB3) },
+            { DEFIO_TAG_E(PB12) },
             { DEFIO_TAG_E(PC10) },
         },
         .misoPins = {
