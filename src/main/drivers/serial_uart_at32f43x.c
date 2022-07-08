@@ -67,11 +67,11 @@
 #ifndef UART5_RX_DMA_CHANNEL
 #define UART5_RX_DMA_CHANNEL NULL
 #endif
-#ifndef UART9_TX_DMA_CHANNEL
-#define UART9_TX_DMA_CHANNEL NULL
+#ifndef UART8_TX_DMA_CHANNEL
+#define UART8_TX_DMA_CHANNEL NULL
 #endif
-#ifndef UART9_RX_DMA_CHANNEL
-#define UART9_RX_DMA_CHANNEL NULL
+#ifndef UART8_RX_DMA_CHANNEL
+#define UART8_RX_DMA_CHANNEL NULL
 #endif
 
 const uartHardware_t uartHardware[UARTDEV_COUNT] = {
@@ -195,32 +195,32 @@ const uartHardware_t uartHardware[UARTDEV_COUNT] = {
     },
 #endif
 
-#ifdef USE_UART5
+#ifdef USE_UART8
     {
-        .device = UARTDEV_5,
-        .reg = UART5,
+        .device = UARTDEV_8,
+        .reg = UART8, //USE UART8 FOR PIN CONFIG
 #ifdef USE_DMA
-        .rxDMAMuxId = DMAMUX_DMAREQ_ID_UART5_RX,
-        .rxDMAResource = (dmaResource_t *)UART5_RX_DMA_CHANNEL,
-        .txDMAMuxId = DMAMUX_DMAREQ_ID_UART5_TX,
-        .txDMAResource = (dmaResource_t *)UART5_TX_DMA_CHANNEL,
+        .rxDMAMuxId = DMAMUX_DMAREQ_ID_UART8_RX,
+        .rxDMAResource = (dmaResource_t *)UART8_RX_DMA_CHANNEL,
+        .txDMAMuxId = DMAMUX_DMAREQ_ID_UART8_TX,
+        .txDMAResource = (dmaResource_t *)UART8_TX_DMA_CHANNEL,
 #endif
         .rxPins = {
-            { DEFIO_TAG_E(PB5),  GPIO_MUX_8 },
-            { DEFIO_TAG_E(PB8),  GPIO_MUX_8 },
+            { DEFIO_TAG_E(PC3),  GPIO_MUX_8 },
+            { DEFIO_TAG_E(PC9),  GPIO_MUX_7 },
         },
         .txPins = {
-            { DEFIO_TAG_E(PB6),  GPIO_MUX_8 },
-            { DEFIO_TAG_E(PB9),  GPIO_MUX_8 },
+            { DEFIO_TAG_E(PC2),  GPIO_MUX_8 },
+            { DEFIO_TAG_E(PC8),  GPIO_MUX_7 },
         },
-        .rcc = RCC_APB1(UART5),
-        .irqn = UART5_IRQn,
-        .txPriority = NVIC_PRIO_SERIALUART5_TXDMA,
-        .rxPriority = NVIC_PRIO_SERIALUART5,
-        .txBuffer = uart5TxBuffer,
-        .rxBuffer = uart5RxBuffer,
-        .txBufferSize = sizeof(uart5TxBuffer),
-        .rxBufferSize = sizeof(uart5RxBuffer),
+        .rcc = RCC_APB1(UART8),
+        .irqn = UART8_IRQn,
+        .txPriority = NVIC_PRIO_SERIALUART8_TXDMA,
+        .rxPriority = NVIC_PRIO_SERIALUART8,
+        .txBuffer = uart8TxBuffer,
+        .rxBuffer = uart8RxBuffer,
+        .txBufferSize = sizeof(uart8TxBuffer),
+        .rxBufferSize = sizeof(uart8RxBuffer),
     },
 #endif
 

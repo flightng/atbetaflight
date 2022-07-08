@@ -22,14 +22,26 @@
 
 #define TARGET_BOARD_IDENTIFIER "AT32F437"
 #define USBD_PRODUCT_STRING     "EMSRAT32F4"
+/**********swd debuger reserved *****************
+ * pb3 swo
+ * pa13	swdio
+ * pa14 swclk
+ * PB2 ->BOOT0
+ * PA8 MCO1
+ * PA11 OTG1
+ * PA10 OTG1
+ */
 
 //buttons
 #define USE_BUTTONS
-#define BUTTON_A_PIN            PA0
+#define BUTTON_A_PIN            PD2
 #define BUTTON_A_PIN_INVERTED // Active high
-#define BUTTON_B_PIN            PC13
+#define BUTTON_B_PIN            PC13 //PC14 FOR lqfp64
 #define BUTTON_B_PIN_INVERTED // Active high
 
+// LED0_PIN PH0 FOR lqfp64
+// LED1_PIN PH1 FOR lqfp64
+// LED2_PIN PH2 FOR lqfp64
 
 #define LED0_PIN                PD13
 #define LED1_PIN                PD14
@@ -40,7 +52,7 @@
 
 
 #define USE_BEEPER
-#define BEEPER_PIN              PB2
+#define BEEPER_PIN              PA0
 //#define BEEPER_INVERTED
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
@@ -55,25 +67,26 @@
 #define SPI1_MOSI_PIN           PA7
 #define SPI1_NSS_PIN            PA4
 
-
+//NOT USE ON AT-START BOARD ! -->OTG2
 #define USE_SPI_DEVICE_2
 #define SPI2_SCK_PIN            PB13
 #define SPI2_MISO_PIN           PB14
 #define SPI2_MOSI_PIN           PB15
-#define SPI2_NSS_PIN            PB12
+#define SPI2_NSS_PIN            PC12
+
 
 
 #define USE_SPI_DEVICE_3
-#define SPI3_SCK_PIN            PB3
-#define SPI3_MISO_PIN           PB4
-#define SPI3_MOSI_PIN           PB5
-#define SPI3_NSS_PIN 			PB2
+#define SPI3_SCK_PIN            PC10
+#define SPI3_MISO_PIN           PC11
+#define SPI3_MOSI_PIN           PC12
+#define SPI3_NSS_PIN 			PC1
 
 // *************** Gyro & ACC **********************
 
 #define USE_EXTI
 #define USE_GYRO_EXTI
-#define GYRO_1_EXTI_PIN        PA1
+#define GYRO_1_EXTI_PIN        PA15
 #define USE_MPU_DATA_READY_SIGNAL
 #define ENSURE_MPU_DATA_READY_IS_LOW
 
@@ -91,18 +104,17 @@
 //#define GYRO_CONFIG_USE_GYRO_DEFAULT GYRO_CONFIG_USE_GYRO_1
 
 // *************** OSD *****************************
-
+//USE SPI3 ON AT-START BOARD ,USE SPI2 ON LQFP64
 #define USE_MAX7456
 #define MAX7456_SPI_INSTANCE    SPI2
 #define MAX7456_SPI_CS_PIN      SPI2_NSS_PIN
-
 
 /********************BLACKBOX***********************/
 #define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
 #define USE_FLASHFS
 #define USE_FLASH_M25P16
-#define FLASH_CS_PIN            SPI3_NSS_PIN
 #define FLASH_SPI_INSTANCE      SPI3
+#define FLASH_CS_PIN            SPI3_NSS_PIN
 
 
 // ***************ELRS **************************
@@ -122,7 +134,7 @@
 //#define RX_NSS_PIN             PA15
 //#define RX_SPI_LED_PIN         PC12
 //#define RX_SPI_EXTI_PIN        PC13
-//#define RX_EXPRESSLRS_SPI_RESET_PIN      PC2
+//#define RX_EXPRESSLRS_SPI_RESET_PIN      PC5
 //#define RX_EXPRESSLRS_SPI_BUSY_PIN       PA13
 //#define RX_EXPRESSLRS_TIMER_INSTANCE     TMR5
 
@@ -130,11 +142,11 @@
 // *************** Baro **************************
 #define USE_I2C
 
-#define USE_I2C_DEVICE_1
-#define I2C_DEVICE              (I2CDEV_1)
-#define I2C1_SCL                PC6        // SCL pad
-#define I2C1_SDA                PC7        // SDA pad
-#define BARO_I2C_INSTANCE       (I2CDEV_1)
+#define USE_I2C_DEVICE_3
+#define I2C_DEVICE              (I2CDEV_3)
+#define I2C3_SCL                PC0        // SCL pad
+#define I2C3_SDA                PC1        // SDA pad
+#define BARO_I2C_INSTANCE       (I2CDEV_3)
 
 #define USE_BARO
 #define USE_BARO_BMP280
@@ -154,18 +166,21 @@
 #define UART2_TX_PIN            PA2
 
 #define USE_UART3
-#define UART3_RX_PIN            PB11
-#define UART3_TX_PIN            PB10
+#define UART3_RX_PIN            PC5
+#define UART3_TX_PIN            PC4
 
 #define USE_UART4
-#define UART4_RX_PIN            PC11
-#define UART4_TX_PIN            PC10
+#define UART4_RX_PIN            PA0
+#define UART4_TX_PIN            PA1
 
+#define USE_UART8
+#define UART8_RX_PIN            PC3
+#define UART8_TX_PIN            PC2
 
-#define USE_SOFTSERIAL1
-#define USE_SOFTSERIAL2
+//#define USE_SOFTSERIAL1
+//#define USE_SOFTSERIAL2
 
-#define SERIAL_PORT_COUNT       5
+#define SERIAL_PORT_COUNT       6 // VCP  UART1 UART2 UART3 UART4 UART5
 
 #define DEFAULT_RX_FEATURE      FEATURE_RX_SERIAL
 #define SERIALRX_PROVIDER       SERIALRX_CRSF
@@ -176,7 +191,7 @@
 // *************** ADC *****************************
 #define USE_ADC
 #define ADC_INSTANCE         ADC1  // Default added
-#define ADC1_DMA_OPT            0  // DMA 2 Stream 0 Channel 0
+#define ADC1_DMA_OPT            0  //DMA 1 CH 1
 
 #define VBAT_ADC_PIN            PB0
 #define CURRENT_METER_ADC_PIN   PB1
