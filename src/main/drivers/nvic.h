@@ -91,6 +91,7 @@
 #define NVIC_PRIORITY_BASE(prio) (((prio)>>(4-(7-(NVIC_PRIORITY_GROUPING>>8))))>>4)
 #define NVIC_PRIORITY_SUB(prio) (((prio)&(0x0f>>(7-(NVIC_PRIORITY_GROUPING>>8))))>>4)
 
+
 #else
 // utility macros to join/split priority
 #define NVIC_PRIORITY_GROUPING NVIC_PriorityGroup_2

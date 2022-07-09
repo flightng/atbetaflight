@@ -80,7 +80,7 @@
 #define SPI3_SCK_PIN            PC10
 #define SPI3_MISO_PIN           PC11
 #define SPI3_MOSI_PIN           PC12
-#define SPI3_NSS_PIN 			PC1
+#define SPI3_NSS_PIN 			PC14
 
 // *************** Gyro & ACC **********************
 
@@ -141,15 +141,16 @@
 
 // *************** Baro **************************
 #define USE_I2C
-
 #define USE_I2C_DEVICE_3
 #define I2C_DEVICE              (I2CDEV_3)
 #define I2C3_SCL                PC0        // SCL pad
 #define I2C3_SDA                PC1        // SDA pad
-#define BARO_I2C_INSTANCE       (I2CDEV_3)
+#define USE_I2C_PULLUP
 
 #define USE_BARO
 #define USE_BARO_BMP280
+#define BARO_I2C_INSTANCE       (I2CDEV_3)
+
 //#define USE_BARO_MS5611
 
 // *************** UART *****************************

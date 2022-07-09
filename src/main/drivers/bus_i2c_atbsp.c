@@ -24,6 +24,8 @@
 
 #include "platform.h"
 
+//fixme: 关于传输的addr_ 左移 1位的问题 前7位是地址， 最后一位 1 表示读， 0 表示写,因为对传感器都一直是读，所以addr_<<1
+
 #if defined(USE_I2C) && !defined(SOFT_I2C)
 
 #include "drivers/io.h"
@@ -35,7 +37,6 @@
 #include "drivers/bus_i2c.h"
 #include "drivers/bus_i2c_impl.h"
 
-#define I2C_TIMEOUT                      10
 
 #ifdef USE_I2C_DEVICE_1
 void I2C1_ERR_IRQHandler(void)
@@ -117,10 +118,9 @@ bool i2cWrite(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t data)
     i2c_status_type status;
 
     if (reg_ == 0xFF)
-        status = i2c_master_transmit(pHandle ,addr_ << 1, &data, 1, I2C_TIMEOUT);
+        status = i2c_master_transmit(pHandle ,addr_ << 1 , &data, 1, I2C_TIMEOUT_US); // addr_ << 1
     else
-    	       //i2c_memory_write(i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout)
-        status = i2c_memory_write(pHandle ,addr_ << 1, reg_, &data, 1, I2C_TIMEOUT);
+        status = i2c_memory_write(pHandle ,addr_ << 1 , reg_, &data, 1, I2C_TIMEOUT_US); // addr_ << 1
 
     if (status != I2C_OK)
         return i2cHandleHardwareFailure(device);
@@ -143,7 +143,7 @@ bool i2cWriteBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len_,
 
     i2c_status_type status;
     //i2c_memory_write_int(i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout)
-    status = i2c_memory_write_int(pHandle ,addr_ << 1, reg_,data, len_,I2C_TIMEOUT);
+    status = i2c_memory_write_int(pHandle ,addr_ << 1, reg_,data, len_,I2C_TIMEOUT_US);
 
     if (status == I2C_ERR_STEP_1) {//BUSY
         return false;
@@ -158,6 +158,13 @@ bool i2cWriteBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len_,
 }
 
 // Blocking read
+/* read reg value from device
+ * @device  eg I2C1
+ * @addr_ 	device addr eg 0x58
+ * @reg_ 	device reg addr
+ * @len		read data length
+ * @buf 	read data to buf
+ */
 bool i2cRead(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, uint8_t* buf)
 {
     if (device == I2CINVALID || device >= I2CDEV_COUNT) {
@@ -172,10 +179,10 @@ bool i2cRead(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, uint8_t
 
     i2c_status_type status;
 
-    if (reg_ == 0xFF)
-        status = i2c_master_receive(pHandle ,addr_ << 1, buf, len, I2C_TIMEOUT);
+    if (reg_ == 0xFF)//任意地址
+    	status = i2c_master_receive(pHandle ,addr_ << 1 , buf, len, I2C_TIMEOUT_US);
     else
-        status = i2c_memory_read(pHandle, addr_ << 1, reg_,buf, len, I2C_TIMEOUT);
+        status = i2c_memory_read(pHandle, addr_ << 1, reg_, buf, len, I2C_TIMEOUT_US);
 
     if (status != I2C_OK) {
         return i2cHandleHardwareFailure(device);
@@ -185,6 +192,13 @@ bool i2cRead(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, uint8_t
 }
 
 // Non-blocking read
+/*i2cReadBuffer read reg value from device
+ * @device  i2c device eg i2c1
+ * @addr_   device address
+ * @reg_	reg value
+ * @len		read data length
+ * @buf 	read data to buf
+ */
 bool i2cReadBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, uint8_t* buf)
 {
     if (device == I2CINVALID || device >= I2CDEV_COUNT) {
@@ -199,7 +213,7 @@ bool i2cReadBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, u
 
     i2c_status_type status;
 
-    status = i2c_memory_read_int(pHandle, addr_ << 1, reg_,buf, len,I2C_TIMEOUT);
+    status = i2c_memory_read_int(pHandle, addr_ << 1, reg_,buf, len,I2C_TIMEOUT_US);
 
     if (status == I2C_ERR_STEP_1) {//busy
         return false;
