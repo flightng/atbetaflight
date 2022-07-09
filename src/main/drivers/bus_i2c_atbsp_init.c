@@ -127,7 +127,7 @@ void i2cInit(I2CDevice device)
     IOInit(scl, OWNER_I2C_SCL, RESOURCE_INDEX(device));
     IOInit(sda, OWNER_I2C_SDA, RESOURCE_INDEX(device));
 
-    // Enable RCC
+    // Enable i2c RCC
     RCC_ClockCmd(hardware->rcc, ENABLE);
 
     i2cUnstick(scl, sda);
@@ -169,7 +169,7 @@ void i2cInit(I2CDevice device)
     	I2Cx_CLKCTRL=0x30F03C6B;
     }
     if(pDev->clockSpeed == 50){
-    	I2Cx_CLKCTRL=0x30F03C6B;
+    	I2Cx_CLKCTRL=0xC0E06969;
     }
     if(pDev->clockSpeed < 50){
     	I2Cx_CLKCTRL=0xB170FFFF;
@@ -183,9 +183,9 @@ void i2cInit(I2CDevice device)
     i2c_own_address1_set( pHandle->i2cx, I2C_ADDRESS_MODE_7BIT, 0x0);
 
     //启用时钟延展
-    i2c_clock_stretch_enable(pHandle->i2cx,TRUE);
+//    i2c_clock_stretch_enable(pHandle->i2cx,TRUE);
     //关闭广播地址使能
-    i2c_general_call_enable(pHandle->i2cx,FALSE);
+//    i2c_general_call_enable(pHandle->i2cx,FALSE);
 
 
     // Setup interrupt handlers
@@ -197,7 +197,7 @@ void i2cInit(I2CDevice device)
     nvic_irq_enable(hardware->er_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_ER), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_ER));
     nvic_irq_enable(hardware->ev_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_EV), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_EV));
 
-    i2c_interrupt_enable(pHandle->i2cx, I2C_ERR_INT | I2C_TDC_INT | I2C_STOP_INT | I2C_ACKFIAL_INT | I2C_TD_INT | I2C_RD_INT, TRUE);
+//    i2c_interrupt_enable(pHandle->i2cx, I2C_ERR_INT | I2C_TDC_INT | I2C_STOP_INT | I2C_ACKFIAL_INT | I2C_TD_INT | I2C_RD_INT, TRUE);
 
     i2c_enable(pHandle->i2cx,TRUE);//i2c_init ctrl1_i2cen =0 ,so enable
 
