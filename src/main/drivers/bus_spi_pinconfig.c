@@ -463,6 +463,7 @@ const spiHardware_t spiHardware[] = {
     },
 #endif
 #ifdef AT32F4
+	//TODO: 修改为逐个针脚的 gpio_mux 进一步增加spi配置的灵活性
     {
         .device = SPIDEV_1,
         .reg = SPI1,
@@ -487,33 +488,36 @@ const spiHardware_t spiHardware[] = {
         .reg = SPI2,
         .sckPins = {
             // { DEFIO_TAG_E(PA9), GPIO_MUX_5 },pa9 used for uart1_tx
-            { DEFIO_TAG_E(PB13) },
-            { DEFIO_TAG_E(PB10) },
+//            { DEFIO_TAG_E(PB13) },
+//            { DEFIO_TAG_E(PB10) },
+			{ DEFIO_TAG_E(PD1) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PA12) },
-            { DEFIO_TAG_E(PB14) },
+//            { DEFIO_TAG_E(PA12) },
+//            { DEFIO_TAG_E(PB14) },
+			{ DEFIO_TAG_E(PD3) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PA10) },
-            { DEFIO_TAG_E(PB15) },
+//            { DEFIO_TAG_E(PA10) },
+//            { DEFIO_TAG_E(PB15) },
+			{ DEFIO_TAG_E(PD4) },
         },
-		.af= GPIO_MUX_5,
+		.af= GPIO_MUX_6,
         .rcc = RCC_APB1(SPI2),
     },
     {
         .device = SPIDEV_3,
         .reg = SPI3,
         .sckPins = {
-            { DEFIO_TAG_E(PB12) },
+//            { DEFIO_TAG_E(PB12) },
             { DEFIO_TAG_E(PC10) },
         },
         .misoPins = {
-            { DEFIO_TAG_E(PB4) },
+//            { DEFIO_TAG_E(PB4) },
             { DEFIO_TAG_E(PC11) },
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PB5) },
+//            { DEFIO_TAG_E(PB5) },
             { DEFIO_TAG_E(PC12) },
         },
 		.af= GPIO_MUX_6,

@@ -69,10 +69,10 @@
 
 //NOT USE ON AT-START BOARD ! -->OTG2
 #define USE_SPI_DEVICE_2
-#define SPI2_SCK_PIN            PB13
-#define SPI2_MISO_PIN           PB14
-#define SPI2_MOSI_PIN           PB15
-#define SPI2_NSS_PIN            PC12
+#define SPI2_SCK_PIN            PD1//PB13
+#define SPI2_MISO_PIN           PD3//PB14
+#define SPI2_MOSI_PIN           PD4//PB15
+#define SPI2_NSS_PIN            PD5
 
 
 
@@ -80,7 +80,7 @@
 #define SPI3_SCK_PIN            PC10
 #define SPI3_MISO_PIN           PC11
 #define SPI3_MOSI_PIN           PC12
-#define SPI3_NSS_PIN 			PC14
+#define SPI3_NSS_PIN 			PD6
 
 // *************** Gyro & ACC **********************
 
