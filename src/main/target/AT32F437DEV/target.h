@@ -53,7 +53,7 @@
 
 #define USE_BEEPER
 #define BEEPER_PIN              PA0
-//#define BEEPER_INVERTED
+#define BEEPER_INVERTED
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
 #define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_OFF
@@ -150,6 +150,11 @@
 #define USE_BARO
 #define USE_BARO_BMP280
 #define BARO_I2C_INSTANCE       (I2CDEV_3)
+
+#define USE_MAG
+#define USE_MAG_HMC5883
+#define USE_MAG_QMC5883
+#define MAG_I2C_INSTANCE        (I2CDEV_3)
 
 //#define USE_BARO_MS5611
 
