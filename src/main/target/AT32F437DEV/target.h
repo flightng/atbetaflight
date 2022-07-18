@@ -43,9 +43,9 @@
 // LED1_PIN PH1 FOR lqfp64
 // LED2_PIN PH2 FOR lqfp64
 
-#define LED0_PIN                PD13
-#define LED1_PIN                PD14
-#define LED2_PIN                PD15
+#define LED0_PIN                PD13 //confirm on LQFP64
+#define LED1_PIN                PD14 //confirm on LQFP64
+#define LED2_PIN                PD15 //confirm on LQFP64
 #define LED0_INVERTED
 #define LED1_INVERTED
 #define LED2_INVERTED
@@ -69,10 +69,10 @@
 
 //NOT USE ON AT-START BOARD ! -->OTG2
 #define USE_SPI_DEVICE_2
-#define SPI2_SCK_PIN            PD1//PB13
-#define SPI2_MISO_PIN           PD3//PB14
-#define SPI2_MOSI_PIN           PD4//PB15
-#define SPI2_NSS_PIN            PD5
+#define SPI2_SCK_PIN            PD1//PB13 on LQFP64
+#define SPI2_MISO_PIN           PD3//PB14 on LQFP64
+#define SPI2_MOSI_PIN           PD4//PB15 on LQFP64
+#define SPI2_NSS_PIN            PD5 //confirm on lqfp64
 
 
 
@@ -80,7 +80,7 @@
 #define SPI3_SCK_PIN            PC10
 #define SPI3_MISO_PIN           PC11
 #define SPI3_MOSI_PIN           PC12
-#define SPI3_NSS_PIN 			PD6
+#define SPI3_NSS_PIN 			PD6 //confirm on lqfp64
 
 // *************** Gyro & ACC **********************
 
@@ -176,8 +176,8 @@
 #define UART3_TX_PIN            PC4
 
 #define USE_UART4
-#define UART4_RX_PIN            PA0
-#define UART4_TX_PIN            PA1
+#define UART4_RX_PIN            PA1
+#define UART4_TX_PIN            PA0
 
 #define USE_UART8
 #define UART8_RX_PIN            PC3
