@@ -294,7 +294,8 @@ int8_t timerGetTIMNumber(const tmr_type *tim)
 
 static inline uint8_t lookupChannelIndex(const uint16_t channel)
 {
-    return channel >> 2;
+//    return channel >> 2;
+	return channel -1 ;//at32 use 1\2\3\4 as channel num
 }
 
 uint8_t timerLookupChannelIndex(const uint16_t channel)

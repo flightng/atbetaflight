@@ -111,7 +111,7 @@ typedef struct timerHardware_s {
 #endif // USE_DMA_SPEC
 	dmaResource_t *dmaTimUPRef;  //for dma burst
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
-	uint32_t dmaTimUPChannel;
+	uint32_t dmaTimUPChannel;//timer up dma mux id
 #endif
 	uint8_t dmaTimUPIrqHandler;
 #endif
@@ -126,7 +126,7 @@ typedef enum {
 
 #if defined(AT32F43x)
 #define HARDWARE_TIMER_DEFINITION_COUNT 15
-//FIXME:: timup_timers 的含义是什么？ 需要确认
+//FIXME:: timup_timers 是支持DSHOT_DMAR dma burst 的定时器
 #define TIMUP_TIMERS ( BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(8) | BIT(9) | BIT(10) | BIT(11) | BIT(12) | BIT(13) |BIT(14) | BIT(20))
 #endif
 
@@ -140,7 +140,6 @@ extern const timerHardware_t timerHardware[];
 #if defined(USE_TIMER_MGMT)
 #if defined(AT32F43x)
 #define FULL_TIMER_CHANNEL_COUNT 80 // XXX Need review
-
 #endif
 
 extern const timerHardware_t fullTimerHardware[];

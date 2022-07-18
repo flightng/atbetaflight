@@ -165,12 +165,13 @@ void pwmCompleteDshotMotorUpdate(void)
 #ifdef USE_DSHOT_DMAR
         if (useBurstDshot) {
             xDMA_SetCurrDataCounter(dmaMotorTimers[i].dmaBurstRef, dmaMotorTimers[i].dmaBurstLength);
-            xDMA_Cmd(dmaMotorTimers[i].dmaBurstRef, ENABLE);
 //            TIM_DMAConfig(dmaMotorTimers[i].timer, TIM_DMABase_CCR1, TIM_DMABurstLength_4Transfers);
             //fixme: 是否是c1dt？是否应该是pr？传输的字节数是多少？
             tmr_dma_control_config(dmaMotorTimers[i].timer,TMR_DMA_TRANSFER_4BYTES,TMR_C1DT_ADDRESS);
 //            TIM_DMACmd(dmaMotorTimers[i].timer, TIM_DMA_Update, ENABLE);
             tmr_dma_request_enable(dmaMotorTimers[i].timer, TMR_OVERFLOW_DMA_REQUEST,TRUE);
+            xDMA_Cmd(dmaMotorTimers[i].dmaBurstRef, ENABLE);
+
         } else
 #endif
         {
@@ -268,6 +269,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
 #ifdef USE_DSHOT_DMAR
     if (useBurstDshot) {
         dmaRef = timerHardware->dmaTimUPRef;
+        dmaMuxId=timerHardware->dmaTimUPChannel; //time up dmamux id
 #if defined(STM32F4)
         dmaChannel = timerHardware->dmaTimUPChannel;
 #endif
@@ -327,20 +329,8 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
 
 
     if (configureTimer) {
-//        TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-//        TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-//
-//        RCC_ClockCmd(timerRCC(timer), ENABLE);
-//        TIM_Cmd(timer, DISABLE);
-//
-//        TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t)(lrintf((float) timerClock(timer) / getDshotHz(pwmProtocolType) + 0.01f) - 1);
-//        TIM_TimeBaseStructure.TIM_Period = (pwmProtocolType == PWM_TYPE_PROSHOT1000 ? (MOTOR_NIBBLE_LENGTH_PROSHOT) : MOTOR_BITLENGTH) - 1;
-//        TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-//        TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-//        TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-//        TIM_TimeBaseInit(timer, &TIM_TimeBaseStructure);
 
-        RCC_ClockCmd(timerRCC(timer), ENABLE);
+    	RCC_ClockCmd(timerRCC(timer), ENABLE);
         tmr_counter_enable(timer, FALSE);
 
         uint32_t perscaler = (uint32_t)(lrintf((float) timerClock(timer) / getDshotHz(pwmProtocolType) + 0.01f) - 1);
@@ -350,7 +340,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
         //TMR_CLOCK_DIV1 = 0X00 NO DIV
         tmr_clock_source_div_set(timer,TMR_CLOCK_DIV1);
         //repet
-        tmr_repetition_counter_set(timer,0);
+        tmr_repetition_counter_set(timer,0);//ONLY TMR1 8
         //COUNT UP
         tmr_cnt_dir_set(timer,TMR_COUNT_UP);
     }
@@ -449,7 +439,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
         DMAINIT.peripheral_base_addr=(uint32_t)&timerHardware->tim->dmadt;
         DMAINIT.peripheral_inc_enable=FALSE;
         DMAINIT.memory_inc_enable=TRUE;
-        DMAINIT.peripheral_data_width =DMA_PERIPHERAL_DATA_WIDTH_WORD;
+        DMAINIT.peripheral_data_width =DMA_MEMORY_DATA_WIDTH_WORD;
         DMAINIT.memory_data_width=DMA_MEMORY_DATA_WIDTH_WORD;
         DMAINIT.loop_mode_enable=FALSE;
         DMAINIT.priority=DMA_PRIORITY_HIGH;
@@ -475,7 +465,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
         DMAINIT.peripheral_base_addr = (uint32_t)timerChCCR(timerHardware);
         DMAINIT.peripheral_inc_enable =FALSE;
         DMAINIT.memory_inc_enable = TRUE;
-        DMAINIT.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;
+        DMAINIT.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;//FIXME: TRY HALFWORD
 		DMAINIT.memory_data_width =DMA_MEMORY_DATA_WIDTH_WORD;
 		DMAINIT.loop_mode_enable=FALSE;
         DMAINIT.priority = DMA_PRIORITY_HIGH;
