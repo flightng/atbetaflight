@@ -281,7 +281,7 @@ void TxTimerConfig(void){
 	       + Counter direction = Up
 	  */
 	//timer, period, perscaler
-	tmr_base_init(usbTxTmr,(CDC_POLLING_INTERVAL - 1),((system_core_clock/2)/10000 - 1));
+	tmr_base_init(usbTxTmr,(CDC_POLLING_INTERVAL - 1),((system_core_clock)/1000 - 1));
 	//TMR_CLOCK_DIV1 = 0X00 NO DIV
 	tmr_clock_source_div_set(usbTxTmr,TMR_CLOCK_DIV1);
 	//COUNT UP
@@ -291,7 +291,7 @@ void TxTimerConfig(void){
 
 	tmr_interrupt_enable(usbTxTmr, TMR_OVF_INT, TRUE);
 
-	nvic_irq_enable(TMR8_OVF_TMR13_IRQn,NVIC_PRIORITY_BASE(NVIC_PRIO_USB), NVIC_PRIORITY_SUB(NVIC_PRIO_USB));
+	nvic_irq_enable(TMR20_OVF_IRQn,NVIC_PRIORITY_BASE(NVIC_PRIO_USB), NVIC_PRIORITY_SUB(NVIC_PRIO_USB));
 
 	tmr_counter_enable(usbTxTmr,TRUE);
 
@@ -304,7 +304,7 @@ void TxTimerConfig(void){
   * @param  htim: TIM handle
   * @retval None
   */
-void TMR8_OVF_TMR13_IRQHandler()
+void TMR20_OVF_IRQHandler()
 {
 
     uint32_t buffsize;
