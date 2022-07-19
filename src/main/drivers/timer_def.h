@@ -139,7 +139,15 @@
 #define DEF_TIM_OUTPUT__D(chan_n, n_channel) PP_IIF(n_channel, TIMER_OUTPUT_N_CHANNEL, TIMER_OUTPUT_NONE)
 
 #if defined(AT32F43x)
-
+/*
+ DEF_TIM(tim, chan, pin, flags, out,dmaopt,upopt)
+		@tim,chan  tmr & channel
+		@pin	output pin
+		@flags  usage for timer
+		@out  0 for normal 1 for N_Channel
+		@dmaopt dma channel index used for timer channel data transmit
+		@upopt  USE_DSHOT_DMAR  timeup dma channel index
+*/
 #define DEF_TIM(tim, chan, pin, flags, out, dmaopt, upopt) {            \
     tim,                                                                \
     TIMER_GET_IO_TAG(pin),                                              \

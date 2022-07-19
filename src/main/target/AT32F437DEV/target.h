@@ -52,8 +52,9 @@
 
 
 #define USE_BEEPER
-#define BEEPER_PIN              PA0
-#define BEEPER_INVERTED
+#define BEEPER_PIN              PB11
+#define BEEPER_INVERTED		 //低电平触发
+#define BEEPER_PWM_HZ	2500 //0  有源bb响 | 2500Hz 无源bb响，PWM驱动
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
 #define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_OFF
