@@ -352,6 +352,10 @@ uint16_t spiCalculateDivider(uint32_t freq)
 #elif defined(STM32H7)
     uint32_t spiClk = 100000000;
 #elif defined(AT32F43x)
+    if(freq> 48000000){
+    	freq= 48000000;
+    }//at23f437 spi  最高48Mhz
+
     uint32_t spiClk = system_core_clock / 2;
 #else
 #error "Base SPI clock not defined for this architecture"
@@ -370,11 +374,14 @@ uint32_t spiCalculateClock(uint16_t spiClkDivisor)
 {
 #if defined(STM32F4) || defined(STM32G4) || defined(STM32F7)
     uint32_t spiClk = SystemCoreClock / 2;
-#elif defined(STM32H7)
+#elif defined(STM32H7) //H7 SPIClk 100Mhz max
     uint32_t spiClk = 100000000;
 #elif defined (AT32F43x)
     uint32_t spiClk = system_core_clock / 2;
-
+//at32f437 spi max 48Mhz
+    if ((spiClk / spiClkDivisor) > 48000000){
+    	return 48000000;
+    }
 
 #else
 #error "Base SPI clock not defined for this architecture"
