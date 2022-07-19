@@ -5408,7 +5408,7 @@ dmaoptEntry_t dmaoptEntryTable[] = {
     DEFS("SDIO",     DMA_PERIPH_SDIO,     PG_SDIO_CONFIG,        sdioConfig_t,       dmaopt),
     DEFW("UART_TX",  DMA_PERIPH_UART_TX,  PG_SERIAL_UART_CONFIG, serialUartConfig_t, txDmaopt, UARTDEV_CONFIG_MAX,              MASK_IGNORED),
     DEFW("UART_RX",  DMA_PERIPH_UART_RX,  PG_SERIAL_UART_CONFIG, serialUartConfig_t, rxDmaopt, UARTDEV_CONFIG_MAX,              MASK_IGNORED),
-#if defined(STM32H7) || defined(STM32G4)
+#if defined(STM32H7) || defined(STM32G4) || defined(AT23F4)
     DEFW("TIMUP",    DMA_PERIPH_TIMUP,    PG_TIMER_UP_CONFIG,    timerUpConfig_t,    dmaopt,   HARDWARE_TIMER_DEFINITION_COUNT, TIMUP_TIMERS),
 #endif
 };
