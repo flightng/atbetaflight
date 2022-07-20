@@ -98,7 +98,28 @@ FAST_CODE void pwmDshotSetDirectionOutput(
     motor->isInput = false;
 #endif
     timerOCPreloadConfig(timer, timerHardware->channel, DISABLE);
+    //DISABLE CHANNEL TO CHANGE CHANNEL FROM INPUT TO OUTPUT
+    tmr_channel_enable(timer,(timerHardware->channel-1)*2,FALSE);
+
+  switch(timerHardware->channel){
+  case 1:
+
+    	timer->cm1=timer->cm1 & 0xff00;
+    	break;
+    case 2:
+    	timer->cm1= timer->cm1 & 0x00ff;
+    	break;
+    case 3:
+    	timer->cm2 =timer->cm2 & 0xff00;
+    	break;
+    case 4:
+    	timer->cm2 =timer->cm2 & 0x00ff;
+    	break;
+  }
+
     timerOCInit(timer, timerHardware->channel, pOcInit);
+//    tmr_channel_enable(timer,(timerHardware->channel-1)*2,TRUE);
+
     timerOCPreloadConfig(timer, timerHardware->channel, ENABLE);
 
 #ifdef USE_DSHOT_DMAR
@@ -142,6 +163,25 @@ static void pwmDshotSetDirectionInput(
     tmr_period_buffer_enable(timer, ENABLE);
 
     timer->pr = 0xffffffff;
+//DISABLE CHANNEL TO CHANGE FROM INPUT TO OUTPUT
+    tmr_channel_enable(timer,motor->icInitStruct.input_channel_select,FALSE);
+
+    switch(motor->icInitStruct.input_channel_select){
+    case TMR_SELECT_CHANNEL_1:
+
+    	timer->cm1=timer->cm1 & 0xff00;
+    	break;
+    case TMR_SELECT_CHANNEL_2:
+    	timer->cm1= timer->cm1 & 0x00ff;
+    	break;
+    case TMR_SELECT_CHANNEL_3:
+    	timer->cm2 =timer->cm2 & 0xff00;
+    	break;
+    case TMR_SELECT_CHANNEL_4:
+    	timer->cm2 =timer->cm2 & 0x00ff;
+    	break;
+    }
+
 
     tmr_input_channel_init(timer, &motor->icInitStruct,TMR_CHANNEL_INPUT_DIV_1);//USE DEFAULT INPUT DIV
 
@@ -221,9 +261,9 @@ static void motor_DMA_IRQHandler(dmaChannelDescriptor_t *descriptor)
         if (useDshotTelemetry) {
             pwmDshotSetDirectionInput(motor);
             xDMA_SetCurrDataCounter(motor->dmaRef, GCR_TELEMETRY_INPUT_LEN);
-            xDMA_Cmd(motor->dmaRef, ENABLE);
 //            TIM_DMACmd(motor->timerHardware->tim, motor->timerDmaSource, ENABLE);
             tmr_dma_request_enable(motor->timerHardware->tim, motor->timerDmaSource,TRUE);
+            xDMA_Cmd(motor->dmaRef, ENABLE);
             dshotDMAHandlerCycleCounters.changeDirectionCompletedAt = getCycleCounter();
         }
 #endif
@@ -381,7 +421,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     tmr_input_default_para_init(&motor->icInitStruct);
 	motor->icInitStruct.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
 	motor->icInitStruct.input_polarity_select = TMR_INPUT_BOTH_EDGE;
-	motor->icInitStruct.input_channel_select = (timerHardware->channel-1)*2;
+	motor->icInitStruct.input_channel_select = (timerHardware->channel-1)*2;//FIXME: BUGS ON N CHANNEL
 	motor->icInitStruct.input_filter_value = 2;
 //	motor->icInitStruct. = TIM_ICPSC_DIV1;//分频怎么设置？ 不分频,input 里进行了默认  tmr_input_channel_divider_set
 
@@ -465,7 +505,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
         DMAINIT.peripheral_base_addr = (uint32_t)timerChCCR(timerHardware);
         DMAINIT.peripheral_inc_enable =FALSE;
         DMAINIT.memory_inc_enable = TRUE;
-        DMAINIT.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;//FIXME: TRY HALFWORD
+        DMAINIT.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;
 		DMAINIT.memory_data_width =DMA_MEMORY_DATA_WIDTH_WORD;
 		DMAINIT.loop_mode_enable=FALSE;
         DMAINIT.priority = DMA_PRIORITY_HIGH;
