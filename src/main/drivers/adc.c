@@ -41,7 +41,7 @@
 
 adcOperatingConfig_t adcOperatingConfig[ADC_CHANNEL_COUNT];
 
-#if defined(STM32F7)
+#if defined(STM32F7) || defined(AT32F4)
 volatile FAST_DATA_ZERO_INIT uint16_t adcValues[ADC_CHANNEL_COUNT];
 #else
 volatile uint16_t adcValues[ADC_CHANNEL_COUNT];

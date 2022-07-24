@@ -200,28 +200,6 @@ void adcInit(const adcConfig_t *config)
 //    adcInitCalibrationValues();
 //#endif
 
-    //RESET ALL ADC
-    adc_reset();
-
-    //init adc common
-	 adc_common_config_type adc_common_struct;
-	 adc_common_default_para_init(&adc_common_struct);
-	/* config combine mode */
-	adc_common_struct.combine_mode = ADC_INDEPENDENT_MODE;
-	/* config division,adcclk is division by hclk */
-	adc_common_struct.div = ADC_HCLK_DIV_4;
-	/* config common dma mode,it's not useful in independent mode */
-	adc_common_struct.common_dma_mode = ADC_COMMON_DMAMODE_DISABLE;
-	/* config common dma request repeat */
-	adc_common_struct.common_dma_request_repeat_state = FALSE;
-	/* config adjacent adc sampling interval,it's useful for ordinary shifting mode */
-	adc_common_struct.sampling_interval = ADC_SAMPLING_INTERVAL_5CYCLES;
-	/* config inner temperature sensor and vintrv */
-	adc_common_struct.tempervintrv_state = TRUE;
-	adc_common_struct.vbat_state = TRUE;
-	/* config voltage battery */
-	adc_common_config(&adc_common_struct);
-
 
     for (int i = 0; i < ADC_CHANNEL_COUNT; i++) {
         int map;
@@ -293,6 +271,28 @@ void adcInit(const adcConfig_t *config)
 
         RCC_ClockCmd(adc->rccADC, ENABLE);
 
+        //RESET ALL ADC
+		adc_reset();
+
+		//init adc common
+		 adc_common_config_type adc_common_struct;
+		 adc_common_default_para_init(&adc_common_struct);
+		/* config combine mode */
+		adc_common_struct.combine_mode = ADC_INDEPENDENT_MODE;
+		/* config division,adcclk is division by hclk */
+		adc_common_struct.div = ADC_HCLK_DIV_4;
+		/* config common dma mode,it's not useful in independent mode */
+		adc_common_struct.common_dma_mode = ADC_COMMON_DMAMODE_DISABLE;
+		/* config common dma request repeat */
+		adc_common_struct.common_dma_request_repeat_state = FALSE;
+		/* config adjacent adc sampling interval,it's useful for ordinary shifting mode */
+		adc_common_struct.sampling_interval = ADC_SAMPLING_INTERVAL_5CYCLES;
+		/* config inner temperature sensor and vintrv */
+		adc_common_struct.tempervintrv_state = TRUE;
+		adc_common_struct.vbat_state = TRUE;
+		/* config voltage battery */
+		adc_common_config(&adc_common_struct);
+
         int configuredAdcChannels = BITCOUNT(adc->channelBits);
 
         // Configure ADCx with inputs
@@ -325,8 +325,8 @@ void adcInit(const adcConfig_t *config)
 		dma_init_struct.priority = DMA_PRIORITY_MEDIUM;
 		dma_init_struct.loop_mode_enable = FALSE;
 
-		dma_init_struct.memory_base_addr = (uint32_t)adcConversionBuffer[dmaBufferIndex];
-		dma_init_struct.peripheral_base_addr = (uint32_t)adc->ADCx->odt;
+		dma_init_struct.memory_base_addr = (uint32_t)&(adcConversionBuffer[dmaBufferIndex]);
+		dma_init_struct.peripheral_base_addr = (uint32_t)&(adc->ADCx->odt);
 
 
 		xDMA_Init(dmaSpec->ref, &dma_init_struct);
@@ -341,7 +341,7 @@ void adcInit(const adcConfig_t *config)
 		adc_dma_mode_enable(adc->ADCx, TRUE);
 
 		/* config dma request repeat,it's not useful when common dma mode is use */
-		adc_dma_request_repeat_enable(adc->ADCx, FALSE);
+		adc_dma_request_repeat_enable(adc->ADCx, TRUE);
 #endif //end of USE_DMA_SPEC
         // Configure channels
 //init  each  channel 逐个通道配置
@@ -367,7 +367,7 @@ void adcInit(const adcConfig_t *config)
     // throws an error when configuring internal channels if ADC1 or ADC2 are already enabled.
 
         /* enable adc overflow interrupt */
-        adc_interrupt_enable(adc->ADCx, ADC_OCCO_INT, TRUE);
+//        adc_interrupt_enable(adc->ADCx, ADC_OCCO_INT, TRUE);
 
         /* adc enable */
         adc_enable(adc->ADCx, TRUE);
