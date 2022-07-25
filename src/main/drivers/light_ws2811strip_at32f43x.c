@@ -179,7 +179,7 @@ bool ws2811LedStripHardwareInit(ioTag_t ioTag)
     dma_init_struct.memory_base_addr = (uint32_t)ledStripDMABuffer;
     dma_init_struct.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;
     dma_init_struct.memory_data_width = DMA_MEMORY_DATA_WIDTH_WORD;
-    dma_init_struct.priority = DMA_PRIORITY_VERY_HIGH;
+    dma_init_struct.priority = DMA_PRIORITY_MEDIUM;//SWITCH TO MEDIUM
 
 #if defined(USE_WS2811_SINGLE_COLOUR)
     dma_init_struct.loop_mode_enable = TRUE;

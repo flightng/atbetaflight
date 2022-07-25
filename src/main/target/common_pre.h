@@ -224,7 +224,7 @@
 #define DMA_DATA_ZERO_INIT
 #define DMA_DATA
 #define STATIC_DMA_DATA_AUTO        static
-#elif defined (STM32F7)
+#elif defined (STM32F7)	|| defined(AT32F4)
 // F7 has no cache coherency issues DMAing to/from DTCM, otherwise buffers must be cache aligned
 #define DMA_DATA_ZERO_INIT          FAST_DATA_ZERO_INIT
 #define DMA_DATA                    FAST_DATA
