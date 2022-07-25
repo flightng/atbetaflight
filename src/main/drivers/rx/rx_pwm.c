@@ -351,7 +351,7 @@ void pwmICConfig(tmr_type *tim, uint8_t channel, uint16_t polarity)
 
     tmr_input_default_para_init(&tmr_ic_init_structure);
 	tmr_ic_init_structure.input_filter_value = 0;
-	tmr_ic_init_structure.input_channel_select = channel;
+	tmr_ic_init_structure.input_channel_select = (channel-1)*2;
 	tmr_ic_init_structure.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
 	tmr_ic_init_structure.input_polarity_select = polarity;//TMR_INPUT_RISING_EDGE;
 

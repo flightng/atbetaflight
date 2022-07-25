@@ -70,6 +70,8 @@
 #endif // STM32F4
 
 #ifdef AT32F4
+#define USE_ITCM_RAM
+#define ITCM_RAM_OPTIMISATION "-O2"
 #define USE_FAST_DATA
 #define USE_DSHOT
 #define USE_DSHOT_BITBANG
