@@ -118,7 +118,7 @@ FAST_CODE void pwmDshotSetDirectionOutput(
   }
 
     timerOCInit(timer, timerHardware->channel, pOcInit);
-//    tmr_channel_enable(timer,(timerHardware->channel-1)*2,TRUE);
+    tmr_channel_enable(timer,(timerHardware->channel-1)*2,TRUE);
 
     timerOCPreloadConfig(timer, timerHardware->channel, ENABLE);
 
@@ -161,33 +161,34 @@ static void pwmDshotSetDirectionInput(
     }
 
     tmr_period_buffer_enable(timer, ENABLE);
-
     timer->pr = 0xffffffff;
 //DISABLE CHANNEL TO CHANGE FROM INPUT TO OUTPUT
     tmr_channel_enable(timer,motor->icInitStruct.input_channel_select,FALSE);
-
+//clear output config
     switch(motor->icInitStruct.input_channel_select){
     case TMR_SELECT_CHANNEL_1:
-
-    	timer->cm1=timer->cm1 & 0xff00;
+    case TMR_SELECT_CHANNEL_1C:
+    	timer->cm1=timer->cm1 & 0xff00;//清低8位
     	break;
     case TMR_SELECT_CHANNEL_2:
-    	timer->cm1= timer->cm1 & 0x00ff;
+    case TMR_SELECT_CHANNEL_2C:
+    	timer->cm1= timer->cm1 & 0x00ff;//清高8位
     	break;
     case TMR_SELECT_CHANNEL_3:
+    case TMR_SELECT_CHANNEL_3C:
     	timer->cm2 =timer->cm2 & 0xff00;
     	break;
     case TMR_SELECT_CHANNEL_4:
     	timer->cm2 =timer->cm2 & 0x00ff;
     	break;
+    default:
+    	break;
     }
 
-
-    tmr_input_channel_init(timer, &motor->icInitStruct,TMR_CHANNEL_INPUT_DIV_1);//USE DEFAULT INPUT DIV
-
     motor->dmaInitStruct.direction =DMA_DIR_PERIPHERAL_TO_MEMORY ;
-
     xDMA_Init(dmaRef, pDmaInit);
+    tmr_input_channel_init(timer, &motor->icInitStruct,TMR_CHANNEL_INPUT_DIV_1);//默认会自动cxen=1
+
 }
 #endif
 
@@ -206,7 +207,6 @@ void pwmCompleteDshotMotorUpdate(void)
         if (useBurstDshot) {
             xDMA_SetCurrDataCounter(dmaMotorTimers[i].dmaBurstRef, dmaMotorTimers[i].dmaBurstLength);
 //            TIM_DMAConfig(dmaMotorTimers[i].timer, TIM_DMABase_CCR1, TIM_DMABurstLength_4Transfers);
-            //fixme: 是否是c1dt？是否应该是pr？传输的字节数是多少？
             tmr_dma_control_config(dmaMotorTimers[i].timer,TMR_DMA_TRANSFER_4BYTES,TMR_C1DT_ADDRESS);
 //            TIM_DMACmd(dmaMotorTimers[i].timer, TIM_DMA_Update, ENABLE);
             tmr_dma_request_enable(dmaMotorTimers[i].timer, TMR_OVERFLOW_DMA_REQUEST,TRUE);
@@ -262,11 +262,15 @@ static void motor_DMA_IRQHandler(dmaChannelDescriptor_t *descriptor)
             pwmDshotSetDirectionInput(motor);
             xDMA_SetCurrDataCounter(motor->dmaRef, GCR_TELEMETRY_INPUT_LEN);
 //            TIM_DMACmd(motor->timerHardware->tim, motor->timerDmaSource, ENABLE);
+            //clear IF RIF flag of timer
             tmr_dma_request_enable(motor->timerHardware->tim, motor->timerDmaSource,TRUE);
             xDMA_Cmd(motor->dmaRef, ENABLE);
+
             dshotDMAHandlerCycleCounters.changeDirectionCompletedAt = getCycleCounter();
+
         }
 #endif
+        
         DMA_CLEAR_FLAG(descriptor, DMA_IT_TCIF);
     }
 }
@@ -380,7 +384,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
         //TMR_CLOCK_DIV1 = 0X00 NO DIV
         tmr_clock_source_div_set(timer,TMR_CLOCK_DIV1);
         //repet
-        tmr_repetition_counter_set(timer,0);//ONLY TMR1 8
+//        tmr_repetition_counter_set(timer,0);//ONLY TMR1 8
         //COUNT UP
         tmr_cnt_dir_set(timer,TMR_COUNT_UP);
     }
@@ -418,11 +422,11 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
 //    motor->icInitStruct.TIM_ICPrescaler = TIM_ICPSC_DIV1;
 //    motor->icInitStruct.TIM_Channel = timerHardware->channel;
 //    motor->icInitStruct.TIM_ICFilter = 2;
-    tmr_input_default_para_init(&motor->icInitStruct);
+//    tmr_input_default_para_init(&motor->icInitStruct);
 	motor->icInitStruct.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
 	motor->icInitStruct.input_polarity_select = TMR_INPUT_BOTH_EDGE;
 	motor->icInitStruct.input_channel_select = (timerHardware->channel-1)*2;//FIXME: BUGS ON N CHANNEL
-	motor->icInitStruct.input_filter_value = 2;
+	motor->icInitStruct.input_filter_value = 2; // << this is the rpmfilter fail reason
 //	motor->icInitStruct. = TIM_ICPSC_DIV1;//分频怎么设置？ 不分频,input 里进行了默认  tmr_input_channel_divider_set
 
 #endif

@@ -23,9 +23,13 @@
 #define TARGET_BOARD_IDENTIFIER "AT32F437"
 #define USBD_PRODUCT_STRING     "EMSRAT32F4"
 /**********swd debuger reserved *****************
- * pb3 swo
+ *
  * pa13	swdio
  * pa14 swclk
+ * PA15	JTDI
+ * PB4 JREST
+ * pb3 swo /DTO
+ *
  * PB2 ->BOOT0
  * PA8 MCO1
  * PA11 OTG1
@@ -198,7 +202,7 @@
 // *************** ADC *****************************
 #define USE_ADC
 #define ADC_INSTANCE         ADC1  // Default added
-#define ADC1_DMA_OPT            0  //DMA 1 CH 1
+#define ADC1_DMA_OPT            11  //DMA 2 CH 5
 
 #define VBAT_ADC_PIN            PB0
 #define CURRENT_METER_ADC_PIN   PB1

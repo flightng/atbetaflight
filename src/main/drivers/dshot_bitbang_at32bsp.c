@@ -116,13 +116,14 @@ void bbTimerChannelInit(bbPort_t *bbPort)
 //    timerOCInit(timhw->tim, timhw->channel, &TIM_OCStruct);
 //    timerOCPreloadConfig(timhw->tim, timhw->channel, TIM_OCPreload_Enable);
     tmr_output_channel_config(timhw->tim,(timhw->channel-1)*2, &TIM_OCStruct);
+    tmr_channel_enable(timhw->tim, ((timhw->channel-1)*2),TRUE);
     tmr_output_channel_buffer_enable(timhw->tim, ((timhw->channel-1)*2),TRUE);
 
 #ifdef DEBUG_MONITOR_PACER
     if (timhw->tag) {
         IO_t io = IOGetByTag(timhw->tag);
-        IOConfigGPIOAF(io, IOCFG_AF_PP, timhw->alternateFunction);
         IOInit(io, OWNER_DSHOT_BITBANG, 0);
+        IOConfigGPIOAF(io, IOCFG_AF_PP, timhw->alternateFunction);
 //        TIM_CtrlPWMOutputs(timhw->tim, ENABLE);
         tmr_output_enable(timhw->tim,TRUE);
     }
