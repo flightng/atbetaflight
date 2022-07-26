@@ -21,7 +21,7 @@
 #ifdef USE_DSHOT
 
 extern FAST_DATA_ZERO_INIT uint8_t dmaMotorTimerCount;
-#if defined(STM32F7) || defined(STM32H7)
+#if defined(STM32F7) || defined(STM32H7) || defined(AT32F43x)
 extern FAST_DATA_ZERO_INIT motorDmaTimer_t dmaMotorTimers[MAX_DMA_TIMERS];
 extern FAST_DATA_ZERO_INIT motorDmaOutput_t dmaMotors[MAX_SUPPORTED_MOTORS];
 #else

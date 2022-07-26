@@ -61,7 +61,7 @@
 #define BEEPER_PWM_HZ	2500 //0  有源bb响 | 2500Hz 无源bb响，PWM驱动
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
-#define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_OFF
+#define DSHOT_BITBANG_DEFAULT   DSHOT_BITBANG_AUTO
 
 // *************** SPI **********************
 #define USE_SPI

@@ -66,9 +66,9 @@ void bbGpioSetup(bbMotor_t *bbMotor)
      *
      */
 
-    bbPort->gpioModeMask |=  (GPIO_MODE_ANALOG << (pinIndex * 2));// 掩模  GPIO_MODER_0 =0x3
-    bbPort->gpioModeInput |= (GPIO_MODE_INPUT << (pinIndex * 2)); //输入
-    bbPort->gpioModeOutput |= (GPIO_MODE_OUTPUT << (pinIndex * 2));//输出
+    bbPort->gpioModeMask |=  (0x3 << (pinIndex * 2));// 掩模  GPIO_MODER_0 = b11
+    bbPort->gpioModeInput |= (GPIO_MODE_INPUT << (pinIndex * 2)); //输入 b00
+    bbPort->gpioModeOutput |= (GPIO_MODE_OUTPUT << (pinIndex * 2));//输出 b01
 
 
 #ifdef USE_DSHOT_TELEMETRY
@@ -138,7 +138,7 @@ void bbTimerChannelInit(bbPort_t *bbPort)
 
 void bbLoadDMARegs(dmaResource_t *dmaResource, dmaRegCache_t *dmaRegCache)
 {
-#if defined(AT32F43x)
+#if defined(AT32F4)
     ((DMA_ARCH_TYPE *)dmaResource)->ctrl = dmaRegCache->CCR;	//ctrl info
     ((DMA_ARCH_TYPE *)dmaResource)->dtcnt = dmaRegCache->CNDTR; // dtcnt data count
     ((DMA_ARCH_TYPE *)dmaResource)->paddr = dmaRegCache->CPAR;  //pheriph address
@@ -288,7 +288,7 @@ void bbDMAPreconfigure(bbPort_t *bbPort, uint8_t direction)
         dmainit->peripheral_base_addr = (uint32_t)&bbPort->gpio->idt;
         dmainit->peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_HALFWORD;
         dmainit->memory_base_addr = (uint32_t)bbPort->portInputBuffer;
-        dmainit->memory_data_width = DMA_MEMORY_DATA_WIDTH_WORD;
+        dmainit->memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
 
 #ifdef USE_DMA_REGISTER_CACHE
         xDMA_Init(bbPort->dmaResource, dmainit);
