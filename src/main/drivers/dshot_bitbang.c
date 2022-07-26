@@ -312,7 +312,7 @@ static void bbSetupDma(bbPort_t *bbPort)
     bbPacer_t *bbPacer = bbFindMotorPacer(bbPort->timhw->tim);
     bbPacer->dmaSources |= bbPort->dmaSource;
 
-    dmaSetHandler(dmaIdentifier, bbDMAIrqHandler, NVIC_BUILD_PRIORITY(2, 1), (uint32_t)bbPort);
+    dmaSetHandler(dmaIdentifier, bbDMAIrqHandler, NVIC_PRIO_DSHOT_DMA, (uint32_t)bbPort);
 
     //setup dmamux for at32f43x
     dmaMuxEnable(dmaIdentifier,bbPort->dmaMuxId);
@@ -403,6 +403,7 @@ static void bbFindPacerTimer(void)
             dmaIdentifier_e dmaIdentifier = dmaGetIdentifier(dma);
             if (dmaGetOwner(dmaIdentifier)->owner == OWNER_FREE) {
                 bbPorts[bbPortIndex].timhw = timer;
+                bbPorts[bbPortIndex].dmaMuxId = dmaChannelSpec->dmaMuxId;
 
                 break;
             }
@@ -658,7 +659,7 @@ static void bbUpdateComplete(void)
         } else
 #endif
         {
-#if defined(STM32G4)
+#if defined(STM32G4)|| defined(AT32F4)
             // Using circular mode resets the counter one short, so explicitly reload
             bbSwitchToOutput(bbPort);
 #endif
