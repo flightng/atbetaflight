@@ -65,7 +65,7 @@ const adcDevice_t adcHardware[ADCDEV_COUNT] = {
 adcDevice_t adcDevice[ADCDEV_COUNT];
 
 //FOR AT32F435/7
-#define ADC_CHANNEL_VREFINT	ADC_CHANNEL_18 //adc1_in17 参考电压
+#define ADC_CHANNEL_VREFINT	ADC_CHANNEL_17 //adc1_in17 参考电压
 #define ADC_CHANNEL_TEMPSENSOR_ADC1	ADC_CHANNEL_16//ADC1_IN16 内部温度传感器
 
 
@@ -79,42 +79,36 @@ const adcTagMap_t adcTagMap[] = {
 #define ADC_TAG_MAP_TEMPSENSOR 1
     // VREFINT is available on all ADC instances except ADC2
     // Here, for simplicity, we force VREFINT on ADC1.
-    { DEFIO_TAG_E__NONE, ADC_DEVICES_1,   ADC_CHANNEL_VREFINT,         19 },
-    // TEMPSENSOR is available on ADC1 or ADC5
+    { DEFIO_TAG_E__NONE, ADC_DEVICES_1,   ADC_CHANNEL_VREFINT,         17 },
+    // TEMPSENSOR is available on ADC1 channel 16
     // Here, for simplicity, we force TEMPSENSOR on ADC1.
-    { DEFIO_TAG_E__NONE, ADC_DEVICES_1,   ADC_CHANNEL_TEMPSENSOR_ADC1, 17 },
+    { DEFIO_TAG_E__NONE, ADC_DEVICES_1,   ADC_CHANNEL_TEMPSENSOR_ADC1, 16 },
 #endif
     // Inputs available for all packages under 100 pin or smaller
 	//参考 DS p35
 
-    { DEFIO_TAG_E__PA0,  ADC_DEVICES_123,  ADC_CHANNEL_0,   1 },
-    { DEFIO_TAG_E__PA1,  ADC_DEVICES_123,  ADC_CHANNEL_1,   2 },
-    { DEFIO_TAG_E__PA2,  ADC_DEVICES_123,  ADC_CHANNEL_2,   3 },
-    { DEFIO_TAG_E__PA3,  ADC_DEVICES_123,  ADC_CHANNEL_3,   4 },
-    { DEFIO_TAG_E__PA4,  ADC_DEVICES_12,   ADC_CHANNEL_4,   5 },
-    { DEFIO_TAG_E__PA5,  ADC_DEVICES_12,   ADC_CHANNEL_5,   6 },
-    { DEFIO_TAG_E__PA6,  ADC_DEVICES_12,   ADC_CHANNEL_6,   7 },
-    { DEFIO_TAG_E__PA7,  ADC_DEVICES_12,   ADC_CHANNEL_7,   8 },
+    { DEFIO_TAG_E__PA0,  ADC_DEVICES_123,  ADC_CHANNEL_0,   0 },
+    { DEFIO_TAG_E__PA1,  ADC_DEVICES_123,  ADC_CHANNEL_1,   1 },
+    { DEFIO_TAG_E__PA2,  ADC_DEVICES_123,  ADC_CHANNEL_2,   2 },
+    { DEFIO_TAG_E__PA3,  ADC_DEVICES_123,  ADC_CHANNEL_3,   3 },
+    { DEFIO_TAG_E__PA4,  ADC_DEVICES_12,   ADC_CHANNEL_4,   4 },
+    { DEFIO_TAG_E__PA5,  ADC_DEVICES_12,   ADC_CHANNEL_5,   5 },
+    { DEFIO_TAG_E__PA6,  ADC_DEVICES_12,   ADC_CHANNEL_6,   6 },
+    { DEFIO_TAG_E__PA7,  ADC_DEVICES_12,   ADC_CHANNEL_7,   7 },
 
-    { DEFIO_TAG_E__PB0,  ADC_DEVICES_12,   ADC_CHANNEL_8,   9 },
-    { DEFIO_TAG_E__PB1,  ADC_DEVICES_12,   ADC_CHANNEL_9,   10 },
+    { DEFIO_TAG_E__PB0,  ADC_DEVICES_12,   ADC_CHANNEL_8,   8 },
+    { DEFIO_TAG_E__PB1,  ADC_DEVICES_12,   ADC_CHANNEL_9,   9 },
 
-    { DEFIO_TAG_E__PC0,  ADC_DEVICES_123,  ADC_CHANNEL_10,   11 },
-    { DEFIO_TAG_E__PC1,  ADC_DEVICES_123,  ADC_CHANNEL_11,   12 },
-    { DEFIO_TAG_E__PC2,  ADC_DEVICES_123,  ADC_CHANNEL_12,   13 },
-    { DEFIO_TAG_E__PC3,  ADC_DEVICES_123,  ADC_CHANNEL_13,   14 },
-    { DEFIO_TAG_E__PC4,  ADC_DEVICES_12,   ADC_CHANNEL_14,   15 },
-    { DEFIO_TAG_E__PC5,  ADC_DEVICES_12,   ADC_CHANNEL_15,   16 },
+    { DEFIO_TAG_E__PC0,  ADC_DEVICES_123,  ADC_CHANNEL_10,   10 },
+    { DEFIO_TAG_E__PC1,  ADC_DEVICES_123,  ADC_CHANNEL_11,   11 },
+    { DEFIO_TAG_E__PC2,  ADC_DEVICES_123,  ADC_CHANNEL_12,   12 },
+    { DEFIO_TAG_E__PC3,  ADC_DEVICES_123,  ADC_CHANNEL_13,   13 },
+    { DEFIO_TAG_E__PC4,  ADC_DEVICES_12,   ADC_CHANNEL_14,   14 },
+    { DEFIO_TAG_E__PC5,  ADC_DEVICES_12,   ADC_CHANNEL_15,   15 },
 
        // Inputs available for packages larger than 100-pin are not listed
 };
 
-
-static void handleError(void)
-{
-    while (true) {
-    }
-}
 
 // Note on sampling time.
 // Temperature sensor has minimum sample time of 9us.
@@ -139,6 +133,9 @@ void adcInitDevice(adcDevice_t *adcdev, int channelCount)
      * 允许 overrun （覆盖采样数据）
      * 关闭超采样
      */
+
+
+
 	adc_base_config_type adc_base_struct;
 	adc_base_default_para_init(&adc_base_struct);
 	adc_base_struct.sequence_mode = TRUE;
@@ -171,12 +168,12 @@ int adcFindTagMapEntry(ioTag_t tag)
 // Need this separate from the main adcValue[] array, because channels are numbered
 // by ADC instance order that is different from ADC_xxx numbering.
 
-//volatile DMA_RAM_R uint16_t adcConversionBuffer[ADC_CHANNEL_COUNT] __attribute__((aligned(32)));
-volatile DMA_RAM_R uint32_t adcConversionBuffer[ADC_CHANNEL_COUNT] __attribute__((aligned(32)));
+volatile DMA_DATA uint32_t adcConversionBuffer[ADC_CHANNEL_COUNT] ;
 
 
 void adcInit(const adcConfig_t *config)
 {
+	//step zero
     memset(adcOperatingConfig, 0, sizeof(adcOperatingConfig));
     memcpy(adcDevice, adcHardware, sizeof(adcDevice));
 
@@ -200,7 +197,7 @@ void adcInit(const adcConfig_t *config)
 //    adcInitCalibrationValues();
 //#endif
 
-
+    //step 1 init gpio
     for (int i = 0; i < ADC_CHANNEL_COUNT; i++) {
         int map;
         int dev;
@@ -261,48 +258,52 @@ void adcInit(const adcConfig_t *config)
     //前面已经进行了整个adc 的重启，无需单个重启
     }//end of for i in each channel  config the gpio
 
+
+
+	//step 2 init & config dma for each adcx
     int  dmaBufferIndex = 0;
     for (int dev = 0; dev < ADCDEV_COUNT; dev++) {
-        adcDevice_t *adc = &adcDevice[dev];
+		adcDevice_t *adc = &adcDevice[dev];
 
-        if (!(adc->ADCx && adc->channelBits)) {
-            continue;
-        }
+		if (!(adc->ADCx && adc->channelBits)) {
+			continue;
+		}
 
-        RCC_ClockCmd(adc->rccADC, ENABLE);
+		RCC_ClockCmd(adc->rccADC, ENABLE);
 
-        //RESET ALL ADC
+		//RESET ALL ADC
 		adc_reset();
+		//仅初始化一次adc common
+		if(adc->ADCx==ADC1){
+		   //step 2 init adc common
+			adc_common_config_type adc_common_struct;
+			adc_common_default_para_init(&adc_common_struct);
+			/* config combine mode */
+			adc_common_struct.combine_mode = ADC_INDEPENDENT_MODE;
+			/* config division,adcclk is division by hclk */
+			adc_common_struct.div = ADC_HCLK_DIV_4;
+			/* config common dma mode,it's not useful in independent mode */
+			adc_common_struct.common_dma_mode = ADC_COMMON_DMAMODE_DISABLE;
+			/* config common dma request repeat */
+			adc_common_struct.common_dma_request_repeat_state = FALSE;
+			/* config adjacent adc sampling interval,it's useful for ordinary shifting mode */
+			adc_common_struct.sampling_interval = ADC_SAMPLING_INTERVAL_5CYCLES;
+			/* config inner temperature sensor and vintrv */
+			adc_common_struct.tempervintrv_state = TRUE;
+			adc_common_struct.vbat_state = TRUE;
+			/* config voltage battery */
+			adc_common_config(&adc_common_struct);
+		}
 
-		//init adc common
-		 adc_common_config_type adc_common_struct;
-		 adc_common_default_para_init(&adc_common_struct);
-		/* config combine mode */
-		adc_common_struct.combine_mode = ADC_INDEPENDENT_MODE;
-		/* config division,adcclk is division by hclk */
-		adc_common_struct.div = ADC_HCLK_DIV_4;
-		/* config common dma mode,it's not useful in independent mode */
-		adc_common_struct.common_dma_mode = ADC_COMMON_DMAMODE_DISABLE;
-		/* config common dma request repeat */
-		adc_common_struct.common_dma_request_repeat_state = FALSE;
-		/* config adjacent adc sampling interval,it's useful for ordinary shifting mode */
-		adc_common_struct.sampling_interval = ADC_SAMPLING_INTERVAL_5CYCLES;
-		/* config inner temperature sensor and vintrv */
-		adc_common_struct.tempervintrv_state = TRUE;
-		adc_common_struct.vbat_state = TRUE;
-		/* config voltage battery */
-		adc_common_config(&adc_common_struct);
 
-        int configuredAdcChannels = BITCOUNT(adc->channelBits);
-
-        // Configure ADCx with inputs
-// init base 配置
-        adcInitDevice(adc, configuredAdcChannels);
+		int configuredAdcChannels = BITCOUNT(adc->channelBits);
+		 // init base 配置
+		// Configure ADCx with inputs
+		adcInitDevice(adc, configuredAdcChannels);
 
 #ifdef USE_DMA_SPEC
         // Configure DMA for this ADC peripheral
-        //config the dma for each adc device
-	const dmaChannelSpec_t *dmaSpec = dmaGetChannelSpecByPeripheral(DMA_PERIPH_ADC, dev, config->dmaopt[dev]);
+    	const dmaChannelSpec_t *dmaSpec = dmaGetChannelSpecByPeripheral(DMA_PERIPH_ADC, dev, config->dmaopt[dev]);
 		dmaIdentifier_e dmaIdentifier = dmaGetIdentifier(dmaSpec->ref);
 		if (!dmaSpec || !dmaAllocate(dmaIdentifier, OWNER_ADC, RESOURCE_INDEX(dev))) {
 			return;
@@ -314,20 +315,22 @@ void adcInit(const adcConfig_t *config)
 		dmaEnable(dmaIdentifier);
 		xDMA_DeInit(dmaSpec->ref);
 
+		//SAVE DMA POINTER
+		adc->dmaResource=dmaSpec->ref;
+
 		dma_init_type dma_init_struct;
 		dma_default_para_init(&dma_init_struct);
 		dma_init_struct.buffer_size = BITCOUNT(adc->channelBits);
 		dma_init_struct.direction = DMA_DIR_PERIPHERAL_TO_MEMORY;
-		dma_init_struct.memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
+		dma_init_struct.memory_data_width = DMA_MEMORY_DATA_WIDTH_WORD;
 		dma_init_struct.memory_inc_enable = TRUE;
-		dma_init_struct.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_HALFWORD;
+		dma_init_struct.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_WORD;
 		dma_init_struct.peripheral_inc_enable = FALSE;
 		dma_init_struct.priority = DMA_PRIORITY_MEDIUM;
-		dma_init_struct.loop_mode_enable = FALSE;
+		dma_init_struct.loop_mode_enable = TRUE;
 
 		dma_init_struct.memory_base_addr = (uint32_t)&(adcConversionBuffer[dmaBufferIndex]);
 		dma_init_struct.peripheral_base_addr = (uint32_t)&(adc->ADCx->odt);
-
 
 		xDMA_Init(dmaSpec->ref, &dma_init_struct);
 		dmaMuxEnable(dmaIdentifier, dmaSpec->dmaMuxId);
@@ -335,39 +338,45 @@ void adcInit(const adcConfig_t *config)
 		/* enable dma transfer complete interrupt */
 		xDMA_ITConfig(dmaSpec->ref,DMA_IT_TCIF,ENABLE);
 		xDMA_Cmd(dmaSpec->ref,ENABLE);
+        
 
 		// Start conversion in DMA mode ,使能ADC DMA 重复采样模式，之后自动采样到内存
 		/* config dma mode,it's not useful when common dma mode is use */
 		adc_dma_mode_enable(adc->ADCx, TRUE);
-
 		/* config dma request repeat,it's not useful when common dma mode is use */
 		adc_dma_request_repeat_enable(adc->ADCx, TRUE);
 #endif //end of USE_DMA_SPEC
-        // Configure channels
-//init  each  channel 逐个通道配置
-        for (int adcChan = 0; adcChan < ADC_CHANNEL_COUNT; adcChan++) {
+		        // Configure channels
+			// step 3.1 init  each  channel 逐个通道配置
+			for (int adcChan = 0; adcChan < ADC_CHANNEL_COUNT; adcChan++) {
 
-            if (!adcOperatingConfig[adcChan].enabled) {
-                continue;
-            }
+				if (!adcOperatingConfig[adcChan].enabled) {
+					continue;
+				}
 
-            if (adcOperatingConfig[adcChan].adcDevice != dev) {
-                continue;
-            }
+				if (adcOperatingConfig[adcChan].adcDevice != dev) {
+					continue;
+				}
 
-            adcOperatingConfig[adcChan].dmaIndex = dmaBufferIndex++;
+				adcOperatingConfig[adcChan].dmaIndex = dmaBufferIndex++;
+		// Start channels.
+				adc_ordinary_channel_set(adcDevice[dev].ADCx,
+						adcOperatingConfig[adcChan].adcChannel,
+						adcOperatingConfig[adcChan].dmaIndex+1,
+						ADC_SAMPLETIME_92_5);
+			}//end of for each channel
 
-            adc_ordinary_channel_set(adcDevice[dev].ADCx,
-            		adcOperatingConfig[adcChan].adcChannel,
-					adcChan,
-					ADC_SAMPLETIME_47_5);
-        }//end of for each channel
-    // Start channels.
-    // This must be done after channel configuration is complete, as HAL_ADC_ConfigChannel
-    // throws an error when configuring internal channels if ADC1 or ADC2 are already enabled.
 
-        /* enable adc overflow interrupt */
-//        adc_interrupt_enable(adc->ADCx, ADC_OCCO_INT, TRUE);
+			if(adc->ADCx==ADC1){
+					/* config voltage_monitoring */
+						adc_voltage_monitor_threshold_value_set(ADC1, 0x100, 0x000);
+						adc_voltage_monitor_single_channel_select(ADC1, adcOperatingConfig[ADC_BATTERY].adcChannel);
+						adc_voltage_monitor_enable(ADC1, ADC_VMONITOR_SINGLE_ORDINARY);
+			}
+
+
+    //enable over flow interupt 
+        adc_interrupt_enable(adc->ADCx, ADC_OCCO_INT, TRUE);
 
         /* adc enable */
         adc_enable(adc->ADCx, TRUE);
@@ -381,9 +390,10 @@ void adcInit(const adcConfig_t *config)
         while(adc_calibration_status_get(adc->ADCx));
 
         //start adc
+        adc_enable(adc->ADCx, TRUE);
         adc_ordinary_software_trigger_enable(adc->ADCx, TRUE);
 
-    }//end of for
+    }//end of for each adc device 
 }
 
 void adcGetChannelValues(void)
@@ -423,15 +433,33 @@ int adcPrivateTemp = -1;
 uint16_t adcInternalReadVrefint(void)
 {
     uint16_t value = adcInternalRead(ADC_VREFINT);
-    adcPrivateVref =((double)ADC_VREF * 4 * value) / 4095;
+    //at32
+    adcPrivateVref =((double)1.2 * 4095) / value * 1000; // 3300 mv
     return adcPrivateVref;
 }
 
 uint16_t adcInternalReadTempsensor(void)
 {
     uint16_t value = adcInternalRead(ADC_TEMPSENSOR);
-    adcPrivateTemp = ((ADC_TEMP_BASE-value *ADC_VREF/4096)/ADC_TEMP_SLOPE+25);
+    adcPrivateTemp = (((ADC_TEMP_BASE-value *ADC_VREF/4096)/ADC_TEMP_SLOPE)+25);
     return adcPrivateTemp;
 }
+
+//clear over flow flag 
+void ADC1_2_3_IRQHandler(void)
+{    for (int dev = 0; dev < ADCDEV_COUNT; dev++) {
+        adcDevice_t *adc = &adcDevice[dev];
+
+        if (!(adc->ADCx && adc->channelBits)) {
+            continue;
+        }
+        if(adc_flag_get(adc->ADCx, ADC_OCCO_FLAG) != RESET)
+        {
+            adc_flag_clear(adc->ADCx, ADC_OCCO_FLAG);
+        } 
+    }
+ }
+
+
 #endif // USE_ADC_INTERNAL
 #endif // USE_ADC
