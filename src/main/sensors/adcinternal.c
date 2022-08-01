@@ -87,8 +87,16 @@ void adcInternalProcess(timeUs_t currentTimeUs)
     adcVrefintValue = updateMovingAverageUint16(&adcVrefintAverageState, vrefintSample);
     adcTempsensorValue = updateMovingAverageUint16(&adcTempsensorAverageState, tempsensorSample);
 
+#ifndef AT32F4
+
     vrefMv = adcInternalCompensateVref(adcVrefintValue);
     coreTemperature = adcInternalComputeTemperature(adcTempsensorValue, vrefMv);
+#else
+    //at32 已经计算好 参考电压值与温度值
+    vrefMv=adcVrefintValue;
+    coreTemperature=adcTempsensorValue;
+
+#endif
 
     DEBUG_SET(DEBUG_ADC_INTERNAL, 0, coreTemperature);
     DEBUG_SET(DEBUG_ADC_INTERNAL, 1, vrefintSample);
