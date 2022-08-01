@@ -877,11 +877,15 @@ void tmr_input_channel_init(tmr_type *tmr_x, tmr_input_config_type *input_struct
   /* get channel selected */
   channel = input_struct->input_channel_select;
 
+  //mod by shanggl
+
   switch(channel)
   {
     case TMR_SELECT_CHANNEL_1:
+      tmr_x->cctrl_bit.c1en       = FALSE;//disable channel
       tmr_x->cctrl_bit.c1p        = (uint32_t)input_struct->input_polarity_select;
       tmr_x->cctrl_bit.c1cp       = (input_struct->input_polarity_select & 0x2) >> 1;
+      tmr_x->cm1 &= 0xff00;	      //clear cm1 c1
       tmr_x->cm1_input_bit.c1c    = input_struct->input_mapped_select;
       tmr_x->cm1_input_bit.c1df   = input_struct->input_filter_value;
       tmr_x->cm1_input_bit.c1idiv = divider_factor;
@@ -889,8 +893,10 @@ void tmr_input_channel_init(tmr_type *tmr_x, tmr_input_config_type *input_struct
       break;
 
     case TMR_SELECT_CHANNEL_2:
+      tmr_x->cctrl_bit.c2en       = FALSE;//disable channel
       tmr_x->cctrl_bit.c2p        = (uint32_t)input_struct->input_polarity_select;
       tmr_x->cctrl_bit.c2cp       = (input_struct->input_polarity_select & 0x2) >> 1;
+      tmr_x->cm1 &= 0x00ff;	//clear cm1 ch2
       tmr_x->cm1_input_bit.c2c    = input_struct->input_mapped_select;
       tmr_x->cm1_input_bit.c2df   = input_struct->input_filter_value;
       tmr_x->cm1_input_bit.c2idiv = divider_factor;
@@ -898,8 +904,10 @@ void tmr_input_channel_init(tmr_type *tmr_x, tmr_input_config_type *input_struct
       break;
 
     case TMR_SELECT_CHANNEL_3:
+      tmr_x->cctrl_bit.c3en		  =FALSE;//disable channel
       tmr_x->cctrl_bit.c3p        = (uint32_t)input_struct->input_polarity_select;
       tmr_x->cctrl_bit.c3cp       = (input_struct->input_polarity_select & 0x2) >> 1;
+      tmr_x->cm2 &= 0xff00;	//clear cm2 ch3
       tmr_x->cm2_input_bit.c3c    = input_struct->input_mapped_select;
       tmr_x->cm2_input_bit.c3df   = input_struct->input_filter_value;
       tmr_x->cm2_input_bit.c3idiv = divider_factor;
@@ -907,7 +915,9 @@ void tmr_input_channel_init(tmr_type *tmr_x, tmr_input_config_type *input_struct
       break;
 
     case TMR_SELECT_CHANNEL_4:
+      tmr_x->cctrl_bit.c4en       =FALSE;//disable channel
       tmr_x->cctrl_bit.c4p        = (uint32_t)input_struct->input_polarity_select;
+      tmr_x->cm2 &= 0x00ff;	//clear cm2 ch 4
       tmr_x->cm2_input_bit.c4c    = input_struct->input_mapped_select;
       tmr_x->cm2_input_bit.c4df   = input_struct->input_filter_value;
       tmr_x->cm2_input_bit.c4idiv = divider_factor;
