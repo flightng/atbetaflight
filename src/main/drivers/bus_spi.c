@@ -352,9 +352,9 @@ uint16_t spiCalculateDivider(uint32_t freq)
 #elif defined(STM32H7)
     uint32_t spiClk = 100000000;
 #elif defined(AT32F43x)
-    if(freq> 48000000){
-    	freq= 48000000;
-    }//at23f437 spi  最高48Mhz
+    if(freq> 36000000){
+    	freq= 36000000;
+    }//at23f437 spi  最高36Mhz
 
     uint32_t spiClk = system_core_clock / 2;
 #else
@@ -379,8 +379,8 @@ uint32_t spiCalculateClock(uint16_t spiClkDivisor)
 #elif defined (AT32F43x)
     uint32_t spiClk = system_core_clock / 2;
 //at32f437 spi max 48Mhz
-    if ((spiClk / spiClkDivisor) > 48000000){
-    	return 48000000;
+    if ((spiClk / spiClkDivisor) > 36000000){
+    	return 36000000;
     }
 
 #else
