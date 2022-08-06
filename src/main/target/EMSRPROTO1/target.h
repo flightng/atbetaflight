@@ -20,7 +20,7 @@
 
 #pragma once
 
-#define TARGET_BOARD_IDENTIFIER "AT32F437"
+#define TARGET_BOARD_IDENTIFIER "EMSR-PROTO-1"
 #define USBD_PRODUCT_STRING     "EMSRAT32F4"
 /**********swd debuger reserved *****************
  *
@@ -34,8 +34,10 @@
  *
  * PB2 ->BOOT0 button
  * PA8  MCO1
- * PA11 OTG1
- * PA10 OTG1
+ * PA11 OTG1 D+ DP
+ * PA10 OTG1 D- DN
+ * PH0 HEXT IN
+ * PH1 HEXT OUT
  */
 
 //buttons
@@ -45,9 +47,6 @@
 #define BUTTON_B_PIN            PC13 //PC14 FOR lqfp64
 #define BUTTON_B_PIN_INVERTED // Active high
 
-// LED0_PIN PH0 FOR lqfp64
-// LED1_PIN PH1 FOR lqfp64
-// LED2_PIN PH2 FOR lqfp64
 
 #define LED0_PIN                PD13 //confirm on LQFP64
 #define LED1_PIN                PD14 //confirm on LQFP64
@@ -99,7 +98,7 @@
 
 #define GYRO_1_CS_PIN          SPI1_NSS_PIN
 #define GYRO_1_SPI_INSTANCE    SPI1
-#define GYRO_1_ALIGN           CW90_DEG
+#define GYRO_1_ALIGN           CW180_DEG
 
 
 #define USE_GYRO
@@ -170,7 +169,7 @@
 
 // *************** UART *****************************
 #define USE_VCP
-#define USB_DETECT_PIN          PC15
+#define USB_DETECT_PIN          PB12
 #define USE_USB_DETECT
 
 #define USE_UART1
