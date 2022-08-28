@@ -78,7 +78,7 @@ uint8_t eepromData[EEPROM_SIZE];
 # elif defined(STM32G4)
 #  define FLASH_PAGE_SIZE                 ((uint32_t)0x800) // 2K page
 // SIMULATOR
-# elif defined(AT32F437ZMT7)
+# elif defined(AT32F437ZMT7) || defined(AT32F437VMT7)
 # define FLASH_PAGE_SIZE ((uint32_t)0x1000) //4k sectors
 # elif defined(AT32F437ZGT7)
 #  define FLASH_PAGE_SIZE                 ((uint32_t)0x800) // 2K page sectors

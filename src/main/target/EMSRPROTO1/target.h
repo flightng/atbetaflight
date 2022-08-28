@@ -48,9 +48,9 @@
 #define BUTTON_B_PIN_INVERTED // Active high
 
 
-#define LED0_PIN                PD13 //confirm on LQFP64
+#define LED0_PIN                PD15 //confirm on LQFP64
 #define LED1_PIN                PD14 //confirm on LQFP64
-#define LED2_PIN                PD15 //confirm on LQFP64
+#define LED2_PIN                PD13 //confirm on LQFP64
 #define LED0_INVERTED
 #define LED1_INVERTED
 #define LED2_INVERTED
@@ -169,7 +169,7 @@
 
 // *************** UART *****************************
 #define USE_VCP
-#define USB_DETECT_PIN          PB12
+#define USB_DETECT_PIN          PC15 //可以悬空忽略
 #define USE_USB_DETECT
 
 #define USE_UART1

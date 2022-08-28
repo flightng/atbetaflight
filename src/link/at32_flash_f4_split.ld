@@ -206,7 +206,7 @@ SECTIONS
     *(.persistent_data)
     . = ALIGN(4);
     __persistent_data_end__ = .;
-  } >RAM
+  } >FASTRAM
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   _heap_stack_end = ORIGIN(STACKRAM) + LENGTH(STACKRAM) - _Hot_Reboot_Flags_Size;
