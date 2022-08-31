@@ -49,6 +49,13 @@ SECTIONS
 
 
   /* System memory (read-only bootloader) interrupt vector */
+  .system_isr_vector (NOLOAD) :
+  {
+    . = ALIGN(4);
+    PROVIDE (system_isr_vector_table_base = .);
+    KEEP(*(.system_isr_vector)) /* Bootloader code */
+    . = ALIGN(4);
+  } >SYSTEM_MEMORY
  
   /* The program code and other data goes into FLASH */
   .text :
