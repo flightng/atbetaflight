@@ -61,18 +61,11 @@ static spi_init_type defaultInit = {
 //与stm32F4 略增加 512分频和1024分频(mdiv[3]=1)
 static uint16_t spiDivisorToBRbits(spi_type  *instance, uint16_t divisor)
 {
-    // SPI2 and SPI3 are on APB1/AHB1 which PCLK is half that of APB2/AHB2.
-#if defined(STM32F410xx) || defined(STM32F411xE)
-    UNUSED(instance);
-#else
-    if (instance == SPI2 || instance == SPI3) {
-        divisor /= 2; // Safe for divisor == 0 or 1
-    }
-#endif
-
+   //at32 spi1\2\3 频率一样 
+	UNUSED(instance);
     divisor = constrain(divisor, 2, 256);
-
     return (ffs(divisor) - 2) << 3; // SPI_CR1_BR_Pos
+
 }
 //bug: 不支持1000 512 1001 1024分频
 static void spiSetDivisorBRreg(spi_type *instance, uint16_t divisor)
