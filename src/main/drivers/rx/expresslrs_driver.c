@@ -197,6 +197,7 @@ void expressLrsTimerResume(void)
 
     LL_TIM_ClearFlag_UPDATE(timer);
     LL_TIM_EnableIT_UPDATE(timer);
+#elif defined(AT32F)
 #else
     TIM_SetAutoreload(timer, (timerState.intervalUs / TICK_TOCK_COUNT));
     TIM_SetCounter(timer, 0);
@@ -210,13 +211,15 @@ void expressLrsTimerResume(void)
 #ifdef USE_HAL_DRIVER
     LL_TIM_EnableCounter(timer);
     LL_TIM_GenerateEvent_UPDATE(timer);
+#elif defined(AT32F43x)
+
 #else
     TIM_Cmd(timer, ENABLE);
     TIM_GenerateEvent(timer, TIM_EventSource_Update);
 #endif
 }
 
-void expressLrsInitialiseTimer(TIM_TypeDef *t, timerOvrHandlerRec_t *timerUpdateCb)
+void expressLrsInitialiseTimer(tmr_type *t, timerOvrHandlerRec_t *timerUpdateCb)
 {
     timer = t;
 
@@ -237,6 +240,8 @@ void expressLrsTimerEnableIRQs(void)
 #ifdef USE_HAL_DRIVER
     HAL_NVIC_SetPriority(irq, NVIC_PRIORITY_BASE(NVIC_PRIO_TIMER), NVIC_PRIORITY_SUB(NVIC_PRIO_TIMER));
     HAL_NVIC_EnableIRQ(irq);
+#elif defined(AT32F43x)
+
 #else
     NVIC_SetPriority(irq, NVIC_PRIORITY_BASE(NVIC_PRIO_TIMER));
     NVIC_EnableIRQ(irq);
