@@ -66,7 +66,7 @@ ARCH_FLAGS      = -std=c99  -mthumb -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=
 
 
 ifeq ($(DEVICE_FLAGS),)
-DEVICE_FLAGS    = -DAT32F437ZMT7
+DEVICE_FLAGS    = -DAT32F437VMT7
 endif
 DEVICE_FLAGS   += -DUSE_ATBSP_DRIVER -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
 
