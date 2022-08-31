@@ -57,6 +57,7 @@
 #include "drivers/accgyro/accgyro_spi_mpu9250.h"
 #include "drivers/accgyro/accgyro_spi_l3gd20.h"
 #include "drivers/accgyro/accgyro_mpu.h"
+#include "drivers/accgyro/accgyro_spi_qmi8658x.h"
 
 #include "pg/pg.h"
 #include "pg/gyrodev.h"
@@ -366,6 +367,9 @@ static gyroSpiDetectFn_t gyroSpiDetectFnTable[] = {
 #endif
 #ifdef USE_GYRO_L3GD20
     l3gd20Detect,
+#endif
+#ifdef USE_GYRO_SPI_QMI8658A
+	qmi8658xSpiDetect,
 #endif
     NULL // Avoid an empty array
 };

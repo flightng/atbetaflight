@@ -314,6 +314,21 @@ retry:
         }
         FALLTHROUGH;
 #endif
+#if defined(USE_ACC_SPI_QMI8658A)
+    case ACC_QMI8658A:
+    	if (qmi8658xSpiAccDetect(dev)) {
+            switch (dev->mpuDetectionResult.sensor) {
+            case QMI_8658A_SPI:
+                accHardware = ACC_QMI8658A;
+                break;
+            default:
+                accHardware = ACC_NONE;
+                break;
+            }
+            break;
+        }
+        FALLTHROUGH;
+#endif
 
 #ifdef USE_FAKE_ACC
     case ACC_FAKE:
