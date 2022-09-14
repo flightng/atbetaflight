@@ -179,7 +179,7 @@
 #define DEFAULT_CPU_OVERCLOCK 0
 #endif
 
-#if defined(STM32H7)
+#if defined(STM32H7) || defined(AT32F4)
 // Move ISRs to fast ram to avoid flash latency.
 #define FAST_IRQ_HANDLER FAST_CODE
 #else

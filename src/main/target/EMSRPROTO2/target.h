@@ -103,6 +103,8 @@
 #define USE_GYRO
 #define USE_GYRO_SPI_ICM42688P
 #define USE_ACCGYRO_BMI270
+#define USE_ACCGYRO_LSM6DSO
+
 
 
 #define USE_ACC
