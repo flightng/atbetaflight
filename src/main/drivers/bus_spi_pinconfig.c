@@ -462,80 +462,93 @@ const spiHardware_t spiHardware[] = {
         //.dmaIrqHandler = DMA1_ST7_HANDLER,
     },
 #endif
-#ifdef AT32F4
+#ifdef AT32F43x
 	//TODO: 修改为逐个针脚的 gpio_mux 进一步增加spi配置的灵活性
     {
         .device = SPIDEV_1,
         .reg = SPI1,
         .sckPins = {
-            { DEFIO_TAG_E(PA5) },
-            { DEFIO_TAG_E(PB3) },
+            { DEFIO_TAG_E(PA5) ,GPIO_MUX_5},
+            { DEFIO_TAG_E(PB3) ,GPIO_MUX_5},
+			{ DEFIO_TAG_E(PE13),GPIO_MUX_4},
         },
         .misoPins = {
-            { DEFIO_TAG_E(PA6) },
-            { DEFIO_TAG_E(PB4) },
+            { DEFIO_TAG_E(PA6) ,GPIO_MUX_5},
+            { DEFIO_TAG_E(PB4) ,GPIO_MUX_5},
+			{ DEFIO_TAG_E(PE14),GPIO_MUX_4}
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PA7) },
-            { DEFIO_TAG_E(PB5) },
+            { DEFIO_TAG_E(PA7) ,GPIO_MUX_5},
+            { DEFIO_TAG_E(PB5) ,GPIO_MUX_5},
+			{ DEFIO_TAG_E(PE15),GPIO_MUX_4},
         },
-		.af=GPIO_MUX_5,
+		.af= 0x00,
         .rcc = RCC_APB2(SPI1),
-        //.dmaIrqHandler = DMA2_ST3_HANDLER,
     },
     {
         .device = SPIDEV_2,
         .reg = SPI2,
         .sckPins = {
-            // { DEFIO_TAG_E(PA9), GPIO_MUX_5 },pa9 used for uart1_tx
-//            { DEFIO_TAG_E(PB13) },
-//            { DEFIO_TAG_E(PB10) },
-			{ DEFIO_TAG_E(PD1) },
+//			 { DEFIO_TAG_E(PB1),  GPIO_MUX_6},
+			 { DEFIO_TAG_E(PB10), GPIO_MUX_5},
+             { DEFIO_TAG_E(PB13) ,GPIO_MUX_5},
+			 { DEFIO_TAG_E(PC7),  GPIO_MUX_5},
+			 { DEFIO_TAG_E(PD1),  GPIO_MUX_6},
+
         },
         .misoPins = {
-//            { DEFIO_TAG_E(PA12) },
-//            { DEFIO_TAG_E(PB14) },
-			{ DEFIO_TAG_E(PD3) },
+            { DEFIO_TAG_E(PA12),  GPIO_MUX_5},
+            { DEFIO_TAG_E(PB14),  GPIO_MUX_5},
+			{ DEFIO_TAG_E(PC2),	  GPIO_MUX_5},
+			{ DEFIO_TAG_E(PD3),   GPIO_MUX_6},
         },
         .mosiPins = {
-//            { DEFIO_TAG_E(PA10) },
-//            { DEFIO_TAG_E(PB15) },
-			{ DEFIO_TAG_E(PD4) },
+            { DEFIO_TAG_E(PB15),  GPIO_MUX_5},
+			{ DEFIO_TAG_E(PC1),   GPIO_MUX_7},
+			{ DEFIO_TAG_E(PC3),   GPIO_MUX_5},
+			{ DEFIO_TAG_E(PD4),	  GPIO_MUX_6},
         },
-		.af= GPIO_MUX_6,
+		.af= 0x00,
         .rcc = RCC_APB1(SPI2),
     },
     {
         .device = SPIDEV_3,
         .reg = SPI3,
         .sckPins = {
-//            { DEFIO_TAG_E(PB12) },
-            { DEFIO_TAG_E(PC10) },
+        	{ DEFIO_TAG_E(PB3),  GPIO_MUX_6},
+            { DEFIO_TAG_E(PB12), GPIO_MUX_7},
+            { DEFIO_TAG_E(PC10), GPIO_MUX_6},
         },
         .misoPins = {
-//            { DEFIO_TAG_E(PB4) },
-            { DEFIO_TAG_E(PC11) },
+            { DEFIO_TAG_E(PB4),  GPIO_MUX_6},
+            { DEFIO_TAG_E(PC11), GPIO_MUX_6},
         },
         .mosiPins = {
-//            { DEFIO_TAG_E(PB5) },
-            { DEFIO_TAG_E(PC12) },
+			{ DEFIO_TAG_E(PB2),  GPIO_MUX_7},
+            { DEFIO_TAG_E(PB5),  GPIO_MUX_6},
+			{ DEFIO_TAG_E(PC12),  GPIO_MUX_6},
+			{ DEFIO_TAG_E(PD0),  GPIO_MUX_6},
         },
-		.af= GPIO_MUX_6,
+		.af= 0x00,
         .rcc = RCC_APB1(SPI3),
     },
     {
         .device = SPIDEV_4,
         .reg = SPI4,
         .sckPins = {
-            { DEFIO_TAG_E(PB7) },
+			{ DEFIO_TAG_E(PB7),  GPIO_MUX_6},
+			{ DEFIO_TAG_E(PB13), GPIO_MUX_6},
         },
         .misoPins = {
-            { DEFIO_TAG_E(PB8) },
+        	{ DEFIO_TAG_E(PA11),  GPIO_MUX_6},
+            { DEFIO_TAG_E(PB8) ,  GPIO_MUX_6},
+			{ DEFIO_TAG_E(PD0) ,  GPIO_MUX_5},
         },
         .mosiPins = {
-            { DEFIO_TAG_E(PB9) },
+        	{ DEFIO_TAG_E(PA1),   GPIO_MUX_5},
+            { DEFIO_TAG_E(PB9),   GPIO_MUX_6},
         },
-		.af= GPIO_MUX_6,
+		.af= 0x00,
         .rcc = RCC_APB2(SPI4),
     },
 #endif
@@ -556,19 +569,19 @@ void spiPinConfigure(const spiPinConfig_t *pConfig)
         for (int pindex = 0 ; pindex < MAX_SPI_PIN_SEL ; pindex++) {
             if (pConfig[device].ioTagSck == hw->sckPins[pindex].pin) {
                 pDev->sck = hw->sckPins[pindex].pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
                 pDev->sckAF = hw->sckPins[pindex].af;
 #endif
             }
             if (pConfig[device].ioTagMiso == hw->misoPins[pindex].pin) {
                 pDev->miso = hw->misoPins[pindex].pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
                 pDev->misoAF = hw->misoPins[pindex].af;
 #endif
             }
             if (pConfig[device].ioTagMosi == hw->mosiPins[pindex].pin) {
                 pDev->mosi = hw->mosiPins[pindex].pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
                 pDev->mosiAF = hw->mosiPins[pindex].af;
 #endif
             }
@@ -576,7 +589,7 @@ void spiPinConfigure(const spiPinConfig_t *pConfig)
 
         if (pDev->sck && pDev->miso && pDev->mosi) {
             pDev->dev = hw->reg;
-#if !(defined(STM32F7) || defined(STM32H7) || defined(STM32G4))
+#if !(defined(STM32F7) || defined(STM32H7) || defined(STM32G4)||defined(AT32F43x))
             pDev->af = hw->af; //at32 默认都是同一个af
 #endif
             pDev->rcc = hw->rcc;

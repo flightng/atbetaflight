@@ -36,7 +36,7 @@
 
 typedef struct spiPinDef_s {
     ioTag_t pin;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F4)
     uint8_t af;
 #endif
 } spiPinDef_t;
@@ -63,12 +63,12 @@ typedef struct SPIDevice_s {
     ioTag_t sck;
     ioTag_t miso;
     ioTag_t mosi;
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) ||defined(AT32F43x)
     uint8_t sckAF;
     uint8_t misoAF;
     uint8_t mosiAF;
 #else
-    uint8_t af;//at32f437 同一组SPI的GPIO复用都是同一个AF，如GPIO_MUX5、GPIO_MUX6
+    uint8_t af;//at32f437 改为每个针脚单独 af
 #endif
 #if defined(HAL_SPI_MODULE_ENABLED)
     SPI_HandleTypeDef hspi;
