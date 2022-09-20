@@ -61,7 +61,7 @@ static spi_init_type defaultInit = {
 //与stm32F4 略增加 512分频和1024分频(mdiv[3]=1)
 static uint16_t spiDivisorToBRbits(spi_type  *instance, uint16_t divisor)
 {
-   //at32 spi1\2\3 频率一样 
+   //at32 spi1\2\3 频率一样
 	UNUSED(instance);
     divisor = constrain(divisor, 2, 256);
     return (ffs(divisor) - 2) << 3; // SPI_CR1_BR_Pos
@@ -93,24 +93,20 @@ void spiInitDevice(SPIDevice device)
     IOInit(IOGetByTag(spi->miso), OWNER_SPI_MISO, RESOURCE_INDEX(device));
     IOInit(IOGetByTag(spi->mosi), OWNER_SPI_MOSI, RESOURCE_INDEX(device));
 
-    IOConfigGPIOAF(IOGetByTag(spi->sck),  SPI_IO_AF_SCK_CFG_HIGH, spi->af);
-    IOConfigGPIOAF(IOGetByTag(spi->miso), SPI_IO_AF_MISO_CFG, spi->af);
-    IOConfigGPIOAF(IOGetByTag(spi->mosi), SPI_IO_AF_CFG, spi->af);
+    IOConfigGPIOAF(IOGetByTag(spi->sck),  SPI_IO_AF_SCK_CFG_HIGH, spi->sckAF);
+    IOConfigGPIOAF(IOGetByTag(spi->miso), SPI_IO_AF_MISO_CFG, spi->misoAF);
+    IOConfigGPIOAF(IOGetByTag(spi->mosi), SPI_IO_AF_CFG, spi->mosiAF);
 
     // Init SPI hardware
-//    SPI_I2S_DeInit(spi->dev);
     spi_i2s_reset(spi->dev);
 
-//    SPI_I2S_DMACmd(spi->dev, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
     spi_i2s_dma_transmitter_enable(spi->dev,TRUE);
     spi_i2s_dma_receiver_enable(spi->dev,TRUE);
 
-//    SPI_Init(spi->dev, &defaultInit);
     spi_init(spi->dev,&defaultInit);
     //补充设置crc，其实复位值就是7 ，还是设置一下吧
     spi_crc_polynomial_set(spi->dev,7);
 
-//    SPI_Cmd(spi->dev, ENABLE);
     spi_enable(spi->dev,TRUE);
 }
 
@@ -119,14 +115,6 @@ void spiInternalResetDescriptors(busDevice_t *bus)
     dma_init_type *initTx = bus->initTx;
 
     dma_default_para_init(initTx);
-//    initTx->DMA_Channel = bus->dmaTx->channel;
-//    initTx->DMA_DIR = DMA_DIR_MemoryToPeripheral;
-//    initTx->DMA_Mode = DMA_Mode_Normal;
-//    initTx->DMA_PeripheralBaseAddr = (uint32_t)&bus->busType_u.spi.instance->DR;
-//    initTx->DMA_Priority = DMA_Priority_Low;
-//    initTx->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-//    initTx->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-//    initTx->DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
 
     initTx->direction=DMA_DIR_MEMORY_TO_PERIPHERAL;
     initTx->loop_mode_enable=FALSE;
@@ -142,7 +130,6 @@ void spiInternalResetDescriptors(busDevice_t *bus)
         dma_default_para_init(initRx);
 
         initRx->direction = DMA_DIR_PERIPHERAL_TO_MEMORY;
-//        initRx->DMA_Channel = bus->dmaRx->channel;
         initRx->loop_mode_enable = FALSE;
         initRx->peripheral_base_addr = (uint32_t)&bus->busType_u.spi.instance->dt;
         initRx->priority = DMA_PRIORITY_LOW;
@@ -175,14 +162,10 @@ static bool spiInternalReadWriteBufPolled(spi_type *instance, const uint8_t *txD
     	 * SPI_I2S_FLAG_RXNE Receive buffer not empty flag 当接收缓存区不慢时，一直等待直到缓存为满
     	 */
         b = txData ? *(txData++) : 0xFF;
-//        while (SPI_I2S_GetFlagStatus(instance, SPI_I2S_FLAG_TXE) == RESET);
-//        SPI_I2S_SendData(instance, b);
 
         while(spi_i2s_flag_get(instance,SPI_I2S_TDBE_FLAG)==RESET);
         spi_i2s_data_transmit(instance,b);
 
-//        while (SPI_I2S_GetFlagStatus(instance, SPI_I2S_FLAG_RXNE) == RESET);
-//        b = SPI_I2S_ReceiveData(instance);
 
         while(spi_i2s_flag_get(instance,SPI_I2S_RDBF_FLAG)==RESET);
         b=spi_i2s_data_receive(instance);
@@ -218,18 +201,13 @@ void spiInternalInitStream(const extDevice_t *dev, bool preInit)
     dma_init_type  *initTx = bus->initTx;
 
     if (txData) {
-//        initTx->DMA_Memory0BaseAddr = (uint32_t)txData;
-//        initTx->DMA_MemoryInc = DMA_MemoryInc_Enable;
     	initTx->memory_base_addr = (uint32_t)txData;
     	initTx->memory_inc_enable =TRUE;
     } else {
         dummyTxByte = 0xff;//默认启动字节
-//        initTx->DMA_Memory0BaseAddr = (uint32_t)&dummyTxByte;
-//        initTx->DMA_MemoryInc = DMA_MemoryInc_Disable;
         initTx->memory_base_addr = (uint32_t)&dummyTxByte;
         initTx->memory_inc_enable =FALSE;
     }
-//    initTx->DMA_BufferSize = len;
     initTx->buffer_size =len;
 
     if (dev->bus->dmaRx) {
@@ -237,8 +215,6 @@ void spiInternalInitStream(const extDevice_t *dev, bool preInit)
         dma_init_type *initRx = bus->initRx;
 
         if (rxData) {
-//        	initRx->DMA_Memory0BaseAddr = (uint32_t)rxData;
-//            initRx->DMA_MemoryInc = DMA_MemoryInc_Enable;
         	initRx->memory_base_addr= (uint32_t)rxData;
         	initRx->memory_inc_enable=TRUE;
         } else {
@@ -272,8 +248,6 @@ void spiInternalStartDMA(const extDevice_t *dev)
         DMA_CLEAR_FLAG(dmaRx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
 
         // Disable streams to enable update
-//        streamRegsTx->CR = 0U;
-//        streamRegsRx->CR = 0U;
 
         xDMA_Cmd(streamRegsTx, DISABLE);
         xDMA_Cmd(streamRegsRx, DISABLE);
@@ -307,7 +281,6 @@ void spiInternalStartDMA(const extDevice_t *dev)
         DMA_CLEAR_FLAG(dmaTx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
 
         // Disable stream to enable update
-//        xDMA_DeInit(streamRegsTx);
         xDMA_Cmd(streamRegsTx, DISABLE);
 
         // Update stream
@@ -320,7 +293,6 @@ void spiInternalStartDMA(const extDevice_t *dev)
 
 
         /* Enable the SPI DMA Tx request */
-//        SPI_I2S_DMACmd(dev->bus->busType_u.spi.instance, SPI_I2S_DMAReq_Tx, ENABLE);
         spi_i2s_dma_transmitter_enable(dev->bus->busType_u.spi.instance,TRUE);
 
     }
@@ -338,8 +310,6 @@ void spiInternalStopDMA (const extDevice_t *dev)
     	DMA_ARCH_TYPE *streamRegsRx = (DMA_ARCH_TYPE *)dmaRx->ref;
 
         // Disable streams
-//	    xDMA_DeInit(streamRegsTx);
-//	    xDMA_DeInit(streamRegsRx);
     	xDMA_Cmd(streamRegsTx,DISABLE);
     	xDMA_Cmd(streamRegsRx,DISABLE);
 
@@ -348,17 +318,14 @@ void spiInternalStopDMA (const extDevice_t *dev)
 
 
 
-//        SPI_I2S_DMACmd(instance, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
         spi_i2s_dma_transmitter_enable(instance,FALSE);
 		spi_i2s_dma_receiver_enable(instance,FALSE);
 
     } else {
         // Ensure the current transmission is complete
-//        while (SPI_I2S_GetFlagStatus(instance, SPI_I2S_FLAG_BSY));
     	while(spi_i2s_flag_get(instance,SPI_I2S_BF_FLAG));
 
         // Drain the RX buffer
-        // while (SPI_I2S_GetFlagStatus(instance, SPI_I2S_FLAG_RXNE)) {
         while(spi_i2s_flag_get(instance,SPI_I2S_RDBF_FLAG)){
             // instance->DR;
             instance->dt;
@@ -369,7 +336,6 @@ void spiInternalStopDMA (const extDevice_t *dev)
     	DMA_CLEAR_FLAG(dmaTx, DMA_IT_HTIF | DMA_IT_TEIF | DMA_IT_TCIF);
 
 
-        // SPI_I2S_DMACmd(instance, SPI_I2S_DMAReq_Tx, DISABLE);
         spi_i2s_dma_transmitter_enable(instance,FALSE);
     }
 }
