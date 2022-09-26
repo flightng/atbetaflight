@@ -3,8 +3,10 @@
 #
 ifeq ($(TARGET),$(filter $(TARGET), $(AT32F43xxMT7_TARGETS)))
 MCU_FLASH_SIZE  := 4032
+DEVICE_FLAGS    = -DAT32F437VMT7
 else ifeq ($(TARGET),$(filter $(TARGET), $(AT32F43xxGT7_TARGETS)))
 MCU_FLASH_SIZE  := 1024
+DEVICE_FLAGS    = -DAT32F435RGT7
 else ifeq ($(TARGET),$(filter $(TARGET), $(AT32F43xxCT7_TARGETS)))
 MCU_FLASH_SIZE  := 256
 else
@@ -59,15 +61,18 @@ DEVICE_STDPERIPH_SRC := $(DEVICE_STDPERIPH_SRC) \
 endif
 
 ifeq ($(LD_SCRIPT),)
-LD_SCRIPT       = $(LINKER_DIR)/at32_flash_f43xM.ld
+ifeq ($(MCU_FLASH_SIZE),4032)
+	LD_SCRIPT       = $(LINKER_DIR)/at32_flash_f43xM.ld
+endif
+ifeq ($(MCU_FLASH_SIZE),1024)
+	LD_SCRIPT       = $(LINKER_DIR)/at32_flash_f43xG.ld
+endif
 endif
 
 ARCH_FLAGS      = -std=c99  -mthumb -mcpu=cortex-m4 -march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -Wdouble-promotion
 
 
-ifeq ($(DEVICE_FLAGS),)
-DEVICE_FLAGS    = -DAT32F437VMT7
-endif
+
 DEVICE_FLAGS   += -DUSE_ATBSP_DRIVER -DAT32F43x -DHSE_VALUE=$(HSE_VALUE)
 
 
