@@ -1,10 +1,10 @@
 /*
 *****************************************************************************
 **
-**  File        : at32_flash_f43xM.ld
+**  File        : at32_flash_f43xG.ld
 **
 **  Abstract    : Linker script for AT32F435/7xM Device with
-**                4032KByte FLASH, 384KByte RAM
+**                1024 Byte FLASH, 384KByte RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -32,8 +32,8 @@ MEMORY
     FLASH (rx)        : ORIGIN = 0x08000000, LENGTH = 10K
     FLASH_CUSTOM_DEFAULTS (r) : ORIGIN = 0x08002800, LENGTH = 6K
     FLASH_CONFIG (r)  : ORIGIN = 0x08004000, LENGTH = 16K
-    FLASH1 (rx)       : ORIGIN = 0x08008000, LENGTH = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 3984K: 4000K
-    FLASH_CUSTOM_DEFAULTS_EXTENDED (r): ORIGIN = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 0x083EC000 : 0x083F0000, LENGTH = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 16K : 0K
+    FLASH1 (rx)       : ORIGIN = 0x08008000, LENGTH = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 972K: 988K
+    FLASH_CUSTOM_DEFAULTS_EXTENDED (r): ORIGIN = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 0x080FB000 : 0x080FF000, LENGTH = DEFINED(USE_CUSTOM_DEFAULTS_EXTENDED) ? 16K : 0K
     
     SYSTEM_MEMORY (rx) : ORIGIN = 0x1FFF0000, LENGTH = 16K
     RAM1 (xrw)        : ORIGIN = 0x10000000, LENGTH = 64K
