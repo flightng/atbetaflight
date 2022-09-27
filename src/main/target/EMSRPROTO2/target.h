@@ -34,8 +34,8 @@
  *
  * PB2 ->BOOT0 button
  * PA8  MCO1
- * PA11 OTG1 D+ DP
- * PA10 OTG1 D- DN
+ * PA12 OTG1 D+ DP
+ * PA11 OTG1 D- DN
  * PH0 HEXT IN
  * PH1 HEXT OUT
  */
@@ -57,7 +57,7 @@
 
 #define USE_BEEPER
 #define BEEPER_PIN              PB11
-// #define BEEPER_INVERTED		 //低电平触发
+#define BEEPER_INVERTED		 //低电平触发
 // #define BEEPER_PWM_HZ	2500 //0  有源bb响 | 2500Hz 无源bb响，PWM驱动
 
 #define ENABLE_DSHOT_DMAR       DSHOT_DMAR_AUTO
@@ -123,6 +123,10 @@
 #define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
 #define USE_FLASHFS
 #define USE_FLASH_M25P16
+#define USE_FLASH_W25N01G          // 1Gb NAND flash support
+#define USE_FLASH_W25M             // Stacked die support
+#define USE_FLASH_W25M512          // 512Kb (256Kb x 2 stacked) NOR flash support
+#define USE_FLASH_W25M02G          // 2Gb (1Gb x 2 stacked) NAND flash support
 #define FLASH_SPI_INSTANCE      SPI3
 #define FLASH_CS_PIN            SPI3_NSS_PIN
 
