@@ -96,15 +96,25 @@ void bbTimerChannelInit(bbPort_t *bbPort)
 {
     const timerHardware_t *timhw = bbPort->timhw;
 
+//    TIM_OCInitTypeDef TIM_OCStruct;
+//    TIM_OCStructInit(&TIM_OCStruct);
+//    TIM_OCStruct.TIM_OCMode = TIM_OCMode_PWM1;
+//    TIM_OCStruct.TIM_OCIdleState = TIM_OCIdleState_Set;
+//    TIM_OCStruct.TIM_OutputState = TIM_OutputState_Enable;
+//    TIM_OCStruct.TIM_OCPolarity = TIM_OCPolarity_Low;
+//    TIM_OCStruct.TIM_Pulse = 10; // Duty doesn't matter, but too value small would make monitor output invalid
     tmr_output_config_type  TIM_OCStruct;
 	tmr_output_default_para_init(&TIM_OCStruct);
 	TIM_OCStruct.oc_mode= TMR_OUTPUT_CONTROL_PWM_MODE_A;//when count up  pwm1 eq pwma pwm2 =pwmb
     TIM_OCStruct.oc_idle_state=TRUE;
     TIM_OCStruct.oc_output_state=TRUE;
 	TIM_OCStruct.oc_polarity=TMR_OUTPUT_ACTIVE_LOW;
-    tmr_channel_value_set(timhw->tim, (timhw->channel-1)*2, 10);// Duty doesn't matter, but too value small would make monitor output invalid
+    tmr_channel_value_set(timhw->tim, (timhw->channel-1)*2, 10);
 
+//    TIM_Cmd(bbPort->timhw->tim, DISABLE);
     tmr_counter_enable(bbPort->timhw->tim, DISABLE);
+//    timerOCInit(timhw->tim, timhw->channel, &TIM_OCStruct);
+//    timerOCPreloadConfig(timhw->tim, timhw->channel, TIM_OCPreload_Enable);
     tmr_output_channel_config(timhw->tim,(timhw->channel-1)*2, &TIM_OCStruct);
     tmr_channel_enable(timhw->tim, ((timhw->channel-1)*2),TRUE);
     tmr_output_channel_buffer_enable(timhw->tim, ((timhw->channel-1)*2),TRUE);
@@ -114,6 +124,7 @@ void bbTimerChannelInit(bbPort_t *bbPort)
         IO_t io = IOGetByTag(timhw->tag);
         IOInit(io, OWNER_DSHOT_BITBANG, 0);
         IOConfigGPIOAF(io, IOCFG_AF_PP, timhw->alternateFunction);
+//        TIM_CtrlPWMOutputs(timhw->tim, ENABLE);
         tmr_output_enable(timhw->tim,TRUE);
     }
 #endif
@@ -127,23 +138,38 @@ void bbTimerChannelInit(bbPort_t *bbPort)
 
 void bbLoadDMARegs(dmaResource_t *dmaResource, dmaRegCache_t *dmaRegCache)
 {
+#if defined(AT32F4)
     ((DMA_ARCH_TYPE *)dmaResource)->ctrl = dmaRegCache->CCR;	//ctrl info
-    ((DMA_ARCH_TYPE *)dmaResource)->dtcnt = dmaRegCache->CNDTR; //dtcnt data count
+    ((DMA_ARCH_TYPE *)dmaResource)->dtcnt = dmaRegCache->CNDTR; // dtcnt data count
     ((DMA_ARCH_TYPE *)dmaResource)->paddr = dmaRegCache->CPAR;  //pheriph address
     ((DMA_ARCH_TYPE *)dmaResource)->maddr = dmaRegCache->CMAR;  //Memory address
-
+#else
+    ((DMA_Stream_TypeDef *)dmaResource)->CR = dmaRegCache->CR;
+    ((DMA_Stream_TypeDef *)dmaResource)->FCR = dmaRegCache->FCR;
+    ((DMA_Stream_TypeDef *)dmaResource)->NDTR = dmaRegCache->NDTR;
+    ((DMA_Stream_TypeDef *)dmaResource)->PAR = dmaRegCache->PAR;
+    ((DMA_Stream_TypeDef *)dmaResource)->M0AR = dmaRegCache->M0AR;
+#endif
 }
 
 static void bbSaveDMARegs(dmaResource_t *dmaResource, dmaRegCache_t *dmaRegCache)
 {
+#if defined(AT32F4)
 	dmaRegCache->CCR=((DMA_ARCH_TYPE *)dmaResource)->ctrl;
 	dmaRegCache->CNDTR=((DMA_ARCH_TYPE *)dmaResource)->dtcnt;
 	dmaRegCache->CPAR=((DMA_ARCH_TYPE *)dmaResource)->paddr ;
 	dmaRegCache->CMAR=((DMA_ARCH_TYPE *)dmaResource)->maddr ;
+#else
+    dmaRegCache->CR = ((DMA_Stream_TypeDef *)dmaResource)->CR;
+    dmaRegCache->FCR = ((DMA_Stream_TypeDef *)dmaResource)->FCR;
+    dmaRegCache->NDTR = ((DMA_Stream_TypeDef *)dmaResource)->NDTR;
+    dmaRegCache->PAR = ((DMA_Stream_TypeDef *)dmaResource)->PAR;
+    dmaRegCache->M0AR = ((DMA_Stream_TypeDef *)dmaResource)->M0AR;
+#endif
 }
 #endif
 
-FAST_CODE void bbSwitchToOutput(bbPort_t * bbPort)
+void bbSwitchToOutput(bbPort_t * bbPort)
 {
     dbgPinHi(1);
     // Output idle level before switching to output
@@ -169,6 +195,8 @@ FAST_CODE void bbSwitchToOutput(bbPort_t * bbPort)
 #endif
 
     // Reinitialize pacer timer for output
+
+//    bbPort->timhw->tim->ARR = bbPort->outputARR;
     bbPort->timhw->tim->pr = bbPort->outputARR;//maps to pr
 
     bbPort->direction = DSHOT_BITBANG_DIRECTION_OUTPUT;
@@ -177,7 +205,7 @@ FAST_CODE void bbSwitchToOutput(bbPort_t * bbPort)
 }
 
 #ifdef USE_DSHOT_TELEMETRY
-FAST_CODE void  bbSwitchToInput(bbPort_t *bbPort)
+void bbSwitchToInput(bbPort_t *bbPort)
 {
     dbgPinHi(1);
 
@@ -216,6 +244,19 @@ FAST_CODE void  bbSwitchToInput(bbPort_t *bbPort)
 
 void bbDMAPreconfigure(bbPort_t *bbPort, uint8_t direction)
 {
+//    DMA_InitTypeDef *dmainit = (direction == DSHOT_BITBANG_DIRECTION_OUTPUT) ?  &bbPort->outputDmaInit : &bbPort->inputDmaInit;
+//
+//    DMA_StructInit(dmainit);
+//
+//    dmainit->DMA_Mode = DMA_Mode_Normal; //loop mode
+//    dmainit->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+//    dmainit->DMA_MemoryInc = DMA_MemoryInc_Enable;
+//
+//    dmainit->DMA_Channel = bbPort->dmaChannel;  //not need
+//    dmainit->DMA_FIFOMode = DMA_FIFOMode_Enable ; //not need
+//    dmainit->DMA_FIFOThreshold = DMA_FIFOThreshold_1QuarterFull ; //not need
+//    dmainit->DMA_MemoryBurst = DMA_MemoryBurst_Single ;
+//    dmainit->DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 	dma_init_type * dmainit = (direction == DSHOT_BITBANG_DIRECTION_OUTPUT) ?  &bbPort->outputDmaInit : &bbPort->inputDmaInit;
 
 	dma_default_para_init(dmainit);
@@ -259,6 +300,14 @@ void bbDMAPreconfigure(bbPort_t *bbPort, uint8_t direction)
 void bbTIM_TimeBaseInit(bbPort_t *bbPort, uint16_t period)
 {
 	//fixme: 貌似之有这里用到了 timer 的baseinit 参数，header里是否定义用途也不大啊
+//	tmr_base_init_type *init = &bbPort->timeBaseInit;
+//
+//    init->TIM_Prescaler = 0; // Feed raw timerClock
+//    init->TIM_ClockDivision = TIM_CKD_DIV1;
+//    init->TIM_CounterMode = TIM_CounterMode_Up;
+//    init->TIM_Period = period;
+//		TIM_TimeBaseInit(bbPort->timhw->tim, init);
+//		TIM_ARRPreloadConfig(bbPort->timhw->tim, ENABLE);
     tmr_base_init(bbPort->timhw->tim, period,0);
     tmr_clock_source_div_set(bbPort->timhw->tim,TMR_CLOCK_DIV1);
     tmr_cnt_dir_set(bbPort->timhw->tim,TMR_COUNT_UP);
@@ -267,6 +316,7 @@ void bbTIM_TimeBaseInit(bbPort_t *bbPort, uint16_t period)
 
 void bbTIM_DMACmd(tmr_type * TIMx, uint16_t TIM_DMASource, FunctionalState NewState)
 {
+//    TIM_DMACmd(TIMx, TIM_DMASource, NewState);
 	tmr_dma_request_enable(TIMx, TIM_DMASource, NewState);
 }
 
