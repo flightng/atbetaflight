@@ -47,8 +47,8 @@ DEVICE_STDPERIPH_SRC = $(STDPERIPH_SRC)\
 ifneq ($(filter VCP, $(FEATURES)),)
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
                    $(USBFS_DIR)/inc\
-                   $(ROOT)/lib/main/AT32F43x/usbd_class/cdc/\
-                  
+                   $(ROOT)/lib/main/AT32F43x/usbd_class/cdc \
+                   $(ROOT)/lib/main/AT32F43x/usbd_class/msc \
 
 VPATH           := $(VPATH):$(USBFS_DIR)/src\
 
@@ -108,7 +108,38 @@ MCU_COMMON_SRC = \
             drivers/adc_at32f43x.c \
 
             
+MSC_SRC = \
+			$(ROOT)/lib/main/AT32F43x/usbd_class/msc/msc_desc.c\
+			$(ROOT)/lib/main/AT32F43x/usbd_class/msc/msc_class.c\
+			$(ROOT)/lib/main/AT32F43x/usbd_class/msc/msc_bot_scsi.c\
+            drivers/usb_msc_common.c \
+            drivers/usb_msc_at32f43x.c \
             
+EXCLUDES +=\
+			drivers/msc/usbd_storage.c\
+			drivers/msc/usbd_storage_sdio.c\
+			drivers/msc/usbd_msc_desc.c\
+			dirvers/msc/usbd_storage_sd_spi.c\
+			
+
+#ifneq ($(filter SDCARD_SPI,$(FEATURES)),)
+#MSC_SRC += \
+#            msc/usbd_storage_sd_spi.c
+#endif
+#
+#ifneq ($(filter SDCARD_SDIO,$(FEATURES)),)
+#MSC_SRC += \
+#            msc/usbd_storage_sdio.c
+#MCU_COMMON_SRC += \
+#            drivers/sdio_f4xx.c
+#endif
+
+ifneq ($(filter ONBOARDFLASH,$(FEATURES)),)
+MSC_SRC += \
+            msc/at32_msc_diskio.c \
+            msc/emfat.c \
+            msc/emfat_file.c
+endif 
 
 DSP_LIB :=
 

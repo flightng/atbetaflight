@@ -197,8 +197,8 @@ COMMON_SRC = \
             io/vtx_smartaudio.c \
             io/vtx_tramp.c \
             io/vtx_control.c \
+            io/usb_msc.c\
 #           drivers/camera_control.c \
-#           io/usb_msc.c \
             
      
            

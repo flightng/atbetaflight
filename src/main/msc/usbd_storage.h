@@ -22,12 +22,17 @@
 
 #pragma once
 
+
 #ifdef USE_HAL_DRIVER
 #include "usbd_msc.h"
+#elif defined(USE_ATBSP_DRIVER)
+//Fixme: fix this before merge
 #else
 #include "usbd_msc_mem.h"
 #include "usbd_msc_core.h"
 #endif
+
+
 
 #include "common/time.h"
 
@@ -42,6 +47,8 @@ extern USBD_StorageTypeDef USBD_MSC_MICRO_SD_SPI_fops;
 #ifdef USE_FLASHFS
 extern USBD_StorageTypeDef USBD_MSC_EMFAT_fops;
 #endif
+#elif defined(USE_ATBSP_DRIVER)
+
 #else // USE_HAL_DRIVER
 extern USBD_STORAGE_cb_TypeDef *USBD_STORAGE_fops;
 #ifdef USE_SDCARD_SDIO

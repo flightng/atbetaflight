@@ -24,7 +24,7 @@
   **************************************************************************
   */
 #include "msc_bot_scsi.h"
-#include "msc_diskio.h"
+#include "msc/at32_msc_diskio.h"
 
 /** @addtogroup AT32F435_437_middlewares_usbd_class
   * @{
