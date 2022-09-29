@@ -35,7 +35,7 @@
  * BOOT0 button
  * PA8  MCO1
  * PA12 OTG1 D+ DP
- * PA11 OTG1 D- DN
+ * PA11 OTG1 D- DM
  * PH0 HEXT IN
  * PH1 HEXT OUT
  */
@@ -156,9 +156,10 @@
 #define UART4_RX_PIN            PC11
 #define UART4_TX_PIN            PC10
 
+//uart5 与i2c 复用，如果启用uart5 需要关闭i2c 的所有设备
 #define USE_UART5
-#define UART8_RX_PIN            PD2
-#define UART8_TX_PIN            PC12
+#define UART5_RX_PIN            PD2
+#define UART5_TX_PIN            PC12
 
 //#define USE_SOFTSERIAL1
 //#define USE_SOFTSERIAL2

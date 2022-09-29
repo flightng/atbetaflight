@@ -197,6 +197,40 @@ const uartHardware_t uartHardware[UARTDEV_COUNT] = {
     },
 #endif
 
+#ifdef USE_UART5
+    {
+        .device = UARTDEV_5,
+        .reg = UART5,
+#ifdef USE_DMA
+        .rxDMAMuxId = DMAMUX_DMAREQ_ID_UART5_RX,
+        .rxDMAResource = (dmaResource_t *)UART5_RX_DMA_CHANNEL,
+        .txDMAMuxId = DMAMUX_DMAREQ_ID_UART5_TX,
+        .txDMAResource = (dmaResource_t *)UART5_TX_DMA_CHANNEL,
+#endif
+        .rxPins = {
+            { DEFIO_TAG_E(PB5), GPIO_MUX_8 },
+            { DEFIO_TAG_E(PB8), GPIO_MUX_8 },
+			{ DEFIO_TAG_E(PD2), GPIO_MUX_8 },
+			{ DEFIO_TAG_E(PE11), GPIO_MUX_8 },
+        },
+        .txPins = {
+                { DEFIO_TAG_E(PB6), GPIO_MUX_8 },
+				{ DEFIO_TAG_E(PB9), GPIO_MUX_8 },
+				{ DEFIO_TAG_E(PC12), GPIO_MUX_8 },
+				{ DEFIO_TAG_E(PE10), GPIO_MUX_8 },
+        },
+        .rcc = RCC_APB1(UART5),
+        .irqn = UART5_IRQn,
+        .txPriority = NVIC_PRIO_SERIALUART5_TXDMA,
+        .rxPriority = NVIC_PRIO_SERIALUART5,
+        .txBuffer = uart5TxBuffer,
+        .rxBuffer = uart5RxBuffer,
+        .txBufferSize = sizeof(uart5TxBuffer),
+        .rxBufferSize = sizeof(uart5RxBuffer),
+    },
+#endif
+
+
 #ifdef USE_UART8
     {
         .device = UARTDEV_8,
