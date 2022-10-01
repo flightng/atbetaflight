@@ -40,7 +40,7 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup ACC
+/** @addtogroup ACC_DEV
   * @{
   */
 
@@ -165,7 +165,7 @@ typedef struct
   * @}
   */
 
-#define ACC                             ((acc_type *) ACC_BASE)
+#define ACC_DEV                             ((acc_type *) ACC_BASE)
 
 /** @defgroup ACC_exported_functions
   * @{
