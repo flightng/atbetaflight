@@ -123,10 +123,11 @@ void EXTIConfig(IO_t io, extiCallbackRec_t *cb, int irqPriority, ioConfig_t conf
 #else
     IOConfigGPIO(io, config);
 
-#if defined(AT32F43x)
-    scfg_exint_line_config(IO_GPIO_PortSource(io), IO_GPIO_PinSource(io));
-#else
-# warning "Unknown CPU"
+	#if defined(AT32F43x)
+		scfg_exint_line_config(IO_GPIO_PortSource(io), IO_GPIO_PinSource(io));
+	#else
+	# warning "Unknown CPU"
+	#endif
 #endif
     uint32_t extiLine = IO_EXTI_Line(io);
 
@@ -168,7 +169,7 @@ void EXTIRelease(IO_t io)
 
 void EXTIEnable(IO_t io)
 {
-#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F4)
+#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
     uint32_t extiLine = IO_EXTI_Line(io);
 
     if (!extiLine) {
@@ -196,7 +197,7 @@ void EXTIEnable(IO_t io)
 
 void EXTIDisable(IO_t io)
 {
-#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
     uint32_t extiLine = IO_EXTI_Line(io);
 
     if (!extiLine) {

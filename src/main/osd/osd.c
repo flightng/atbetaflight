@@ -440,8 +440,8 @@ static void osdCompleteInitialization(void)
     char string_buffer[30];
     tfp_sprintf(string_buffer, "V%s", FC_VERSION_STRING);
     displayWrite(osdDisplayPort, 20, 6, DISPLAYPORT_ATTR_NONE, string_buffer);
-    tfp_sprintf(string_buffer, "By %s", "EMSR & N.T.Jia");
-    displayWrite(osdDisplayPort, 20, 7, DISPLAYPORT_ATTR_NONE, string_buffer);
+    tfp_sprintf(string_buffer, "AT32 BY %s", "EMSR");
+    displayWrite(osdDisplayPort, 10, 7, DISPLAYPORT_ATTR_NONE, string_buffer);
 #ifdef USE_CMS
     displayWrite(osdDisplayPort, 7, 8,  DISPLAYPORT_ATTR_NONE, CMS_STARTUP_HELP_TEXT1);
     displayWrite(osdDisplayPort, 11, 9, DISPLAYPORT_ATTR_NONE, CMS_STARTUP_HELP_TEXT2);
