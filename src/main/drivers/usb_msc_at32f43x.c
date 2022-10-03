@@ -242,8 +242,8 @@ uint8_t mscStart(void)
      /* select usb 48m clcok source */
      msc_usb_clock48m_select(USB_CLK_HEXT);
 
-     /* enable otgfs irq */
-     nvic_irq_enable(OTG_IRQ, 0, 0);
+     /* enable otgfs irq ，使用NVIC_PRIO_USB(2,0) 优先级，否则会打断SPI dma 传输*/
+     nvic_irq_enable(OTG_IRQ, NVIC_PRIORITY_BASE(NVIC_PRIO_USB), NVIC_PRIORITY_SUB(NVIC_PRIO_USB));
 
      usbd_init(&otg_core_struct,
               USB_FULL_SPEED_CORE_ID,
