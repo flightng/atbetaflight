@@ -222,12 +222,12 @@ void spiInternalInitStream(const extDevice_t *dev, bool preInit)
             initRx->memory_inc_enable = FALSE;
         }
         // If possible use 16 bit memory writes to prevent atomic access issues on gyro data
-
-        if ((initRx->memory_base_addr & 0x1) || (len & 0x1)) {
-            initRx->memory_data_width = DMA_MEMORY_DATA_WIDTH_BYTE;
-        } else {
-            initRx->memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
-        }
+        //cause oom when using w25n01g
+//        if ((initRx->memory_base_addr & 0x1) || (len & 0x1)) {
+//            initRx->memory_data_width = DMA_MEMORY_DATA_WIDTH_BYTE;
+//        } else {
+//            initRx->memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
+//        }
         initRx->buffer_size = len;
     }
 }
