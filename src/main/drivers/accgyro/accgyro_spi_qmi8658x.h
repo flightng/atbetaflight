@@ -51,18 +51,18 @@
 
 enum Qmi8658Register
 {
-	Qmi8658Register_WhoAmI = 0,
-	Qmi8658Register_Revision,
-	Qmi8658Register_Ctrl1,
-	Qmi8658Register_Ctrl2,
+	Qmi8658Register_WhoAmI = 0x00,
+	Qmi8658Register_Revision = 0x01,
+	Qmi8658Register_Ctrl1 = 0x02,
+	Qmi8658Register_Ctrl2 = 0x03,
 	Qmi8658Register_Ctrl3,
 	Qmi8658Register_Ctrl4,
 	Qmi8658Register_Ctrl5,
 	Qmi8658Register_Ctrl6,
 	Qmi8658Register_Ctrl7,
 	Qmi8658Register_Ctrl8,
-	Qmi8658Register_Ctrl9,
-	Qmi8658Register_Cal1_L = 11,
+	Qmi8658Register_Ctrl9 = 0x0A,
+	Qmi8658Register_Cal1_L = 0x0B,
 	Qmi8658Register_Cal1_H,
 	Qmi8658Register_Cal2_L,
 	Qmi8658Register_Cal2_H,
@@ -70,20 +70,19 @@ enum Qmi8658Register
 	Qmi8658Register_Cal3_H,
 	Qmi8658Register_Cal4_L,
 	Qmi8658Register_Cal4_H,
-	Qmi8658Register_FifoWmkTh = 19,
-	Qmi8658Register_FifoCtrl = 20,
-	Qmi8658Register_FifoCount = 21,
-	Qmi8658Register_FifoStatus = 22,
-	Qmi8658Register_FifoData = 23,
-	Qmi8658Register_StatusI2CM = 44,
-	Qmi8658Register_StatusInt = 45,
-	Qmi8658Register_Status0,
-	Qmi8658Register_Status1,
-	Qmi8658Register_Timestamp_L = 48,
-	Qmi8658Register_Timestamp_M,
-	Qmi8658Register_Timestamp_H,
-	Qmi8658Register_Tempearture_L = 51,
-	Qmi8658Register_Tempearture_H,
+	Qmi8658Register_FifoWmkTh = 0x13,
+	Qmi8658Register_FifoCtrl = 0x14,
+	Qmi8658Register_FifoCount = 0x15,
+	Qmi8658Register_FifoStatus = 0x16,
+	Qmi8658Register_FifoData = 0x17,
+	Qmi8658Register_StatusInt = 0x2D,
+	Qmi8658Register_Status0 = 0x2E,
+	Qmi8658Register_Status1 = 0x2F,
+	Qmi8658Register_Timestamp_L = 0x30,
+	Qmi8658Register_Timestamp_M = 0x31,
+	Qmi8658Register_Timestamp_H = 0x32,
+	Qmi8658Register_Tempearture_L = 0x33,
+	Qmi8658Register_Tempearture_H = 0x34,
 	Qmi8658Register_Ax_L = 0x35,
 	Qmi8658Register_Ax_H,
 	Qmi8658Register_Ay_L,
@@ -217,14 +216,14 @@ enum qmi8658_AccOdr
 
 enum qmi8658_GyrRange
 {
-	Qmi8658GyrRange_16dps = 0 << 4,
-	Qmi8658GyrRange_32dps = 1 << 4,
-	Qmi8658GyrRange_64dps = 2 << 4,
-	Qmi8658GyrRange_128dps = 3 << 4,
-	Qmi8658GyrRange_256dps = 4 << 4,
-	Qmi8658GyrRange_512dps = 5 << 4,
-	Qmi8658GyrRange_1024dps = 6 << 4,
-	Qmi8658GyrRange_2048dps = 7 << 4
+	Qmi8658GyrRange_16dps = 0x00 << 4,
+	Qmi8658GyrRange_32dps = 0x01 << 4,
+	Qmi8658GyrRange_64dps = 0x02 << 4,
+	Qmi8658GyrRange_128dps = 0x03 << 4,
+	Qmi8658GyrRange_256dps = 0x04 << 4,
+	Qmi8658GyrRange_512dps = 0x05 << 4,
+	Qmi8658GyrRange_1024dps = 0x06 << 4,
+	Qmi8658GyrRange_2048dps = 0x07 << 4
 };
 
 /*!
@@ -232,15 +231,15 @@ enum qmi8658_GyrRange
  */
 enum qmi8658_GyrOdr
 {
-	Qmi8658GyrOdr_8000Hz = 0x00,
-	Qmi8658GyrOdr_4000Hz = 0x01,
-	Qmi8658GyrOdr_2000Hz = 0x02,
-	Qmi8658GyrOdr_1000Hz = 0x03,
-	Qmi8658GyrOdr_500Hz	= 0x04,
-	Qmi8658GyrOdr_250Hz	= 0x05,
-	Qmi8658GyrOdr_125Hz	= 0x06,
-	Qmi8658GyrOdr_62_5Hz 	= 0x07,
-	Qmi8658GyrOdr_31_25Hz	= 0x08
+	Qmi8658GyrOdr_7174Hz = 0x00,
+	Qmi8658GyrOdr_3587Hz = 0x01,
+	Qmi8658GyrOdr_1793Hz = 0x02,
+	Qmi8658GyrOdr_896Hz = 0x03,
+	Qmi8658GyrOdr_448Hz	= 0x04,
+	Qmi8658GyrOdr_224Hz	= 0x05,
+	Qmi8658GyrOdr_112Hz	= 0x06,
+	Qmi8658GyrOdr_56_05Hz 	= 0x07,
+	Qmi8658GyrOdr_28_03Hz	= 0x08
 };
 
 enum qmi8658_AccUnit
@@ -274,10 +273,10 @@ enum qmi8658_FifoWmkLevel
 
 enum qmi8658_FifoSize
 {
-	qmi8658_Fifo_16 = (0 << 2),
-	qmi8658_Fifo_32 = (1 << 2),
-	qmi8658_Fifo_64 = (2 << 2),
-	qmi8658_Fifo_128 = (3 << 2)
+	qmi8658_Fifo_16 = 0x00 << 2,
+	qmi8658_Fifo_32 = 0x01 << 2,
+	qmi8658_Fifo_64 = 0x02 << 2,
+	qmi8658_Fifo_128 =0x03 << 2
 };
 
 enum qmi8658_Interrupt
@@ -285,7 +284,6 @@ enum qmi8658_Interrupt
 	qmi8658_Int_none,
 	qmi8658_Int1,
 	qmi8658_Int2,
-
 	qmi8658_Int_total
 };
 

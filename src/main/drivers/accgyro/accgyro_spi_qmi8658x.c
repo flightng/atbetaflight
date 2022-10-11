@@ -148,14 +148,14 @@ void qmi8658xGyroInit(gyroDev_t *gyro)
     spiWriteReg(&gyro->dev,Qmi8658Register_Ctrl2, Qmi8658AccRange_16g | Qmi8658AccOdr_8000Hz );// | 0x80 to enable self test 
 	 uint8_t ctl_dada= spiReadRegMsk(&gyro->dev,Qmi8658Register_Ctrl5);
 	 ctl_dada &= 0xf0;
-	 ctl_dada |= A_LSP_MODE_3 | 0x01;
+	 ctl_dada |= A_LSP_MODE_1 | 0x01;
 	spiWriteReg(&gyro->dev,Qmi8658Register_Ctrl5,ctl_dada);
     delay(100);
 //Configure Gyroscope, Enable Self-Test
-    spiWriteReg(&gyro->dev,Qmi8658Register_Ctrl3,  Qmi8658GyrRange_2048dps| Qmi8658GyrOdr_8000Hz );//| 0x80 to enable self test 
+    spiWriteReg(&gyro->dev,Qmi8658Register_Ctrl3,  Qmi8658GyrRange_2048dps| Qmi8658GyrOdr_7174Hz );//| 0x80 to enable self test 
      ctl_dada= spiReadRegMsk(&gyro->dev,Qmi8658Register_Ctrl5);
 	 ctl_dada &= 0x0f;
-	 ctl_dada |= G_LSP_MODE_3 | 0x10;
+	 ctl_dada |= G_LSP_MODE_1 | 0x10;
 	 spiWriteReg(&gyro->dev,Qmi8658Register_Ctrl5,ctl_dada);
 
 //FLASH FIFO
@@ -244,7 +244,7 @@ bool qmi8658xSpiGyroDetect(gyroDev_t *gyro)
 #else
     gyro->readFn = mpuGyroReadSPI;//int2 is not ready . use pull first
 #endif
-    gyro->scale = GYRO_SCALE_2000DPS;
+    gyro->scale = GYRO_SCALE_2048DPS;
 
     return true;
 }
