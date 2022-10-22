@@ -21,5 +21,6 @@ TARGET_SRC = \
             drivers/rx/rx_sx1280.c \
             rx/expresslrs_telemetry.c \
             rx/expresslrs_common.c \
-            rx/expresslrs.c
+            rx/expresslrs.c\
+            io/fuzzi_co_processor.c
 

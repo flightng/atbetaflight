@@ -190,6 +190,11 @@
 #define UART4_RX_PIN            PA1
 #define UART4_TX_PIN            PA0
 
+
+#define USE_UART5
+#define UART5_RX_PIN            PD2
+#define UART5_TX_PIN            PC12
+
 #define USE_UART8
 #define UART8_RX_PIN            PC3
 #define UART8_TX_PIN            PC2
@@ -197,12 +202,18 @@
 //#define USE_SOFTSERIAL1
 //#define USE_SOFTSERIAL2
 
-#define SERIAL_PORT_COUNT       6 // VCP  UART1 UART2 UART3 UART4 UART5
+#define SERIAL_PORT_COUNT       7 // VCP  UART1 UART2 UART3 UART4 UART5 uart8
 
 #define DEFAULT_RX_FEATURE      FEATURE_RX_SERIAL
 #define SERIALRX_PROVIDER       SERIALRX_CRSF
 #define SERIALRX_UART           SERIAL_PORT_USART2
 
+//*******************CO-Proceseor*******************
+#define USE_FUZZI_CO_PROCESSOR
+#define CO_PROCESSOR_UART		SERIAL_PORT_UART5
+#define CO_PROCESSOR_UART_BAUD	500000
+#define UART5_TX_DMA_CHANNEL	DMA2_CHANNEL3_BASE
+#define UART5_RX_DMA_CHANNEL	DMA2_CHANNEL4_BASE
 
 
 // *************** ADC *****************************

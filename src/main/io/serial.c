@@ -91,7 +91,7 @@ const serialPortIdentifier_e serialPortIdentifiers[SERIAL_PORT_COUNT] = {
     SERIAL_PORT_USART7,
 #endif
 #ifdef USE_UART8
-    SERIAL_PORT_USART8,
+	SERIAL_PORT_USART8,
 #endif
 #ifdef USE_UART9
     SERIAL_PORT_UART9,
