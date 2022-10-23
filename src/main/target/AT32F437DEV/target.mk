@@ -22,5 +22,5 @@ TARGET_SRC = \
             rx/expresslrs_telemetry.c \
             rx/expresslrs_common.c \
             rx/expresslrs.c\
-            io/fuzzi_co_processor.c
+            io/fuzzy_co_processor.c
 

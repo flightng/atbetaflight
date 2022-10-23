@@ -7,10 +7,12 @@
 
 
 #ifdef  USE_FUZZI_CO_PROCESSOR
-#include <io/fuzzi_co_processor.h>
+#include <io/fuzzy_co_processor.h>
 #include <io/serial.h>
 
-
+#define CO_PROCESSOR_BAUDRATE 12000000
+// baud rate should be optimized, since the flc is tested by CP210x which only give stable output at 500_000 baud rate
+// we can increase the baud rate to 12_000_000 when we use the real flc
 
 static serialPort_t *coProcessorPort;
 static int8_t sendCnt;//发送次数，有可能会溢出
@@ -20,7 +22,7 @@ static int8_t recvCnt;//接收次数
 	协处理器初始化，默认先使用 uart5
 */
 
-bool FuzziCoProcessorInit( void ){
+bool fuzzyCoProcessorInit( void ){
 
 	const serialPortConfig_t *portConfig = findSerialPortConfig(FUNCTION_CO_PROCESSOR);
 
@@ -28,8 +30,9 @@ bool FuzziCoProcessorInit( void ){
 	        portOptions_e portOptions = 0;
 	        portOptions = SERIAL_BIDIR;
 	        coProcessorPort = openSerialPort(portConfig->identifier, FUNCTION_CO_PROCESSOR, NULL, NULL, 500000, MODE_RXTX, portOptions);
-		//fixme : for debug use port5
-//	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, NULL, NULL, CO_PROCESSOR_UART_BAUD, MODE_RXTX, portOptions);
+
+			//fixme : for debug use port5
+//	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, NULL, NULL, CO_PROCESSOR_BAUDRATE, MODE_RXTX, portOptions);
 
 	    }
 
@@ -44,7 +47,7 @@ bool FuzziCoProcessorInit( void ){
 	在mainpid loop 中 ，发送error信息到协处理器
 
 */
-static void FuzziCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh){
+static void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh){
 
 	int8_t txBuffer[8];
 /* 发送数据帧类型
@@ -56,12 +59,15 @@ static void FuzziCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t 
 	YAW_E_HIGH ,YAW_E_LOW
 	CRC
 */
-	txBuffer[0]=0x55;
-	txBuffer[1]=0xE0;
-	txBuffer[2]=sendCnt;
-	txBuffer[3]= (int8_t)(errRoll  >> 8);  txBuffer[4] = (int8_t)(errRoll<<8);
-	txBuffer[5]= (int8_t)(errPitch >> 8);  txBuffer[6] = (int8_t)(errPitch<<8);
-	txBuffer[7]= (int8_t)(errYaw   >> 8) ; txBuffer[8] = (int8_t)(errYaw<<8);
+	txBuffer[0]	=0x55;
+	txBuffer[1]	=0xE0;
+	txBuffer[2]	=sendCnt;
+	txBuffer[3]	= (uint8_t)(errRoll  	>> 8);
+	txBuffer[4] = (uint8_t)(errRoll		&0x00FF);
+	txBuffer[5]	= (uint8_t)(errPitch 	>> 8); 
+	txBuffer[6] = (uint8_t)(errPitch	&0x00FF);
+	txBuffer[7]	= (uint8_t)(errYaw   	>> 8);
+	txBuffer[8] = (uint8_t)(errYaw		&0x00FF);
 	UNUSED(errHigh);
 
 	for(int8_t i=0;i<10;i++)
@@ -130,7 +136,7 @@ static void FuzziReceiveFrame(uint8_t c)
 }
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
-static void FuzziCoProcessorRecv(){
+static void fuzzyCoProcessorRecv(){
 
     if (coProcessorPort == NULL) {
         return;

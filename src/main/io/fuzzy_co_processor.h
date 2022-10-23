@@ -14,11 +14,11 @@ static pidf_t pid_buffer[4];
 
 static int8_t coRecvBuffer[12];// 9 used for now
 
-bool FuzziCoProcessorInit(void);
+bool fuzzyCoProcessorInit(void);
 
-static void FuzziCoProcessorSendError(float errPitch,float errRoll,float errYaw,float errHigh);
+static void fuzzyCoProcessorSendError(float errPitch,float errRoll,float errYaw,float errHigh);
 
-static void FuzziCoProcessorRecv();
+static void fuzzyCoProcessorRecv();
 
 
 
