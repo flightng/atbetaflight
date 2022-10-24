@@ -143,7 +143,7 @@ bool i2cWriteBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len_,
 
     i2c_status_type status;
     //i2c_memory_write_int(i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout)
-    status = i2c_memory_write_int(pHandle ,addr_ << 1, reg_,data, len_,I2C_TIMEOUT_US);
+    status = i2c_memory_write(pHandle ,addr_ << 1, reg_,data, len_,I2C_TIMEOUT_US);
 
     if (status == I2C_ERR_STEP_1) {//BUSY
         return false;
@@ -213,7 +213,7 @@ bool i2cReadBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, u
 
     i2c_status_type status;
 
-    status = i2c_memory_read_int(pHandle, addr_ << 1, reg_,buf, len,I2C_TIMEOUT_US);
+    status = i2c_memory_read(pHandle, addr_ << 1, reg_,buf, len,I2C_TIMEOUT_US);
 
     if (status == I2C_ERR_STEP_1) {//busy
         return false;
@@ -234,17 +234,17 @@ bool i2cBusy(I2CDevice device, bool *error)
         *error = pHandle->error_code>0 ?true:false;
     }
 
-    if (pHandle->status == I2C_END)
-    {
-        if (i2c_flag_get(pHandle->i2cx, I2C_BUSYF_FLAG) == SET)
-        {
-            return true;
-        }
-
-        return false;
+    if(pHandle->error_code !=I2C_OK){
+    	return true;
     }
 
-    return true;
+
+   if (i2c_flag_get(pHandle->i2cx, I2C_BUSYF_FLAG) == SET)
+   {
+	   return true;
+   }
+
+   return false;
 }
 
 #endif
