@@ -101,6 +101,12 @@ typedef struct pidf_s {
     uint16_t F;
 } pidf_t;
 
+typedef struct pidfDelta_s {
+    int8_t DP;
+    int8_t DI;
+    int8_t DD;
+} pidDelta_t;
+
 typedef enum {
     ANTI_GRAVITY_SMOOTH,
     ANTI_GRAVITY_STEP

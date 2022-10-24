@@ -10,7 +10,7 @@
 #include <flight/pid.h>
 
 //for Roll=0 Pitch Yaw High 
-static pidf_t pid_buffer[4];
+static pidDelta_t deltaPidBuffer[4];
 
 static int8_t coRecvBuffer[12];// 9 used for now
 

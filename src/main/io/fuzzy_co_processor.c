@@ -1,11 +1,3 @@
-/*
- * 模糊PID 协处理器
- * 通过 uart5 调用协处理器进行数据处理
- *
- *
- */
-
-
 #ifdef  USE_FUZZI_CO_PROCESSOR
 #include <io/fuzzy_co_processor.h>
 #include <io/serial.h>
@@ -14,9 +6,20 @@
 // baud rate should be optimized, since the flc is tested by CP210x which only give stable output at 500_000 baud rate
 // we can increase the baud rate to 12_000_000 when we use the real flc
 
+/* FCP frame structure:
+	<Header>	[1 byte]	0x55
+	<Type>		[1 byte]
+	<Payload>	[x bytes]
+	<CRC>		[1 byte], CRC8 of the <Type>+<Payload>
+*/
+
 static serialPort_t *coProcessorPort;
-static int8_t sendCnt;//发送次数，有可能会溢出
-static int8_t recvCnt;//接收次数
+static int8_t timestampSend;//发送次数，有可能会溢出
+static int8_t timestampRecv;//接收次数
+static uint8_t payloadLen;//payload长度
+static uint16_t symbleErrorCountTX;// 发送误码次数
+static uint16_t symbleErrorCountRX;// 接收误码次数
+static bool badFrame;
 
 /*
 	协处理器初始化，默认先使用 uart5
@@ -43,100 +46,109 @@ bool fuzzyCoProcessorInit( void ){
 
 	    return true;
 }
-/*
-	在mainpid loop 中 ，发送error信息到协处理器
 
+
+/* Type E0: Roll, Pitch, Yaw axex rate error
+	FC -> CP
+	<Payload>	[7 bytes]
+		<timestampSend>	[1 bytes]
+		ROLL_E_HIGH , ROLL_E_LOW 
+		PITCH_E_HIGH, PITCH_E_LOW
+		YAW_E_HIGH ,YAW_E_LOW
 */
 static void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh){
 
-	int8_t txBuffer[8];
-/* 发送数据帧类型
-	0X55 
-	0XE0  
-	SEND_CNT
-	ROLL_E_HIGH , ROLL_E_LOW 
-	PITCH_E_HIGH, PITCH_E_LOW
-	YAW_E_HIGH ,YAW_E_LOW
-	CRC
-*/
-	txBuffer[0]	=0x55;
-	txBuffer[1]	=0xE0;
-	txBuffer[2]	=sendCnt;
-	txBuffer[3]	= (uint8_t)(errRoll  	>> 8);
-	txBuffer[4] = (uint8_t)(errRoll		&0x00FF);
-	txBuffer[5]	= (uint8_t)(errPitch 	>> 8); 
-	txBuffer[6] = (uint8_t)(errPitch	&0x00FF);
-	txBuffer[7]	= (uint8_t)(errYaw   	>> 8);
-	txBuffer[8] = (uint8_t)(errYaw		&0x00FF);
+	uint8_t txErrorBuffer[10];
+
+	txErrorBuffer[0] = 0x55;
+	txErrorBuffer[1] = 0xE0;
+	txErrorBuffer[2] = timestampSend;
+	txErrorBuffer[3] = (uint8_t)(errRoll  	>> 8);
+	txErrorBuffer[4] = (uint8_t)(errRoll	&0x00FF);
+	txErrorBuffer[5] = (uint8_t)(errPitch 	>> 8); 
+	txErrorBuffer[6] = (uint8_t)(errPitch	&0x00FF);
+	txErrorBuffer[7] = (uint8_t)(errYaw   	>> 8);
+	txErrorBuffer[8] = (uint8_t)(errYaw		&0x00FF);
+	txErrorBuffer[8] = 0x56;//crc, not implemented yet
 	UNUSED(errHigh);
 
 	for(int8_t i=0;i<10;i++)
 	{
-		serialWrite(coProcessorPort, txBuffer[8]);
+		serialWriteBuf(coProcessorPort, txErrorBuffer,sizeof(txErrorBuffer));
 	}
 
-	sendCnt++;
+	timestampSend++;
 }
+
+/* Type E1: response to E0
+	CP -> FC
+	<Payload>	[9 bytes]
+		<timestampRecv>	[1 bytes]
+		ROLL_P , ROLL_I , ROLL_D 
+		PITCH_P, PITCH_I, PITCH_D
+		YAW_P ,YAW_I
+	Noted: each PID needs to multiply 10 before apply to the real PID controller 
+*/
 
 //process 0x55 0xE1 timecount r.p r.i r.d p.p p.i p.d y.p y.i 0xCC
 
-static void FuzziReceiveFrame(uint8_t c)
+static void fuzzyProcessFrame(uint8_t c)
 {
 	static enum coRecvState_e {
-        CO_HEADER_1,  // Waiting for preamble 1 (0x55)
-        CO_HEADER_2, // Waiting for preamble 2 (0xE1)
-        CO_DATA,     // Receiving data
-        CO_WAITCRC,  // Waiting for CRC  0XCC
-    } state = CO_HEADER_1;
+        FCP_HEADER, // Waiting for preamble 1 (0x55)
+        FCP_TYPE, 	// Waiting for preamble 2 (0xE1)
+        FCP_PAYLOAD,// Receiving data
+        FCP_CRC,	// Waiting for CRC  0XCC
+	} coRecvState = FCP_HEADER;
 
     static int r_index;
 
-	switch(state){
-		case CO_HEADER_1:
+	switch(coRecvState){
+		case FCP_HEADER:
 			if(0x55==c){
-				state=CO_HEADER_2;
-			}
-			else{
-				state=CO_HEADER_1;
+				coRecvState=FCP_TYPE;
+			}else{ // Co-processor received bad frame
+				symbleErrorCountTX++;
+				badFrame=true;
+				coRecvState=FCP_TYPE;
 			}
 			break;
-		case CO_HEADER_2:
+		case FCP_TYPE:
 			if(0xE1==c){
-				state=CO_DATA;
+				coRecvState=FCP_PAYLOAD;
+				payloadLen = 9;
 				r_index=0;
 			}
 			else{
-				state=CO_HEADER_1;
+				coRecvState=FCP_HEADER;
 			}
 			break;
-		case CO_DATA:
-			 coRecvBuffer[r_index] = c;
-			if (++r_index == 9) {
-				state = CO_WAITCRC;
+		case FCP_PAYLOAD:
+			coRecvBuffer[r_index] = c;
+			if (++r_index == payloadLen) {
+				coRecvState = FCP_CRC;
 			}
 			break;
-		case CO_WAITCRC:
+		case FCP_CRC:
 			int8_t crc=c;
 			//check crc
 			//PROCESS RECV 
-			pid_buffer[0].P=coRecvBuffer[1];
-			pid_buffer[0].I=coRecvBuffer[2];
-			pid_buffer[0].D=coRecvBuffer[3];
-			pid_buffer[1].P=coRecvBuffer[4];
-			pid_buffer[1].I=coRecvBuffer[5];
-			pid_buffer[1].D=coRecvBuffer[6];
-			pid_buffer[2].P=coRecvBuffer[7];
-			pid_buffer[2].I=coRecvBuffer[8];
-			recvCnt++;
-		state=CO_HEADER_1;
+			deltaPidBuffer[0].P=coRecvBuffer[1];
+			deltaPidBuffer[0].I=coRecvBuffer[2];
+			deltaPidBuffer[0].D=coRecvBuffer[3];
+			deltaPidBuffer[1].P=coRecvBuffer[4];
+			deltaPidBuffer[1].I=coRecvBuffer[5];
+			deltaPidBuffer[1].D=coRecvBuffer[6];
+			deltaPidBuffer[2].P=coRecvBuffer[7];
+			deltaPidBuffer[2].I=coRecvBuffer[8];
+			timestampRecv++;
+		state=FCP_HEADER;
 		break;
 	}
-
-
 }
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
-static void fuzzyCoProcessorRecv(){
+static pidDelta_t fuzzyCoProcessorRecv(){
 
     if (coProcessorPort == NULL) {
         return;
@@ -144,11 +156,19 @@ static void fuzzyCoProcessorRecv(){
 
     while (serialRxBytesWaiting(coProcessorPort) > 0) {
         uint8_t c = serialRead(coProcessorPort);
-        FuzziReceiveFrame(c);
+        fuzzyProcessFrame(c);
     }
 
+	if (badFrame){
+		badFrame=false;
+		for (int i=0;i<4;i++){
+			deltaPidBuffer[i].P=0;
+			deltaPidBuffer[i].I=0;
+			deltaPidBuffer[i].D=0;
+		}
+	}
+
+	return deltaPidBuffer;
 }
-
-
 
 #endif
