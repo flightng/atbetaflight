@@ -120,6 +120,7 @@
 #include "io/vtx_rtc6705.h"
 #include "io/vtx_smartaudio.h"
 #include "io/vtx_tramp.h"
+#include "io/fuzzy_co_processor.h"
 
 #include "msc/emfat_file.h"
 #ifdef USE_PERSISTENT_MSC_RTC
@@ -999,6 +1000,10 @@ void init(void)
     // Attempt to enable DMA on all SPI busses
     spiInitBusDMA();
 #endif
+#endif
+
+#ifdef USE_FUZZY_CO_PROCESSOR
+    fuzzyCoProcessorInit();
 #endif
 
     swdPinsInit();

@@ -1162,6 +1162,8 @@ static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
     DEBUG_SET(DEBUG_PIDLOOP, 3, micros() - startTime);
 }
 
+#if defined( USE_FUZZY_CO_PROCESSOR)
+
 static FAST_CODE void subTaskTransmitErrorToCoProcessor(timeUs_t currentTimeUs)
 {
     int16_t errorRoll = (int16_t)pidGetCurrentRateError(FD_ROLL);
@@ -1184,6 +1186,8 @@ static FAST_CODE void subTaskUpdatePidCoes(timeUs_t currentTimeUs)
     pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].DI * 10.0f;
     UNUSED(currentTimeUs);
 }
+
+#endif
 
 #ifdef USE_TELEMETRY
 #define GYRO_TEMP_READ_DELAY_US 3e6    // Only read the gyro temp every 3 seconds

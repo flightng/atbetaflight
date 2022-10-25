@@ -1,7 +1,11 @@
 #include "io/fuzzy_co_processor.h"
 #include "io/serial.h"
 
-#define CO_PROCESSOR_BAUDRATE 12000000
+
+#ifdef USE_FUZZY_CO_PROCESSOR
+
+
+
 // baud rate should be optimized, since the flc is tested by CP210x which only give stable output at 500_000 baud rate
 // we can increase the baud rate to 12_000_000 when we use the real flc
 
@@ -17,7 +21,7 @@ static int8_t timestampSend;//发送次数，有可能会溢出
 static int8_t timestampRecv;//接收次数
 static uint8_t payloadLen;//payload长度
 static uint16_t symbleErrorCountTX;// 发送误码次数
-static uint16_t symbleErrorCountRX;// 接收误码次数
+//static uint16_t symbleErrorCountRX;// 接收误码次数
 static bool badFrame;
 
 /*
@@ -33,8 +37,10 @@ bool fuzzyCoProcessorInit( void ){
 	        portOptions = SERIAL_BIDIR;
 	        coProcessorPort = openSerialPort(portConfig->identifier, FUNCTION_CO_PROCESSOR, NULL, NULL, 500000, MODE_RXTX, portOptions);
 
+
+	    }else{
 			//fixme : for debug use port5
-//	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, NULL, NULL, CO_PROCESSOR_BAUDRATE, MODE_RXTX, portOptions);
+	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, NULL, NULL, CO_PROCESSOR_UART_BAUD, MODE_RXTX, SERIAL_BIDIR);
 
 	    }
 
@@ -55,7 +61,12 @@ bool fuzzyCoProcessorInit( void ){
 		PITCH_E_HIGH, PITCH_E_LOW
 		YAW_E_HIGH ,YAW_E_LOW
 */
-static void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh){
+void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh){
+
+
+    if (!coProcessorPort) {
+        return ;
+    }
 
 	uint8_t txErrorBuffer[10];
 
@@ -91,17 +102,17 @@ static void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t 
 
 //process 0x55 0xE1 timecount r.p r.i r.d p.p p.i p.d y.p y.i 0xCC
 
-static void fuzzyProcessFrame(uint8_t c)
+void fuzzyProcessFrame(uint8_t c)
 {
 	static enum coRecvState_e {
-        FCP_HEADER, // Waiting for preamble 1 (0x55)
+        FCP_HEADER=1, // Waiting for preamble 1 (0x55)
         FCP_TYPE, 	// Waiting for preamble 2 (0xE1)
         FCP_PAYLOAD,// Receiving data
         FCP_CRC,	// Waiting for CRC  0XCC
 	} coRecvState = FCP_HEADER;
 
     static int r_index;
-	uint8_t crc;
+//	uint8_t crc;
 
 	switch(coRecvState){
 		case FCP_HEADER:
@@ -130,7 +141,7 @@ static void fuzzyProcessFrame(uint8_t c)
 			}
 			break;
 		case FCP_CRC:
-			crc=c;
+//			crc=c;
 			//check crc
 			//PROCESS RECV 
 			deltaPidBuffer[0].DP=coRecvBuffer[1];
@@ -149,7 +160,7 @@ static void fuzzyProcessFrame(uint8_t c)
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
 // static pidDelta_t fuzzyCoProcessorRecv(){
-static void fuzzyCoProcessorRecv(){
+void fuzzyCoProcessorRecv(){
 
     if (coProcessorPort == NULL) {
         return;
@@ -171,4 +182,6 @@ static void fuzzyCoProcessorRecv(){
 
 	// return deltaPidBuffer;
 }
+
+#endif
 
