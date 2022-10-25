@@ -18,7 +18,7 @@ bool fuzzyCoProcessorInit(void);
 
 static void fuzzyCoProcessorSendError(float errPitch,float errRoll,float errYaw,float errHigh);
 
-static void fuzzyCoProcessorRecv();
+static pidDelta_t fuzzyCoProcessorRecv();
 
 
 

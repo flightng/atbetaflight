@@ -1016,6 +1016,8 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         float setpointCorrection = currentPidSetpoint - uncorrectedSetpoint;
 #endif
 
+        // -----save errorRate to pidRuntime
+        pidRuntime.currentRateError[axis] = errorRate;
         // --------low-level gyro-based PID based on 2DOF PID controller. ----------
         // 2-DOF PID controller with optional filter on derivative term.
         // b = 1 and only c (feedforward weight) can be tuned (amount derivative on measurement or error).
@@ -1294,6 +1296,11 @@ void pidSetItermReset(bool enabled)
 float pidGetPreviousSetpoint(int axis)
 {
     return pidRuntime.previousPidSetpoint[axis];
+}
+
+float pidGetCurrentRateError(int axis)
+{
+    return pidRuntime.currentRateError[axis];
 }
 
 float pidGetDT()

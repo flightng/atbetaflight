@@ -1,4 +1,4 @@
-#ifdef  USE_FUZZI_CO_PROCESSOR
+#ifdef  USE_FUZZY_CO_PROCESSOR
 #include <io/fuzzy_co_processor.h>
 #include <io/serial.h>
 
@@ -148,6 +148,7 @@ static void fuzzyProcessFrame(uint8_t c)
 }
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
+// static pidDelta_t fuzzyCoProcessorRecv(){
 static pidDelta_t fuzzyCoProcessorRecv(){
 
     if (coProcessorPort == NULL) {
@@ -168,7 +169,7 @@ static pidDelta_t fuzzyCoProcessorRecv(){
 		}
 	}
 
-	return deltaPidBuffer;
+	// return deltaPidBuffer;
 }
 
 #endif

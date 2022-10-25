@@ -76,6 +76,7 @@
 #include "io/gps.h"
 #include "io/pidaudio.h"
 #include "io/serial.h"
+#include "io/fuzzy_co_processor.h"
 #include "io/servos.h"
 #include "io/statusindicator.h"
 #include "io/transponder_ir.h"
@@ -1161,6 +1162,29 @@ static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
     DEBUG_SET(DEBUG_PIDLOOP, 3, micros() - startTime);
 }
 
+static FAST_CODE void subTaskTransmitErrorToCoProcessor(timeUs_t currentTimeUs)
+{
+    float errorRoll = pidGetCurrentRateError(FD_ROLL);
+    float errorPitch = pidGetCurrentRateError(FD_PITCH);
+    float errorYaw = pidGetCurrentRateError(FD_YAW);
+    fuzzyCoProcessorSendError(errorRoll, errorPitch, errorYaw);
+    UNUSED(currentTimeUs);
+}
+
+static FAST_CODE void subTaskUpdatePidCoes(timeUs_t currentTimeUs)
+{
+    fuzzyCoProcessorRecv();
+    pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].P * 10.0f;
+    pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].I * 10.0f;
+    pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].D * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].P * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].I * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].D * 10.0f;
+    pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].P * 10.0f;
+    pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].I * 10.0f;
+    UNUSED(currentTimeUs);
+}
+
 #ifdef USE_TELEMETRY
 #define GYRO_TEMP_READ_DELAY_US 3e6    // Only read the gyro temp every 3 seconds
 void subTaskTelemetryPollSensors(timeUs_t currentTimeUs)
@@ -1284,10 +1308,19 @@ FAST_CODE void taskMainPidLoop(timeUs_t currentTimeUs)
     DEBUG_SET(DEBUG_PIDLOOP, 0, micros() - currentTimeUs);
 
     subTaskRcCommand(currentTimeUs);
+#if defined(USE_FUZZY_CO_PROCESSOR)
+    // send error to fuzzy co processor
+    subTaskTransmitErrorToCoProcessor();
     subTaskPidController(currentTimeUs);
     subTaskMotorUpdate(currentTimeUs);
     subTaskPidSubprocesses(currentTimeUs);
-
+    subTaskUpdatePidCoes(currentTimeUs);
+    // process pid coes from fuzzy co processor
+#else
+    subTaskPidController(currentTimeUs);
+    subTaskMotorUpdate(currentTimeUs);
+    subTaskPidSubprocesses(currentTimeUs);
+#endif
     DEBUG_SET(DEBUG_CYCLETIME, 0, getTaskDeltaTimeUs(TASK_SELF));
     DEBUG_SET(DEBUG_CYCLETIME, 1, getAverageSystemLoadPercent());
 }
