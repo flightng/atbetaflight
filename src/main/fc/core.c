@@ -1167,21 +1167,21 @@ static FAST_CODE void subTaskTransmitErrorToCoProcessor(timeUs_t currentTimeUs)
     float errorRoll = pidGetCurrentRateError(FD_ROLL);
     float errorPitch = pidGetCurrentRateError(FD_PITCH);
     float errorYaw = pidGetCurrentRateError(FD_YAW);
-    fuzzyCoProcessorSendError(errorRoll, errorPitch, errorYaw);
+    fuzzyCoProcessorSendError(errorRoll, errorPitch, errorYaw, 0);
     UNUSED(currentTimeUs);
 }
 
 static FAST_CODE void subTaskUpdatePidCoes(timeUs_t currentTimeUs)
 {
     fuzzyCoProcessorRecv();
-    pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].P * 10.0f;
-    pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].I * 10.0f;
-    pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].D * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].P * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].I * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].D * 10.0f;
-    pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].P * 10.0f;
-    pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].I * 10.0f;
+    pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].DP * 10.0f;
+    pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].DI * 10.0f;
+    pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].DD * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].DP * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].DI * 10.0f;
+    pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].DD * 10.0f;
+    pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].DP * 10.0f;
+    pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].DI * 10.0f;
     UNUSED(currentTimeUs);
 }
 
@@ -1310,7 +1310,7 @@ FAST_CODE void taskMainPidLoop(timeUs_t currentTimeUs)
     subTaskRcCommand(currentTimeUs);
 #if defined(USE_FUZZY_CO_PROCESSOR)
     // send error to fuzzy co processor
-    subTaskTransmitErrorToCoProcessor();
+    subTaskTransmitErrorToCoProcessor(currentTimeUs);
     subTaskPidController(currentTimeUs);
     subTaskMotorUpdate(currentTimeUs);
     subTaskPidSubprocesses(currentTimeUs);
