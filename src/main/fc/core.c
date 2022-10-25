@@ -1164,10 +1164,10 @@ static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
 
 static FAST_CODE void subTaskTransmitErrorToCoProcessor(timeUs_t currentTimeUs)
 {
-    float errorRoll = pidGetCurrentRateError(FD_ROLL);
-    float errorPitch = pidGetCurrentRateError(FD_PITCH);
-    float errorYaw = pidGetCurrentRateError(FD_YAW);
-    fuzzyCoProcessorSendError(errorRoll, errorPitch, errorYaw, 0);
+    int16_t errorRoll = (int16_t)pidGetCurrentRateError(FD_ROLL);
+    int16_t errorPitch = (int16_t)pidGetCurrentRateError(FD_PITCH);
+    int16_t errorYaw = (int16_t)pidGetCurrentRateError(FD_YAW);
+    fuzzyCoProcessorSendError((int16_t)(errorRoll/GYRO_SCALE_2000DPS), (int16_t)(errorPitch/GYRO_SCALE_2000DPS), (int16_t)(errorYaw/GYRO_SCALE_2000DPS), 0);
     UNUSED(currentTimeUs);
 }
 

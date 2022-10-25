@@ -38,6 +38,12 @@ ifeq (CYGWIN ,$(findstring CYGWIN,$(UNAME)))
   CYGWIN := 1
 endif
 
+# Windows using MYSYS/gnuwin32make shell
+ifeq (MSYS ,$(findstring MSYS,$(UNAME)))
+  OSFAMILY := windows
+  MSYS := 1
+endif
+
 # report an error if we couldn't work out what OS this is running on
 ifndef OSFAMILY
   $(info uname reports $(UNAME))

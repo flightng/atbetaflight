@@ -1,6 +1,5 @@
-#ifdef  USE_FUZZY_CO_PROCESSOR
-#include <io/fuzzy_co_processor.h>
-#include <io/serial.h>
+#include "io/fuzzy_co_processor.h"
+#include "io/serial.h"
 
 #define CO_PROCESSOR_BAUDRATE 12000000
 // baud rate should be optimized, since the flc is tested by CP210x which only give stable output at 500_000 baud rate
@@ -102,6 +101,7 @@ static void fuzzyProcessFrame(uint8_t c)
 	} coRecvState = FCP_HEADER;
 
     static int r_index;
+	uint8_t crc;
 
 	switch(coRecvState){
 		case FCP_HEADER:
@@ -130,26 +130,26 @@ static void fuzzyProcessFrame(uint8_t c)
 			}
 			break;
 		case FCP_CRC:
-			int8_t crc=c;
+			crc=c;
 			//check crc
 			//PROCESS RECV 
-			deltaPidBuffer[0].P=coRecvBuffer[1];
-			deltaPidBuffer[0].I=coRecvBuffer[2];
-			deltaPidBuffer[0].D=coRecvBuffer[3];
-			deltaPidBuffer[1].P=coRecvBuffer[4];
-			deltaPidBuffer[1].I=coRecvBuffer[5];
-			deltaPidBuffer[1].D=coRecvBuffer[6];
-			deltaPidBuffer[2].P=coRecvBuffer[7];
-			deltaPidBuffer[2].I=coRecvBuffer[8];
+			deltaPidBuffer[0].DP=coRecvBuffer[1];
+			deltaPidBuffer[0].DI=coRecvBuffer[2];
+			deltaPidBuffer[0].DD=coRecvBuffer[3];
+			deltaPidBuffer[1].DP=coRecvBuffer[4];
+			deltaPidBuffer[1].DI=coRecvBuffer[5];
+			deltaPidBuffer[1].DD=coRecvBuffer[6];
+			deltaPidBuffer[2].DP=coRecvBuffer[7];
+			deltaPidBuffer[2].DI=coRecvBuffer[8];
 			timestampRecv++;
-		state=FCP_HEADER;
+		coRecvState=FCP_HEADER;
 		break;
 	}
 }
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
 // static pidDelta_t fuzzyCoProcessorRecv(){
-static pidDelta_t fuzzyCoProcessorRecv(){
+static void fuzzyCoProcessorRecv(){
 
     if (coProcessorPort == NULL) {
         return;
@@ -163,13 +163,12 @@ static pidDelta_t fuzzyCoProcessorRecv(){
 	if (badFrame){
 		badFrame=false;
 		for (int i=0;i<4;i++){
-			deltaPidBuffer[i].P=0;
-			deltaPidBuffer[i].I=0;
-			deltaPidBuffer[i].D=0;
+			deltaPidBuffer[i].DP=0;
+			deltaPidBuffer[i].DI=0;
+			deltaPidBuffer[i].DD=0;
 		}
 	}
 
 	// return deltaPidBuffer;
 }
 
-#endif
