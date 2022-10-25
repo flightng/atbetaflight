@@ -56,7 +56,6 @@ COMMON_SRC = \
             fc/runtime_config.c \
             fc/stats.c \
             io/beeper.c \
-            io/fuzzy_co_processor.c \
             io/piniobox.c \
             io/serial.c \
             io/smartaudio_protocol.c \
@@ -174,6 +173,7 @@ COMMON_SRC = \
             io/gps.c \
             io/ledstrip.c \
             io/pidaudio.c \
+            io/fuzzy_co_processor.c \
             osd/osd.c \
             osd/osd_elements.c \
             osd/osd_warnings.c \

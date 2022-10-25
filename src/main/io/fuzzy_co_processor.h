@@ -16,10 +16,10 @@ static int8_t coRecvBuffer[12];// 9 used for now
 
 bool fuzzyCoProcessorInit(void);
 
-static void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh);
+void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,int16_t errHigh);
 
 // static pidDelta_t fuzzyCoProcessorRecv();
-static void fuzzyCoProcessorRecv();
+void fuzzyCoProcessorRecv();
 
 
 
