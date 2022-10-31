@@ -85,7 +85,7 @@
 
 #define GYRO_1_CS_PIN          SPI1_NSS_PIN
 #define GYRO_1_SPI_INSTANCE    SPI1
-#define GYRO_1_ALIGN           CW270_DEG
+#define GYRO_1_ALIGN           CW180_DEG
 
 
 #define USE_GYRO
@@ -148,6 +148,7 @@
 #define UART2_RX_PIN            PA3
 #define UART2_TX_PIN            PA2
 
+//uart3 与i2c 复用，如果启用uart3 需要关闭i2c 的所有设备
 #define USE_UART3
 #define UART3_RX_PIN            PB11
 #define UART3_TX_PIN            PB10
@@ -156,7 +157,6 @@
 #define UART4_RX_PIN            PC11
 #define UART4_TX_PIN            PC10
 
-//uart5 与i2c 复用，如果启用uart5 需要关闭i2c 的所有设备
 #define USE_UART5
 #define UART5_RX_PIN            PD2
 #define UART5_TX_PIN            PC12
