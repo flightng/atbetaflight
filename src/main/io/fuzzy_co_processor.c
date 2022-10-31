@@ -1,6 +1,8 @@
 #include "io/fuzzy_co_processor.h"
 #include "io/serial.h"
-
+#include "common/crc.h"
+#include "common/maths.h"
+#include "common/streambuf.h"
 
 #ifdef USE_FUZZY_CO_PROCESSOR
 
@@ -70,22 +72,39 @@ void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,
 
 	uint8_t txErrorBuffer[10];
 
-	txErrorBuffer[0] = 0x55;
-	txErrorBuffer[1] = 0xE0;
-	txErrorBuffer[2] = timestampSend;
-	txErrorBuffer[3] = (uint8_t)(errRoll  	>> 8);
-	txErrorBuffer[4] = (uint8_t)(errRoll	&0x00FF);
-	txErrorBuffer[5] = (uint8_t)(errPitch 	>> 8); 
-	txErrorBuffer[6] = (uint8_t)(errPitch	&0x00FF);
-	txErrorBuffer[7] = (uint8_t)(errYaw   	>> 8);
-	txErrorBuffer[8] = (uint8_t)(errYaw		&0x00FF);
-	txErrorBuffer[8] = 0x56;//crc, not implemented yet
+//	txErrorBuffer[0] = 0x55;
+//	txErrorBuffer[1] = 0xE0;
+//	txErrorBuffer[2] = timestampSend;
+//	txErrorBuffer[3] = (uint8_t)(errRoll  	>> 8);
+//	txErrorBuffer[4] = (uint8_t)(errRoll	&0x00FF);
+//	txErrorBuffer[5] = (uint8_t)(errPitch 	>> 8);
+//	txErrorBuffer[6] = (uint8_t)(errPitch	&0x00FF);
+//	txErrorBuffer[7] = (uint8_t)(errYaw   	>> 8);
+//	txErrorBuffer[8] = (uint8_t)(errYaw		&0x00FF);
+//	txErrorBuffer[9] = 0x56;//crc, not implemented yet
 	UNUSED(errHigh);
 
-	for(int8_t i=0;i<10;i++)
-	{
-		serialWriteBuf(coProcessorPort, txErrorBuffer,sizeof(txErrorBuffer));
-	}
+	sbuf_t buf;
+	// prepare pointer
+	buf.ptr = txErrorBuffer;
+	buf.end = ARRAYEND(txErrorBuffer);
+
+	sbufWriteU8(&buf, 0x55);
+	sbufWriteU8(&buf, 0xE0);
+	sbufWriteU8(&buf, timestampSend);
+
+	sbufWriteData(&buf, &errRoll, 2);
+	sbufWriteData(&buf, &errPitch, 2);
+	sbufWriteData(&buf, &errYaw, 2);
+
+	// add crc over (all) data
+	crc8_dvb_s2_sbuf_append(&buf, txErrorBuffer);
+
+	// switch to reader
+	sbufSwitchToReader(&buf, txErrorBuffer);
+
+	// send data if possible
+	serialWriteBuf(coProcessorPort, sbufPtr(&buf), sbufBytesRemaining(&buf));
 
 	timestampSend++;
 }
