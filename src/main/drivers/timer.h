@@ -32,8 +32,16 @@
 #include "pg/timerio.h"
 
 #define CC_CHANNELS_PER_TIMER         4 // TIM_Channel_1..4
+
+#if defined(AT32F43x)
+
+#define CC_INDEX_FROM_CHANNEL(x)      ((uint8_t)((x) -1))
+#define CC_CHANNEL_FROM_INDEX(x)      ((uint16_t)(x) +1 )
+
+#else
 #define CC_INDEX_FROM_CHANNEL(x)      ((uint8_t)((x) >> 2))
 #define CC_CHANNEL_FROM_INDEX(x)      ((uint16_t)(x) << 2)
+#endif
 
 typedef uint16_t captureCompare_t;        // 16 bit on both 103 and 303, just register access must be 32bit sometimes (use timCCR_t)
 
@@ -139,7 +147,7 @@ extern const timerHardware_t timerHardware[];
 
 #if defined(USE_TIMER_MGMT)
 #if defined(AT32F43x)
-#define FULL_TIMER_CHANNEL_COUNT 80 // XXX Need review
+#define FULL_TIMER_CHANNEL_COUNT 56 // XXX Need review
 #endif
 
 extern const timerHardware_t fullTimerHardware[];
