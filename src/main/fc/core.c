@@ -1164,27 +1164,55 @@ static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
 
 #if defined( USE_FUZZY_CO_PROCESSOR)
 
+static int16_t errorRoll;
+static int16_t errorPitch;
+static int16_t errorYaw;
+static int16_t sendCount;
+
 static FAST_CODE void subTaskTransmitErrorToCoProcessor(timeUs_t currentTimeUs)
 {
-    int16_t errorRoll = (int16_t)pidGetCurrentRateError(FD_ROLL);
-    int16_t errorPitch = (int16_t)pidGetCurrentRateError(FD_PITCH);
-    int16_t errorYaw = (int16_t)pidGetCurrentRateError(FD_YAW);
-    fuzzyCoProcessorSendError((int16_t)(errorRoll/GYRO_SCALE_2000DPS), (int16_t)(errorPitch/GYRO_SCALE_2000DPS), (int16_t)(errorYaw/GYRO_SCALE_2000DPS), 0);
+
+
+    errorRoll = (int16_t)pidGetCurrentRateError(FD_ROLL);
+    errorPitch = (int16_t)pidGetCurrentRateError(FD_PITCH);
+    errorYaw = (int16_t)pidGetCurrentRateError(FD_YAW);
     UNUSED(currentTimeUs);
+    // fuzzyCoProcessorSendError((int16_t)(errorRoll/GYRO_SCALE_2000DPS), (int16_t)(errorPitch/GYRO_SCALE_2000DPS), (int16_t)(errorYaw/GYRO_SCALE_2000DPS), 0);
+    sendCount++;
+    if (sendCount == 2) {
+        sendCount = 0;
+        fuzzyCoProcessorSendError((int16_t)(errorRoll/GYRO_SCALE_2000DPS), (int16_t)(errorPitch/GYRO_SCALE_2000DPS), (int16_t)(errorYaw/GYRO_SCALE_2000DPS), 0);
+    }
 }
+
+static int16_t recvCount;
 
 static FAST_CODE void subTaskUpdatePidCoes(timeUs_t currentTimeUs)
 {
-    fuzzyCoProcessorRecv();
-    pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].DP * 10.0f;
-    pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].DI * 10.0f;
-    pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].DD * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].DP * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].DI * 10.0f;
-    pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].DD * 10.0f;
-    pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].DP * 10.0f;
-    pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].DI * 10.0f;
-    UNUSED(currentTimeUs);
+    recvCount++;
+    if (recvCount == 2) {
+        recvCount = 0;
+        fuzzyCoProcessorUpdatePidCoes();
+        pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].DP * 10.0f;
+        pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].DI * 10.0f;
+        pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].DD * 10.0f;
+        pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].DP * 10.0f;
+        pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].DI * 10.0f;
+        pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].DD * 10.0f;
+        pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].DP * 10.0f;
+        pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].DI * 10.0f;
+        UNUSED(currentTimeUs);
+    }
+    // fuzzyCoProcessorRecv();
+    // pidRuntime.pidCoefficient[FD_ROLL].Kp += deltaPidBuffer[0].DP * 10.0f;
+    // pidRuntime.pidCoefficient[FD_ROLL].Ki += deltaPidBuffer[0].DI * 10.0f;
+    // pidRuntime.pidCoefficient[FD_ROLL].Kd += deltaPidBuffer[0].DD * 10.0f;
+    // pidRuntime.pidCoefficient[FD_PITCH].Kp += deltaPidBuffer[1].DP * 10.0f;
+    // pidRuntime.pidCoefficient[FD_PITCH].Ki += deltaPidBuffer[1].DI * 10.0f;
+    // pidRuntime.pidCoefficient[FD_PITCH].Kd += deltaPidBuffer[1].DD * 10.0f;
+    // pidRuntime.pidCoefficient[FD_YAW].Kp += deltaPidBuffer[2].DP * 10.0f;
+    // pidRuntime.pidCoefficient[FD_YAW].Ki += deltaPidBuffer[2].DI * 10.0f;
+    // UNUSED(currentTimeUs);
 }
 
 #endif

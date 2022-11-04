@@ -173,9 +173,9 @@
 //*******************CO-Proceseor*******************
 #define USE_FUZZY_CO_PROCESSOR
 #define CO_PROCESSOR_UART		SERIAL_PORT_UART5
-#define CO_PROCESSOR_UART_BAUD	10000000
-#define UART5_TX_DMA_CHANNEL	DMA2_CHANNEL3_BASE
-#define UART5_RX_DMA_CHANNEL	DMA2_CHANNEL4_BASE
+#define CO_PROCESSOR_UART_BAUD	2250000
+// #define UART5_TX_DMA_CHANNEL	DMA2_CHANNEL3_BASE
+// #define UART5_RX_DMA_CHANNEL	DMA2_CHANNEL4_BASE
 
 // *************** ADC *****************************
 #define USE_ADC
