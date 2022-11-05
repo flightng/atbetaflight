@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_qspi.c
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    contain all the functions for qspi firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -67,7 +67,7 @@ void qspi_encryption_enable(qspi_type* qspi_x, confirm_state new_state)
   *         - QSPI_SCK_MODE_3
   * @retval none
   */
-void qspi_sck_mode_set( qspi_type* qspi_x, qspi_clk_mode_type new_mode)
+void qspi_sck_mode_set(qspi_type* qspi_x, qspi_clk_mode_type new_mode)
 {
   qspi_x->ctrl_bit.sckmode = new_mode;
 }
@@ -165,7 +165,7 @@ flag_status qspi_flag_get(qspi_type* qspi_x, uint32_t flag)
   *         - QSPI_CMDSTS_FLAG
   * @retval none
   */
-void qspi_flag_clear( qspi_type* qspi_x, uint32_t flag)
+void qspi_flag_clear(qspi_type* qspi_x, uint32_t flag)
 {
   qspi_x->cmdsts = QSPI_CMDSTS_FLAG;
 }
@@ -258,18 +258,27 @@ void qspi_xip_enable(qspi_type* qspi_x, confirm_state new_state)
   {
     return;
   }
-  
+
+  /* wait until tx fifo emoty*/
+  while(qspi_x->fifosts_bit.txfifordy == 0);
+
   /* flush and reset qspi state */
   qspi_x->ctrl_bit.xiprcmdf = 1;
-  
+
   /* wait until action is finished */
   while(qspi_x->ctrl_bit.abort);
-    
+
   /* set xip mode to new state */
   qspi_x->ctrl_bit.xipsel = new_state;
-  
+
   /* wait until abort is not set */
   while(qspi_x->ctrl_bit.abort);
+
+  /* wait until cache status valid*/
+  if(new_state == TRUE)
+  {
+    while( qspi_x->xip_cmd_w3_bit.csts );
+  }
 }
 
 /**

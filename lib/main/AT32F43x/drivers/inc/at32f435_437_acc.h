@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_acc.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 acc header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -40,7 +40,7 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup ACC_DEV
+/** @addtogroup ACC
   * @{
   */
 

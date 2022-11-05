@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_usb.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 usb header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -43,12 +43,12 @@ extern "C" {
 /** @addtogroup USB
   * @{
   */
-  
-/** @defgroup USB_global_interrupts_definition 
+
+/** @defgroup USB_global_interrupts_definition
   * @brief usb global interrupt mask
   * @{
   */
-  
+
 #define USB_OTG_MODEMIS_INT              ((uint32_t)0x00000002) /*!< usb otg mode mismatch interrupt */
 #define USB_OTG_OTGINT_INT               ((uint32_t)0x00000004) /*!< usb otg interrupt */
 #define USB_OTG_SOF_INT                  ((uint32_t)0x00000008) /*!< usb otg sof interrupt */
@@ -77,7 +77,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup USB_global_interrupt_flags_definition 
+/** @defgroup USB_global_interrupt_flags_definition
   * @brief usb global interrupt flag
   * @{
   */
@@ -110,9 +110,9 @@ extern "C" {
 /**
   * @}
   */
-  
 
-/** @defgroup USB_global_setting_definition 
+
+/** @defgroup USB_global_setting_definition
   * @brief usb global setting
   * @{
   */
@@ -153,7 +153,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup USB_host_config_definition 
+/** @defgroup USB_host_config_definition
   * @{
   */
 
@@ -241,7 +241,7 @@ extern "C" {
   */
 
 
-/** @defgroup USB_device_config_definition 
+/** @defgroup USB_device_config_definition
   * @{
   */
 /**
@@ -437,6 +437,7 @@ typedef struct
   uint32_t                               trans_len;                   /*!< endpoint transmission length*/
 
   uint32_t                               last_len;                    /*!< last transfer length */
+  uint32_t                               rem0_len;                    /*!< rem transfer length */
   uint32_t                               ept0_slen;                   /*!< endpoint 0 transfer sum length */
 } usb_ept_info;
 
@@ -486,7 +487,7 @@ typedef struct
       __IO uint32_t reserved3                : 10; /* [31:22] */
     } gotgctrl_bit;
   };
-  
+
   /**
   * @brief otgfs interrupt register, offset:0x04
   */

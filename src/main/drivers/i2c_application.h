@@ -1,17 +1,17 @@
 /**
   **************************************************************************
   * @file     i2c_application.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    i2c application libray header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
-  * The software Board Support Package (BSP) that is made available to 
-  * download from Artery official website is the copyrighted work of Artery. 
-  * Artery authorizes customers to use, copy, and distribute the BSP 
-  * software and its related documentation for the purpose of design and 
-  * development in conjunction with Artery microcontrollers. Use of the 
+  * The software Board Support Package (BSP) that is made available to
+  * download from Artery official website is the copyrighted work of Artery.
+  * Artery authorizes customers to use, copy, and distribute the BSP
+  * software and its related documentation for the purpose of design and
+  * development in conjunction with Artery microcontrollers. Use of the
   * software is governed by this copyright notice and the following disclaimer.
   *
   * THIS SOFTWARE IS PROVIDED ON "AS IS" BASIS WITHOUT WARRANTIES,
@@ -38,8 +38,8 @@ extern "C" {
 /** @addtogroup AT32F435_437_middlewares_i2c_application_library
   * @{
   */
-  
-  
+
+
 /** @defgroup I2C_library_event_check_flag
   * @{
   */
@@ -52,14 +52,25 @@ extern "C" {
   * @}
   */
 
-#define I2C_START                        0
-#define I2C_END                          1
+/** @defgroup I2C_library_memory_address_width_mode
+  * @{
+  */
+
+typedef enum
+{
+  I2C_MEM_ADDR_WIDIH_8                   = 0x01, /*!< memory address is 8 bit */
+  I2C_MEM_ADDR_WIDIH_16                  = 0x02, /*!< memory address is 16 bit */
+} i2c_mem_address_width_type;
+
+/**
+  * @}
+  */
 
 /** @defgroup I2C_library_transmission_mode
   * @{
   */
 
-typedef enum 
+typedef enum
 {
   I2C_INT_MA_TX = 0,
   I2C_INT_MA_RX,
@@ -68,7 +79,7 @@ typedef enum
   I2C_DMA_MA_TX,
   I2C_DMA_MA_RX,
   I2C_DMA_SLA_TX,
-  I2C_DMA_SLA_RX,  
+  I2C_DMA_SLA_RX,
 } i2c_mode_type;
 
 /**
@@ -79,7 +90,7 @@ typedef enum
   * @{
   */
 
-typedef enum 
+typedef enum
 {
   I2C_OK = 0,          /*!< no error */
   I2C_ERR_STEP_1,      /*!< step 1 error */
@@ -111,7 +122,7 @@ typedef enum
   * @{
   */
 
-typedef struct 
+typedef struct
 {
   i2c_type                               *i2cx;                   /*!< i2c registers base address      */
   uint8_t                                *pbuff;                  /*!< pointer to i2c transfer buffer  */
@@ -137,35 +148,35 @@ void            i2c_config                (i2c_handle_type* hi2c);
 void            i2c_lowlevel_init         (i2c_handle_type* hi2c);
 void            i2c_reset_ctrl2_register  (i2c_handle_type* hi2c);
 i2c_status_type i2c_wait_end              (i2c_handle_type* hi2c, uint32_t timeout);
-i2c_status_type i2c_wait_flag             (i2c_handle_type* hi2c, uint32_t flag, flag_status status, uint32_t event_check, uint32_t timeout);
-                                          
+i2c_status_type i2c_wait_flag             (i2c_handle_type* hi2c, uint32_t flag, uint32_t event_check, uint32_t timeout);
+
 i2c_status_type i2c_master_transmit       (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_master_receive        (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_transmit        (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_receive         (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
-                                          
+
 i2c_status_type i2c_master_transmit_int   (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_master_receive_int    (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_transmit_int    (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_receive_int     (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
-                                          
+
 i2c_status_type i2c_master_transmit_dma   (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_master_receive_dma    (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_transmit_dma    (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_slave_receive_dma     (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
-                                         
+
 i2c_status_type i2c_smbus_master_transmit (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_smbus_master_receive  (i2c_handle_type* hi2c, uint16_t address, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_smbus_slave_transmit  (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
 i2c_status_type i2c_smbus_slave_receive   (i2c_handle_type* hi2c, uint8_t* pdata, uint16_t size, uint32_t timeout);
 
-i2c_status_type i2c_memory_write          (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-i2c_status_type i2c_memory_write_int      (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-i2c_status_type i2c_memory_write_dma      (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-i2c_status_type i2c_memory_read           (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-i2c_status_type i2c_memory_read_int       (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-i2c_status_type i2c_memory_read_dma       (i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
-                                          
+i2c_status_type i2c_memory_write          (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+i2c_status_type i2c_memory_write_int      (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+i2c_status_type i2c_memory_write_dma      (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+i2c_status_type i2c_memory_read           (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+i2c_status_type i2c_memory_read_int       (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+i2c_status_type i2c_memory_read_dma       (i2c_handle_type* hi2c, i2c_mem_address_width_type mem_address_width, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout);
+
 void            i2c_evt_irq_handler       (i2c_handle_type* hi2c);
 void            i2c_err_irq_handler       (i2c_handle_type* hi2c);
 void            i2c_dma_tx_irq_handler    (i2c_handle_type* hi2c);
@@ -177,7 +188,7 @@ void            i2c_dma_rx_irq_handler    (i2c_handle_type* hi2c);
 
 /**
   * @}
-  */ 
+  */
 
 #ifdef __cplusplus
 }

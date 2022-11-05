@@ -1,17 +1,17 @@
 /**
   **************************************************************************
   * @file     at32f435_437_i2c.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 i2c header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
-  * The software Board Support Package (BSP) that is made available to 
-  * download from Artery official website is the copyrighted work of Artery. 
-  * Artery authorizes customers to use, copy, and distribute the BSP 
-  * software and its related documentation for the purpose of design and 
-  * development in conjunction with Artery microcontrollers. Use of the 
+  * The software Board Support Package (BSP) that is made available to
+  * download from Artery official website is the copyrighted work of Artery.
+  * Artery authorizes customers to use, copy, and distribute the BSP
+  * software and its related documentation for the purpose of design and
+  * development in conjunction with Artery microcontrollers. Use of the
   * software is governed by this copyright notice and the following disclaimer.
   *
   * THIS SOFTWARE IS PROVIDED ON "AS IS" BASIS WITHOUT WARRANTIES,
@@ -43,34 +43,34 @@ extern "C" {
 /** @addtogroup I2C
   * @{
   */
- 
+
 /**
   * @brief maximum number of single transfers
   */
-#define MAX_TRANSFER_CNT                 255 /*!< maximum number of single transfers */   
+#define MAX_TRANSFER_CNT                 255 /*!< maximum number of single transfers */
 
 /** @defgroup I2C_interrupts_definition
   * @brief i2c interrupt
   * @{
   */
-  
-#define I2C_TD_INT                       ((uint32_t)0x00000002) /*!< i2c transmit data interrupt */     
-#define I2C_RD_INT                       ((uint32_t)0x00000004) /*!< i2c receive data interrupt */  
+
+#define I2C_TD_INT                       ((uint32_t)0x00000002) /*!< i2c transmit data interrupt */
+#define I2C_RD_INT                       ((uint32_t)0x00000004) /*!< i2c receive data interrupt */
 #define I2C_ADDR_INT                     ((uint32_t)0x00000008) /*!< i2c address match interrupt */
 #define I2C_ACKFIAL_INT                  ((uint32_t)0x00000010) /*!< i2c ack fail interrupt */
 #define I2C_STOP_INT                     ((uint32_t)0x00000020) /*!< i2c stop detect interrupt */
 #define I2C_TDC_INT                      ((uint32_t)0x00000040) /*!< i2c transmit data complete interrupt */
-#define I2C_ERR_INT                      ((uint32_t)0x00000080) /*!< i2c bus error interrupt */ 
+#define I2C_ERR_INT                      ((uint32_t)0x00000080) /*!< i2c bus error interrupt */
 
 /**
   * @}
   */
-  
+
 /** @defgroup I2C_flags_definition
   * @brief i2c flag
   * @{
   */
-  
+
 #define  I2C_TDBE_FLAG                   ((uint32_t)0x00000001) /*!< i2c transmit data buffer empty flag */
 #define  I2C_TDIS_FLAG                   ((uint32_t)0x00000002) /*!< i2c send interrupt status */
 #define  I2C_RDBF_FLAG                   ((uint32_t)0x00000004) /*!< i2c receive data buffer full flag */
@@ -95,7 +95,7 @@ extern "C" {
 /** @defgroup I2C_exported_types
   * @{
   */
-  
+
 /**
   * @brief i2c smbus mode set
   */
@@ -137,7 +137,7 @@ typedef enum
   */
 typedef enum
 {
-  I2C_SMBUS_ALERT_HIGH                   = 0x00, /*!< smbus alert pin set high */  
+  I2C_SMBUS_ALERT_HIGH                   = 0x00, /*!< smbus alert pin set high */
   I2C_SMBUS_ALERT_LOW                    = 0x01  /*!< smbus alert pin set low */
 } i2c_smbus_alert_set_type;
 
@@ -146,7 +146,7 @@ typedef enum
   */
 typedef enum
 {
-  I2C_TIMEOUT_DETCET_LOW                 = 0x00, /*!< detect low level timeout */ 
+  I2C_TIMEOUT_DETCET_LOW                 = 0x00, /*!< detect low level timeout */
   I2C_TIMEOUT_DETCET_HIGH                = 0x01  /*!< detect high level timeout */
 } i2c_timeout_detcet_type;
 
@@ -170,20 +170,20 @@ typedef enum
   */
 typedef enum
 {
-  I2C_AUTO_STOP_MODE                     = 0x00, /*!< auto generate stop mode */ 
-  I2C_SOFT_STOP_MODE                     = 0x01, /*!< soft generate stop mode */  
-  I2C_RELOAD_MODE                        = 0x02  /*!< reload mode */  
+  I2C_AUTO_STOP_MODE                     = 0x02000000, /*!< auto generate stop mode */
+  I2C_SOFT_STOP_MODE                     = 0x00000000, /*!< soft generate stop mode */
+  I2C_RELOAD_MODE                        = 0x01000000  /*!< reload mode */
 } i2c_reload_stop_mode_type;
 
 /**
-  * @brief i2c start stop mode
+  * @brief i2c start mode
   */
 typedef enum
 {
-  I2C_WITHOUT_START                      = 0x00, /*!< transfer data without start condition */
-  I2C_GEN_START_READ                     = 0x01, /*!< read data and generate start */
-  I2C_GEN_START_WRITE                    = 0x02  /*!< send data and generate start */
-} i2c_start_stop_mode_type;
+  I2C_WITHOUT_START                      = 0x00000000, /*!< transfer data without start condition */
+  I2C_GEN_START_READ                     = 0x00002400, /*!< read data and generate start */
+  I2C_GEN_START_WRITE                    = 0x00002000  /*!< send data and generate start */
+} i2c_start_mode_type;
 
 /**
   * @brief type define i2c register all
@@ -191,7 +191,7 @@ typedef enum
 typedef struct
 {
   /**
-    * @brief i2c ctrl1 register, offset:0x00 
+    * @brief i2c ctrl1 register, offset:0x00
     */
   union
   {
@@ -223,7 +223,7 @@ typedef struct
   };
 
   /**
-    * @brief i2c ctrl2 register, offset:0x04 
+    * @brief i2c ctrl2 register, offset:0x04
     */
   union
   {
@@ -452,7 +452,7 @@ void i2c_ext_timeout_enable(i2c_type *i2c_x, confirm_state new_state);
 void i2c_interrupt_enable(i2c_type *i2c_x, uint32_t source, confirm_state new_state);
 flag_status i2c_interrupt_get(i2c_type *i2c_x, uint16_t source);
 void i2c_dma_enable(i2c_type *i2c_x, i2c_dma_request_type dma_req, confirm_state new_state);
-void i2c_transmit_set(i2c_type *i2c_x, uint16_t address, uint8_t cnt, i2c_reload_stop_mode_type rld_stop, i2c_start_stop_mode_type start_stop);
+void i2c_transmit_set(i2c_type *i2c_x, uint16_t address, uint8_t cnt, i2c_reload_stop_mode_type rld_stop, i2c_start_mode_type start);
 void i2c_start_generate(i2c_type *i2c_x);
 void i2c_stop_generate(i2c_type *i2c_x);
 void i2c_data_send(i2c_type *i2c_x, uint8_t data);

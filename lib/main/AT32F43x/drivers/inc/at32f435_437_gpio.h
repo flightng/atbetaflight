@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_gpio.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 gpio header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -47,7 +47,7 @@ extern "C" {
 /** @defgroup GPIO_pins_number_definition
   * @{
   */
-  
+
 #define GPIO_PINS_0                      0x0001 /*!< gpio pins number 0 */
 #define GPIO_PINS_1                      0x0002 /*!< gpio pins number 1 */
 #define GPIO_PINS_2                      0x0004 /*!< gpio pins number 2 */
@@ -541,7 +541,7 @@ uint16_t gpio_output_data_read(gpio_type *gpio_x);
 void gpio_bits_set(gpio_type *gpio_x, uint16_t pins);
 void gpio_bits_reset(gpio_type *gpio_x, uint16_t pins);
 void gpio_bits_write(gpio_type *gpio_x, uint16_t pins, confirm_state bit_state);
-void gpio_port_wirte(gpio_type *gpio_x, uint16_t port_value);
+void gpio_port_write(gpio_type *gpio_x, uint16_t port_value);
 void gpio_pin_wp_config(gpio_type *gpio_x, uint16_t pins);
 void gpio_pins_huge_driven_config(gpio_type *gpio_x, uint16_t pins, confirm_state new_state);
 void gpio_pin_mux_config(gpio_type *gpio_x, gpio_pins_source_type gpio_pin_source, gpio_mux_sel_type gpio_mux);

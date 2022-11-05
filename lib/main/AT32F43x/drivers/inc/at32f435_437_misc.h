@@ -1,17 +1,17 @@
 /**
   **************************************************************************
   * @file     at32f435_437_misc.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 misc header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
-  * The software Board Support Package (BSP) that is made available to 
-  * download from Artery official website is the copyrighted work of Artery. 
-  * Artery authorizes customers to use, copy, and distribute the BSP 
-  * software and its related documentation for the purpose of design and 
-  * development in conjunction with Artery microcontrollers. Use of the 
+  * The software Board Support Package (BSP) that is made available to
+  * download from Artery official website is the copyrighted work of Artery.
+  * Artery authorizes customers to use, copy, and distribute the BSP
+  * software and its related documentation for the purpose of design and
+  * development in conjunction with Artery microcontrollers. Use of the
   * software is governed by this copyright notice and the following disclaimer.
   *
   * THIS SOFTWARE IS PROVIDED ON "AS IS" BASIS WITHOUT WARRANTIES,
@@ -76,9 +76,9 @@ typedef enum
   */
 typedef enum
 {
-  NVIC_LP_SLEEPONEXIT                    = 0x02, /*!< send event on pending */
+  NVIC_LP_SLEEPONEXIT                    = 0x02, /*!< enable sleep-on-exit feature */
   NVIC_LP_SLEEPDEEP                      = 0x04, /*!< enable sleep-deep output signal when entering sleep mode */
-  NVIC_LP_SEVONPEND                      = 0x10  /*!< enable sleep-on-exit feature */
+  NVIC_LP_SEVONPEND                      = 0x10  /*!< send event on pending */
 } nvic_lowpower_mode_type;
 
 /**

@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_acc.c
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    contains all the functions for the acc firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -30,8 +30,8 @@
   * @{
   */
 
-/** @defgroup ACC_DEV
-  * @brief ACC_DEV driver modules
+/** @defgroup ACC
+  * @brief ACC driver modules
   * @{
   */
 
@@ -70,7 +70,7 @@ void acc_calibration_mode_enable(uint16_t acc_trim, confirm_state new_state)
   */
 void acc_step_set(uint8_t step_value)
 {
-  ACC_DEV->ctrl1_bit.step = step_value;
+	ACC_DEV->ctrl1_bit.step = step_value;
 }
 
 /**
@@ -83,7 +83,7 @@ void acc_step_set(uint8_t step_value)
   */
 void acc_sof_select(uint16_t sof_sel)
 {
-  ACC_DEV->ctrl1 |= sof_sel;
+	ACC_DEV->ctrl1 |= sof_sel;
 }
 
 /**
@@ -99,11 +99,11 @@ void acc_interrupt_enable(uint16_t acc_int, confirm_state new_state)
 {
   if(acc_int == ACC_CALRDYIEN_INT)
   {
-    ACC_DEV->ctrl1_bit.calrdyien = new_state;
+	  ACC_DEV->ctrl1_bit.calrdyien = new_state;
   }
   else
   {
-    ACC_DEV->ctrl1_bit.eien = new_state;
+	  ACC_DEV->ctrl1_bit.eien = new_state;
   }
 }
 

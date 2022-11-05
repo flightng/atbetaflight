@@ -168,16 +168,14 @@ void i2cInit(I2CDevice device)
     uint32_t i2cPclk=crm_clk_freq.apb1_freq;//at32f43x i2c123 on apb1
 
     uint32_t I2Cx_CLKCTRL= i2cClockTIMINGR(i2cPclk, pDev->clockSpeed, 0);
+//    uint32_t I2Cx_CLKCTRL=0x80504C4E;
 
 //    HAL_I2C_Init(pHandle);
     i2c_reset( pHandle->i2cx);
     /* config i2c */
-    i2c_init( pHandle->i2cx, 0, I2Cx_CLKCTRL);
+    i2c_init( pHandle->i2cx, 0x0F, I2Cx_CLKCTRL);
 
     i2c_own_address1_set( pHandle->i2cx, I2C_ADDRESS_MODE_7BIT, 0x0);
-
-    //开启时钟延展
-    i2c_clock_stretch_enable(pHandle->i2cx,TRUE);
 
 
     nvic_irq_enable(hardware->er_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_ER), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_ER));

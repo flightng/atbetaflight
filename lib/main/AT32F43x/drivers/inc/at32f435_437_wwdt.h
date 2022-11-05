@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_wwdt.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 wwdt header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -43,12 +43,12 @@ extern "C" {
 /** @addtogroup WWDT
   * @{
   */
- 
-/** @defgroup WWDT_enable_bit_definition 
+
+/** @defgroup WWDT_enable_bit_definition
   * @brief wwdt enable bit
   * @{
   */
-  
+
 #define WWDT_EN_BIT                      ((uint32_t)0x00000080) /*!< wwdt enable bit */
 
 /**
@@ -124,7 +124,7 @@ typedef struct
   * @}
   */
 
-#define WWDT                             ((wwdt_type *) WWDT_BASE) 
+#define WWDT                             ((wwdt_type *) WWDT_BASE)
 
 /** @defgroup WWDT_exported_functions
   * @{
