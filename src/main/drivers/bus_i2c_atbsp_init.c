@@ -176,6 +176,10 @@ void i2cInit(I2CDevice device)
 
     i2c_own_address1_set( pHandle->i2cx, I2C_ADDRESS_MODE_7BIT, 0x0);
 
+    //开启时钟延展
+    i2c_clock_stretch_enable(pHandle->i2cx,TRUE);
+
+
     nvic_irq_enable(hardware->er_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_ER), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_ER));
     nvic_irq_enable(hardware->ev_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_EV), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_EV));
 
