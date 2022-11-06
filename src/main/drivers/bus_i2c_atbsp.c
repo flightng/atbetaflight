@@ -37,6 +37,7 @@
 #include "drivers/bus_i2c.h"
 #include "drivers/bus_i2c_impl.h"
 
+#define I2C_TIMEOUT                      0xff
 
 #ifdef USE_I2C_DEVICE_1
 void I2C1_ERR_IRQHandler(void)
@@ -118,10 +119,9 @@ bool i2cWrite(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t data)
     i2c_status_type status;
 
     if (reg_ == 0xFF)
-        status = i2c_master_transmit(pHandle ,addr_ << 1 , &data, 1, I2C_TIMEOUT_US); // addr_ << 1
+        status = i2c_master_transmit(pHandle ,addr_ << 1 , &data, 1, I2C_TIMEOUT); // addr_ << 1
     else
         status = i2c_memory_write(pHandle ,I2C_MEM_ADDR_WIDIH_8,addr_ << 1 , reg_, &data, 1, I2C_TIMEOUT_US); // addr_ << 1
-
     if (status != I2C_OK)
         return i2cHandleHardwareFailure(device);
 
@@ -143,7 +143,7 @@ bool i2cWriteBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len_,
 
     i2c_status_type status;
     //i2c_memory_write_int(i2c_handle_type* hi2c, uint16_t address, uint16_t mem_address, uint8_t* pdata, uint16_t size, uint32_t timeout)
-    status = i2c_memory_write_int(pHandle ,I2C_MEM_ADDR_WIDIH_8,addr_ << 1, reg_,data, len_,I2C_TIMEOUT_US);
+    status = i2c_memory_write_int(pHandle ,I2C_MEM_ADDR_WIDIH_8,addr_ << 1, reg_,data, len_,I2C_TIMEOUT);
 
     if (status == I2C_ERR_STEP_1) {//BUSY
         return false;
@@ -180,9 +180,9 @@ bool i2cRead(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, uint8_t
     i2c_status_type status;
 
     if (reg_ == 0xFF)//任意地址
-    	status = i2c_master_receive(pHandle ,addr_ << 1 , buf, len, I2C_TIMEOUT_US);
+    	status = i2c_master_receive(pHandle ,addr_ << 1 , buf, len, I2C_TIMEOUT);
     else
-        status = i2c_memory_read(pHandle,I2C_MEM_ADDR_WIDIH_8, addr_ << 1, reg_, buf, len, I2C_TIMEOUT_US);
+        status = i2c_memory_read(pHandle,I2C_MEM_ADDR_WIDIH_8, addr_ << 1, reg_, buf, len, I2C_TIMEOUT);
 
     if (status != I2C_OK) {
         return i2cHandleHardwareFailure(device);
@@ -213,7 +213,7 @@ bool i2cReadBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, u
 
     i2c_status_type status;
 
-    status = i2c_memory_read_int(pHandle,I2C_MEM_ADDR_WIDIH_8, addr_ << 1, reg_,buf, len,I2C_TIMEOUT_US);
+    status = i2c_memory_read_int(pHandle,I2C_MEM_ADDR_WIDIH_8, addr_ << 1, reg_,buf, len,I2C_TIMEOUT);
 
     if (status == I2C_ERR_STEP_1) {//busy
         return false;

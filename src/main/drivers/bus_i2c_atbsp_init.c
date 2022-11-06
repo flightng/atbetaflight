@@ -168,7 +168,7 @@ void i2cInit(I2CDevice device)
     uint32_t i2cPclk=crm_clk_freq.apb1_freq;//at32f43x i2c123 on apb1
 
     uint32_t I2Cx_CLKCTRL= i2cClockTIMINGR(i2cPclk, pDev->clockSpeed, 0);
-//    uint32_t I2Cx_CLKCTRL=0x80504C4E;
+//    uint32_t I2Cx_CLKCTRL=0x10D01728;
 
 //    HAL_I2C_Init(pHandle);
     i2c_reset( pHandle->i2cx);
