@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_dac.c
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    contains all the functions for the dac firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -411,7 +411,7 @@ flag_status dac_udr_flag_get(dac_select_type dac_select)
         status = SET;
       break;
     default:
-      break;	  
+      break;
   }
   return status;
 }

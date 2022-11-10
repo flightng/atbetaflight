@@ -157,47 +157,29 @@ void i2cInit(I2CDevice device)
 //    pHandle->Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
 //    pHandle->Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
-
     /*	at32 clkctrl	可以使用以下默认值
      *   I2Cx_CLKCTRL                   0xB170FFFF   //10K
   	  	 I2Cx_CLKCTRL                   0xC0E06969   //50K
 	 	 I2Cx_CLKCTRL                   0x80504C4E   //100K
 		 I2Cx_CLKCTRL                   0x30F03C6B   //200K
      */
-    uint32_t I2Cx_CLKCTRL= 0x80504C4E;
-    if(pDev->clockSpeed > 100){
-    	I2Cx_CLKCTRL=0x30F03C6B;
-    }
-    if(pDev->clockSpeed == 50){
-    	I2Cx_CLKCTRL=0xC0E06969;
-    }
-    if(pDev->clockSpeed < 50){
-    	I2Cx_CLKCTRL=0xB170FFFF;
-    }
+    crm_clocks_freq_type crm_clk_freq;
+    crm_clocks_freq_get (&crm_clk_freq);
+    uint32_t i2cPclk=crm_clk_freq.apb1_freq;//at32f43x i2c123 on apb1
+
+    uint32_t I2Cx_CLKCTRL= i2cClockTIMINGR(i2cPclk, pDev->clockSpeed, 0);
+//    uint32_t I2Cx_CLKCTRL=0x10D01728;
 
 //    HAL_I2C_Init(pHandle);
     i2c_reset( pHandle->i2cx);
     /* config i2c */
-    i2c_init( pHandle->i2cx, 0, I2Cx_CLKCTRL);
+    i2c_init( pHandle->i2cx, 0x0F, I2Cx_CLKCTRL);
 
     i2c_own_address1_set( pHandle->i2cx, I2C_ADDRESS_MODE_7BIT, 0x0);
 
-    //启用时钟延展
-//    i2c_clock_stretch_enable(pHandle->i2cx,TRUE);
-    //关闭广播地址使能
-//    i2c_general_call_enable(pHandle->i2cx,FALSE);
-
-
-    // Setup interrupt handlers
-//    HAL_NVIC_SetPriority(hardware->er_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_ER), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_ER));
-//    HAL_NVIC_EnableIRQ(hardware->er_irq);
-//    HAL_NVIC_SetPriority(hardware->ev_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_EV), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_EV));
-//    HAL_NVIC_EnableIRQ(hardware->ev_irq);
 
     nvic_irq_enable(hardware->er_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_ER), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_ER));
     nvic_irq_enable(hardware->ev_irq, NVIC_PRIORITY_BASE(NVIC_PRIO_I2C_EV), NVIC_PRIORITY_SUB(NVIC_PRIO_I2C_EV));
-
-//    i2c_interrupt_enable(pHandle->i2cx, I2C_ERR_INT | I2C_TDC_INT | I2C_STOP_INT | I2C_ACKFIAL_INT | I2C_TD_INT | I2C_RD_INT, TRUE);
 
     i2c_enable(pHandle->i2cx,TRUE);//i2c_init ctrl1_i2cen =0 ,so enable
 

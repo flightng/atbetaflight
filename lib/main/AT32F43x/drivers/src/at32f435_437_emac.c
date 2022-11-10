@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_emac.c
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    contains all the functions for the emac firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -207,16 +207,16 @@ void emac_stop(void)
 {
   /* stop dma transmission */
   emac_dma_operations_set(EMAC_DMA_OPS_START_STOP_TRANSMIT, FALSE);
-  
+
   /* stop dma reception */
   emac_dma_operations_set(EMAC_DMA_OPS_START_STOP_RECEIVE, FALSE);
-  
+
   /* stop receive state machine of the mac for reception from the mii */
   emac_receiver_enable(FALSE);
-  
+
   /* flush transmit fifo */
   emac_dma_operations_set(EMAC_DMA_OPS_FLUSH_TRANSMIT_FIFO, TRUE);
-  
+
   /* stop transmit state machine of the mac for transmission on the mii */
   emac_trasmitter_enable(FALSE);
 }
@@ -270,6 +270,7 @@ error_status emac_phy_register_read(uint8_t address, uint8_t reg, uint16_t *data
 
   do
   {
+    timeout++;
     *data = EMAC->miidt_bit.md;
   } while((EMAC->miiaddr_bit.mb) && (timeout < PHY_TIMEOUT));
 
@@ -290,9 +291,9 @@ error_status emac_phy_register_read(uint8_t address, uint8_t reg, uint16_t *data
 void emac_receiver_enable(confirm_state new_state)
 {
   __IO uint32_t temp = 0;
-  
+
   EMAC->ctrl_bit.re = new_state;
-  
+
   temp = EMAC->ctrl;
   emac_delay(1);
   EMAC->ctrl = temp;
@@ -306,9 +307,9 @@ void emac_receiver_enable(confirm_state new_state)
 void emac_trasmitter_enable(confirm_state new_state)
 {
   __IO uint32_t temp = 0;
-  
+
   EMAC->ctrl_bit.te = new_state;
-  
+
   temp = EMAC->ctrl;
   emac_delay(1);
   EMAC->ctrl = temp;
@@ -1248,40 +1249,6 @@ uint32_t emac_dma_poll_demand_get(emac_dma_tx_rx_type transfer_type)
     }
   }
   return 0;
-}
-
-/**
-  * @brief  get emac dma status
-  * @param  flag: specifies the flag to check.
-  *         this parameter can be one of the following values:
-  *         - DMA_TX_DONE
-  *         - DMA_TX_STOP
-  *         - DMA_TX_UNAVAILABLE
-  *         - DMA_TX_JABBER_TIMEOUT
-  *         - DMA_RX_OVERFLOW
-  *         - DMA_TX_UNDERFLOW
-  *         - DMA_RX_DONE
-  *         - DMA_RX_UNAVAILABLE
-  *         - DMA_RX_STOP
-  *         - DMA_RX_WDG_TIMEOUT
-  *         - DMA_TX_EARLY
-  *         - DMA_FATAL_BUS_ERROR
-  *         - DMA_RX_EARLY
-  *         - DMA_MMC_STATUS
-  *         - DMA_PMT_STATUS
-  *         - DMA_TST_STATUS
-  * @retval the new state of usart_flag (SET or RESET).
-  */
-flag_status emac_dma_status_get(uint32_t flag)
-{
-  if(EMAC_DMA->sts & flag)
-  {
-    return SET;
-  }
-  else
-  {
-    return RESET;
-  }
 }
 
 /**
@@ -2317,7 +2284,7 @@ flag_status emac_dma_flag_get(uint32_t dma_flag)
   *         - EMAC_DMA_FBEI_FLAG
   *         - EMAC_DMA_ERI_FLAG
   *         - EMAC_DMA_AIS_FLAG
-  *         - EMAC_DMA_NIS_FLAG      
+  *         - EMAC_DMA_NIS_FLAG
   * @retval none
   */
 void emac_dma_flag_clear(uint32_t dma_flag)

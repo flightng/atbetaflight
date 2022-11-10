@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_edma.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 edma header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -45,11 +45,11 @@ extern "C" {
   */
 
 /** @defgroup EDMA_interrupts_definition
-  * @brief edma interrupt    
+  * @brief edma interrupt
   * @{
   */
 
-#define EDMA_DMERR_INT                   ((uint32_t)0x00000002) /* edma direct mode error intterrupt */  
+#define EDMA_DMERR_INT                   ((uint32_t)0x00000002) /* edma direct mode error intterrupt */
 #define EDMA_DTERR_INT                   ((uint32_t)0x00000004) /* edma data transfer error intterrupt */
 #define EDMA_HDT_INT                     ((uint32_t)0x00000008) /* edma half data transfer intterrupt */
 #define EDMA_FDT_INT                     ((uint32_t)0x00000010) /* edma full data transfer intterrupt */
@@ -58,12 +58,12 @@ extern "C" {
 /**
   * @}
   */
-  
+
 /** @defgroup EDMA_flags_definition
-  * @brief edma flag 
+  * @brief edma flag
   * @{
   */
-  
+
 #define EDMA_FERR1_FLAG                  ((uint32_t)0x10000001) /* edma stream1 fifo error flag */
 #define EDMA_DMERR1_FLAG                 ((uint32_t)0x10000004) /* edma stream1 direct mode error flag */
 #define EDMA_DTERR1_FLAG                 ((uint32_t)0x10000008) /* edma stream1 data transfer error flag */
@@ -104,7 +104,7 @@ extern "C" {
 #define EDMA_DTERR8_FLAG                 ((uint32_t)0x22000000) /* edma stream8 data transfer error flag */
 #define EDMA_HDT8_FLAG                   ((uint32_t)0x24000000) /* edma stream8 half data transfer flag */
 #define EDMA_FDT8_FLAG                   ((uint32_t)0x28000000) /* edma stream8 full data transfer flag */
-  
+
 /**
   * @brief masks define
   */
@@ -137,7 +137,7 @@ extern "C" {
 /**
   * @}
   */
-  
+
 /** @defgroup EDMA_exported_types
   * @{
   */
@@ -186,7 +186,7 @@ typedef enum
   */
 typedef enum
 {
-  EDMA_PRIORITY_LOW                      = 0x00, /*!< stream priority: low */  
+  EDMA_PRIORITY_LOW                      = 0x00, /*!< stream priority: low */
   EDMA_PRIORITY_MEDIUM                   = 0x01, /*!< stream priority: medium */
   EDMA_PRIORITY_HIGH                     = 0x02, /*!< stream priority: high */
   EDMA_PRIORITY_VERY_HIGH                = 0x03  /*!< stream priority: very high */
@@ -197,7 +197,7 @@ typedef enum
   */
 typedef enum
 {
-  EDMA_FIFO_THRESHOLD_1QUARTER           = 0x00, /*!< fifo threshold level: 1quarter full */  
+  EDMA_FIFO_THRESHOLD_1QUARTER           = 0x00, /*!< fifo threshold level: 1quarter full */
   EDMA_FIFO_THRESHOLD_HALF               = 0x01, /*!< fifo threshold level: half full */
   EDMA_FIFO_THRESHOLD_3QUARTER           = 0x02, /*!< fifo threshold level: 13quarter full */
   EDMA_FIFO_THRESHOLD_FULL               = 0x03  /*!< fifo threshold level: full */
@@ -208,12 +208,12 @@ typedef enum
   */
 typedef enum
 {
-  EDMA_FIFO_STATUS_LESS_1QUARTER         = 0x00, /*!< fifo stutas level: less 1quarter full */  
+  EDMA_FIFO_STATUS_LESS_1QUARTER         = 0x00, /*!< fifo stutas level: less 1quarter full */
   EDMA_FIFO_STATUS_1QUARTER              = 0x01, /*!< fifo stutas level: 1quarter full */
   EDMA_FIFO_STATUS_HALF                  = 0x02, /*!< fifo stutas level: half full */
-  EDMA_FIFO_STATUS_3QUARTER              = 0x03, /*!< fifo stutas level: 3quarter full */  
-  EDMA_FIFO_STATUS_EMPTY                 = 0x04, /*!< fifo stutas level: empty */  
-  EDMA_FIFO_STATUS_FULL                  = 0x05  /*!< fifo stutas level: full */  
+  EDMA_FIFO_STATUS_3QUARTER              = 0x03, /*!< fifo stutas level: 3quarter full */
+  EDMA_FIFO_STATUS_EMPTY                 = 0x04, /*!< fifo stutas level: empty */
+  EDMA_FIFO_STATUS_FULL                  = 0x05  /*!< fifo stutas level: full */
 } edma_fifo_stutas_type;
 
 /**
@@ -221,7 +221,7 @@ typedef enum
   */
 typedef enum
 {
-  EDMA_MEMORY_SINGLE                     = 0x00, /*!< memory single transfer */  
+  EDMA_MEMORY_SINGLE                     = 0x00, /*!< memory single transfer */
   EDMA_MEMORY_BURST_4                    = 0x01, /*!< memory burst transfer 4 beats */
   EDMA_MEMORY_BURST_8                    = 0x02, /*!< memory burst transfer 8 beats */
   EDMA_MEMORY_BURST_16                   = 0x03  /*!< memory burst transfer 16 beats */
@@ -232,7 +232,7 @@ typedef enum
   */
 typedef enum
 {
-  EDMA_PERIPHERAL_SINGLE                 = 0x00, /*!< peripheral single transfer */  
+  EDMA_PERIPHERAL_SINGLE                 = 0x00, /*!< peripheral single transfer */
   EDMA_PERIPHERAL_BURST_4                = 0x01, /*!< peripheral burst transfer 4 beats */
   EDMA_PERIPHERAL_BURST_8                = 0x02, /*!< peripheral burst transfer 8 beats */
   EDMA_PERIPHERAL_BURST_16               = 0x03  /*!< peripheral burst transfer 16 beats */
@@ -312,7 +312,7 @@ typedef enum
   EDMAMUX_DMAREQ_ID_TMR8_CH2             = 0x32, /*!< edmamux channel request inputs resources: timer8 ch2 */
   EDMAMUX_DMAREQ_ID_TMR8_CH3             = 0x33, /*!< edmamux channel request inputs resources: timer8 ch3 */
   EDMAMUX_DMAREQ_ID_TMR8_CH4             = 0x34, /*!< edmamux channel request inputs resources: timer8 ch4 */
-  EDMAMUX_DMAREQ_ID_TMR8_UP              = 0x35, /*!< edmamux channel request inputs resources: timer8 overflow */
+  EDMAMUX_DMAREQ_ID_TMR8_OVERFLOW        = 0x35, /*!< edmamux channel request inputs resources: timer8 overflow */
   EDMAMUX_DMAREQ_ID_TMR8_TRIG            = 0x36, /*!< edmamux channel request inputs resources: timer8 trigger */
   EDMAMUX_DMAREQ_ID_TMR8_HALL            = 0x37, /*!< edmamux channel request inputs resources: timer8 hall */
   EDMAMUX_DMAREQ_ID_TMR2_CH1             = 0x38, /*!< edmamux channel request inputs resources: timer2 ch1 */
@@ -462,8 +462,8 @@ typedef struct
   edmamux_sync_id_sel_type               sync_signal_sel;     /*!< edma dmamux synchronization input select */
   edmamux_sync_pol_type                  sync_polarity;       /*!< edma dmamux synchronization polarity */
   uint32_t                               sync_request_number; /*!< edma dmamux number of dma requests before an output event is generated */
-  confirm_state                          sync_event_enable;   /*!< edma dmamux event generation disabled */  
-  confirm_state                          sync_enable;         /*!< edma dmamux synchronization enable */  
+  confirm_state                          sync_event_enable;   /*!< edma dmamux event generation disabled */
+  confirm_state                          sync_enable;         /*!< edma dmamux synchronization enable */
 } edmamux_sync_init_type;
 
 /**
@@ -738,7 +738,7 @@ typedef struct
       __IO uint32_t reserved1            : 28;/* [31:4] */
     }muxgsts_bit;
   };
-  
+
   /**
     * @brief edmamux request generator status clear register, offset:0x17C
     */
@@ -1003,7 +1003,7 @@ typedef struct
 /** @defgroup EDMA_exported_functions
   * @{
   */
-  
+
 /* edma controller function */
 void edma_reset(edma_stream_type *edma_streamx);
 void edma_init(edma_stream_type *edma_streamx, edma_init_type *edma_init_struct);

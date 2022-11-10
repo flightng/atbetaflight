@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_pwc.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 pwr header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -44,8 +44,8 @@ extern "C" {
   * @{
   */
 
-/** @defgroup PWC_flags_definition 
-  * @brief pwc flag  
+/** @defgroup PWC_flags_definition
+  * @brief pwc flag
   * @{
   */
 
@@ -67,17 +67,19 @@ extern "C" {
   * @brief  select ldo output voltage.
   * @param  val: set the ldo output voltage.
   *         this parameter can be one of the following values:
-  *         - PWC_LDO_OUTPUT_1V2
-  *         - PWC_LDO_OUTPUT_1V3
-  *         - PWC_LDO_OUTPUT_1V1
-  *         - PWC_LDO_OUTPUT_1V0
+  *         - PWC_LDO_OUTPUT_1V3: system clock up to 288MHz.
+  *         - PWC_LDO_OUTPUT_1V2: system clock up to 240MHz.
+  *         - PWC_LDO_OUTPUT_1V1: system clock up to 192MHz.
+  *         - PWC_LDO_OUTPUT_1V0: system clock up to 144MHz.
+  * @note   useage limited.
+  *         PWC_LDO_OUTPUT_1V3: operation temperature range -40~85 degree, VDD must over 3.0V.
   */
 #define pwc_ldo_output_voltage_set(val)  (PWC->ldoov_bit.ldoovsel = val)
 
 /** @defgroup PWC_exported_types
   * @{
   */
-  
+
 /**
   * @brief pwc pvm voltage type
   */
@@ -97,8 +99,8 @@ typedef enum
   */
 typedef enum
 {
-  PWC_LDO_OUTPUT_1V2                     = 0x00, /*!< ldo output voltage is 1.2v */
   PWC_LDO_OUTPUT_1V3                     = 0x01, /*!< ldo output voltage is 1.3v */
+  PWC_LDO_OUTPUT_1V2                     = 0x00, /*!< ldo output voltage is 1.2v */
   PWC_LDO_OUTPUT_1V1                     = 0x04, /*!< ldo output voltage is 1.1v */
   PWC_LDO_OUTPUT_1V0                     = 0x05, /*!< ldo output voltage is 1.0v */
 } pwc_ldo_output_voltage_type;
@@ -188,12 +190,12 @@ typedef struct
   };
 
 } pwc_type;
-  
+
 /**
   * @}
   */
 
-#define PWC                              ((pwc_type *) PWC_BASE) 
+#define PWC                              ((pwc_type *) PWC_BASE)
 
 /** @defgroup PWC_exported_functions
   * @{

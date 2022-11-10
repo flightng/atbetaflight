@@ -91,6 +91,7 @@ MCU_COMMON_SRC = \
             drivers/timer_at32f43x.c\
             drivers/dma_at32f43x.c\
             drivers/i2c_application.c\
+            drivers/bus_i2c_timing.c\
             drivers/bus_i2c_atbsp_init.c \
             drivers/bus_i2c_atbsp.c\
 			drivers/bus_spi_at32bsp.c\

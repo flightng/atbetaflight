@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_ertc.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 ertc header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -44,8 +44,8 @@ extern "C" {
   * @{
   */
 
-/** @defgroup ERTC_interrupts_definition 
-  * @brief ertc interrupt  
+/** @defgroup ERTC_interrupts_definition
+  * @brief ertc interrupt
   * @{
   */
 
@@ -59,11 +59,11 @@ extern "C" {
   * @}
   */
 
-/** @defgroup ERTC_flags_definition 
-  * @brief ertc flag  
+/** @defgroup ERTC_flags_definition
+  * @brief ertc flag
   * @{
   */
-  
+
 #define ERTC_ALAWF_FLAG                  ((uint32_t)0x00000001) /*!< ertc alarm a register allows write flag */
 #define ERTC_ALBWF_FLAG                  ((uint32_t)0x00000002) /*!< ertc alarm b register allows write flag */
 #define ERTC_WATWF_FLAG                  ((uint32_t)0x00000004) /*!< ertc wakeup timer register allows write flag */
@@ -93,11 +93,21 @@ extern "C" {
 /**
   * @}
   */
- 
+
+/**
+  * @brief compatible with older versions
+  */
+#define ERTC_WAT_CLK_CK_A_16BITS         ERTC_WAT_CLK_CK_B_16BITS  
+#define ERTC_WAT_CLK_CK_A_17BITS         ERTC_WAT_CLK_CK_B_17BITS
+
+/**
+  * @}
+  */
+
 /** @defgroup ERTC_exported_types
   * @{
   */
-  
+
 /**
   * @brief ertc hour mode
   */
@@ -167,8 +177,8 @@ typedef enum
   ERTC_WAT_CLK_ERTCCLK_DIV8              = 0x01, /*!< the wake up timer clock is ERTC_CLK / 8 */
   ERTC_WAT_CLK_ERTCCLK_DIV4              = 0x02, /*!< the wake up timer clock is ERTC_CLK / 4 */
   ERTC_WAT_CLK_ERTCCLK_DIV2              = 0x03, /*!< the wake up timer clock is ERTC_CLK / 2 */
-  ERTC_WAT_CLK_CK_A_16BITS               = 0x04, /*!< the wake up timer clock is CK_A, wakeup counter = ERTC_WAT */
-  ERTC_WAT_CLK_CK_A_17BITS               = 0x06  /*!< the wake up timer clock is CK_A, wakeup counter = ERTC_WAT + 65535 */
+  ERTC_WAT_CLK_CK_B_16BITS               = 0x04, /*!< the wake up timer clock is CK_B, wakeup counter = ERTC_WAT */
+  ERTC_WAT_CLK_CK_B_17BITS               = 0x06  /*!< the wake up timer clock is CK_B, wakeup counter = ERTC_WAT + 65535 */
 } ertc_wakeup_clock_type;
 
 /**
@@ -1112,12 +1122,12 @@ typedef struct
 
 
 } ertc_type;
- 
+
 /**
   * @}
   */
 
-#define ERTC                              ((ertc_type *) ERTC_BASE)  
+#define ERTC                              ((ertc_type *) ERTC_BASE)
 
 /** @defgroup ERTC_exported_functions
   * @{

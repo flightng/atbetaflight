@@ -388,6 +388,28 @@ SPEED_OPTIMISED_SRC := $(SPEED_OPTIMISED_SRC) \
 SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             drivers/bus_i2c_hal_init.c
 endif #!F3
+
+ifeq ($(TARGET),$(filter $(TARGET),$(AT32F43x_TARGETS)))
+SPEED_OPTIMISED_SRC := $(SPEED_OPTIMISED_SRC) \
+			drivers/bus_i2c_atbsp.c\
+			drivers/i2c_application.c\
+			drivers/adc_at32f43x.c\
+			dirvers/bus_spi_at32bps.c\
+			drivers/timer_atbsp.c\
+			drivers/serial_uart_at32bsp.c\
+			drivers/serial_uart_at32f43x.c\
+			drivers/dshot_bitbang_at32bsp.c\
+			drivers/serial_usb_vcp_at32f43x.c\
+			
+SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
+			drivers/bus_i2c_atbsp_init.c\
+			drivers/light_ws2811strip_at32f43x.c\
+			
+			#drivers/timer_at32f43x.c\
+
+endif #end of at32
+
+
 endif #!F1
 
 # check if target.mk supplied

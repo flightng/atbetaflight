@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_crc.c
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    contains all the functions for the crc firmware library
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -106,7 +106,7 @@ void crc_common_data_set(uint8_t cdt_value)
   * @param  none
   * @retval 8-bit value of the common data register
   */
-uint8_t crc_common_date_get(void)
+uint8_t crc_common_data_get(void)
 {
   return (CRC->cdt_bit.cdt);
 }
@@ -125,7 +125,7 @@ void crc_init_data_set(uint32_t value)
   * @brief  control the reversal of the bit order in the input data
   * @param  value
   *         this parameter can be one of the following values:
-  *         - CRC_REVERSE_INPUT_NO_AFFECTE 
+  *         - CRC_REVERSE_INPUT_NO_AFFECTE
   *         - CRC_REVERSE_INPUT_BY_BYTE
   *         - CRC_REVERSE_INPUT_BY_HALFWORD
   *         - CRC_REVERSE_INPUT_BY_WORD
@@ -140,7 +140,7 @@ void crc_reverse_input_data_set(crc_reverse_input_type value)
   * @brief  control the reversal of the bit order in the output data
   * @param  value
   *         this parameter can be one of the following values:
-  *         - CRC_REVERSE_OUTPUT_NO_AFFECTE 
+  *         - CRC_REVERSE_OUTPUT_NO_AFFECTE
   *         - CRC_REVERSE_OUTPUT_DATA
   * @retval none.
   */

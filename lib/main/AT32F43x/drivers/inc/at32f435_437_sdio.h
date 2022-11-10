@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_sdio.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 sdio header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -45,7 +45,7 @@ extern "C" {
   */
 
 /** @defgroup SDIO_interrupts_definition
-  * @brief sdio interrupt  
+  * @brief sdio interrupt
   * @{
   */
 
@@ -76,8 +76,8 @@ extern "C" {
 /**
   * @}
   */
- 
-/** @defgroup SDIO_flags_definition 
+
+/** @defgroup SDIO_flags_definition
   * @brief sdio flag
   * @{
   */
@@ -109,11 +109,11 @@ extern "C" {
 /**
   * @}
   */
- 
+
 /** @defgroup SDIO_exported_types
   * @{
   */
-  
+
 /**
   * @brief sdio power state
   */
@@ -578,7 +578,7 @@ typedef struct
 
 void sdio_reset(sdio_type *sdio_x);
 void sdio_power_set(sdio_type *sdio_x, sdio_power_state_type power_state);
-flag_status sdio_power_status_get(sdio_type *sdio_x);
+sdio_power_state_type sdio_power_status_get(sdio_type *sdio_x);
 void sdio_clock_config(sdio_type *sdio_x, uint16_t clk_div, sdio_edge_phase_type clk_edg);
 void sdio_bus_width_config(sdio_type *sdio_x, sdio_bus_width_type width);
 void sdio_clock_bypass(sdio_type *sdio_x, confirm_state new_state);

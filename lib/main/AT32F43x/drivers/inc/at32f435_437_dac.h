@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_dac.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 dac header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -46,7 +46,7 @@ extern "C" {
 
 #define DAC1_D1DMAUDRF                   ((uint32_t)(0x00002000))
 #define DAC2_D2DMAUDRF                   ((uint32_t)(0x20000000))
- 
+
 /** @defgroup DAC_exported_types
   * @{
   */

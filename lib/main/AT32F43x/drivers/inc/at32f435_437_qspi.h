@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_qspi.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 qspi header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -517,12 +517,12 @@ typedef struct
   */
 
 void qspi_encryption_enable(qspi_type* qspi_x, confirm_state new_state);
-void qspi_sck_mode_set( qspi_type* qspi_x, qspi_clk_mode_type new_mode);
+void qspi_sck_mode_set(qspi_type* qspi_x, qspi_clk_mode_type new_mode);
 void qspi_clk_division_set(qspi_type* qspi_x, qspi_clk_div_type new_clkdiv);
 void qspi_xip_cache_bypass_set(qspi_type* qspi_x, confirm_state new_state);
 void qspi_interrupt_enable(qspi_type* qspi_x, confirm_state new_state);
 flag_status qspi_flag_get(qspi_type* qspi_x, uint32_t flag);
-void qspi_flag_clear( qspi_type* qspi_x, uint32_t flag);
+void qspi_flag_clear(qspi_type* qspi_x, uint32_t flag);
 void qspi_dma_rx_threshold_set(qspi_type* qspi_x, qspi_dma_fifo_thod_type new_threshold);
 void qspi_dma_tx_threshold_set(qspi_type* qspi_x, qspi_dma_fifo_thod_type new_threshold);
 void qspi_dma_enable(qspi_type* qspi_x, confirm_state new_state);

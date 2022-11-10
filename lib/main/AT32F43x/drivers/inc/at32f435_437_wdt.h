@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_wdt.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 wdt header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -45,7 +45,7 @@ extern "C" {
   */
 
 
-/** @defgroup WDT_flags_definition 
+/** @defgroup WDT_flags_definition
   * @brief wdt flag
   * @{
   */
@@ -53,7 +53,7 @@ extern "C" {
 #define WDT_DIVF_UPDATE_FLAG             ((uint16_t)0x0001) /*!< wdt division value update complete flag */
 #define WDT_RLDF_UPDATE_FLAG             ((uint16_t)0x0002) /*!< wdt reload value update complete flag */
 #define WDT_WINF_UPDATE_FLAG             ((uint16_t)0x0004) /*!< wdt window value update complete flag */
- 
+
 /**
   * @}
   */
@@ -61,7 +61,7 @@ extern "C" {
 /** @defgroup WDT_exported_types
   * @{
   */
-  
+
 /**
   * @brief wdt division value type
   */
@@ -159,7 +159,7 @@ typedef struct
     } win_bit;
   };
 } wdt_type;
-  
+
 /**
   * @}
   */

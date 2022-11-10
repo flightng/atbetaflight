@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_spi.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 spi header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -43,13 +43,13 @@ extern "C" {
 /** @addtogroup SPI
   * @{
   */
-  
+
 /**
   * @defgroup SPI_I2S_flags_definition
-  * @brief spi i2s flag   
-  * @{  
+  * @brief spi i2s flag
+  * @{
   */
-  
+
 #define SPI_I2S_RDBF_FLAG                0x0001 /*!< spi or i2s receive data buffer full flag */
 #define SPI_I2S_TDBE_FLAG                0x0002 /*!< spi or i2s transmit data buffer empty flag */
 #define I2S_ACS_FLAG                     0x0004 /*!< i2s audio channel state flag */
@@ -65,9 +65,9 @@ extern "C" {
   */
 
 /**
-  * @defgroup SPI_I2S_interrupts_definition 
-  * @brief spi i2s interrupt    
-  * @{  
+  * @defgroup SPI_I2S_interrupts_definition
+  * @brief spi i2s interrupt
+  * @{
   */
 
 #define SPI_I2S_ERROR_INT                0x0020 /*!< error interrupt */
@@ -81,9 +81,9 @@ extern "C" {
 /** @defgroup SPI_exported_types
   * @{
   */
-  
+
 /**
-  * @brief spi frame bit num type 
+  * @brief spi frame bit num type
   */
 typedef enum
 {
@@ -92,7 +92,7 @@ typedef enum
 } spi_frame_bit_num_type;
 
 /**
-  * @brief spi master/slave mode type 
+  * @brief spi master/slave mode type
   */
 typedef enum
 {
@@ -101,7 +101,7 @@ typedef enum
 } spi_master_slave_mode_type;
 
 /**
-  * @brief spi clock polarity (clkpol) type 
+  * @brief spi clock polarity (clkpol) type
   */
 typedef enum
 {
@@ -110,7 +110,7 @@ typedef enum
 } spi_clock_polarity_type;
 
 /**
-  * @brief spi clock phase (clkpha) type 
+  * @brief spi clock phase (clkpha) type
   */
 typedef enum
 {
@@ -119,7 +119,7 @@ typedef enum
 } spi_clock_phase_type;
 
 /**
-  * @brief spi cs mode type 
+  * @brief spi cs mode type
   */
 typedef enum
 {
@@ -128,7 +128,7 @@ typedef enum
 } spi_cs_mode_type;
 
 /**
-  * @brief spi master clock frequency division type 
+  * @brief spi master clock frequency division type
   */
 typedef enum
 {
@@ -146,7 +146,7 @@ typedef enum
 } spi_mclk_freq_div_type;
 
 /**
-  * @brief spi transmit first bit (lsb/msb) type 
+  * @brief spi transmit first bit (lsb/msb) type
   */
 typedef enum
 {
@@ -155,7 +155,7 @@ typedef enum
 } spi_first_bit_type;
 
 /**
-  * @brief spi transmission mode type 
+  * @brief spi transmission mode type
   */
 typedef enum
 {
@@ -166,7 +166,7 @@ typedef enum
 } spi_transmission_mode_type;
 
 /**
-  * @brief spi crc direction type 
+  * @brief spi crc direction type
   */
 typedef enum
 {
@@ -175,7 +175,7 @@ typedef enum
 } spi_crc_direction_type;
 
 /**
-  * @brief spi single line bidirectional direction type 
+  * @brief spi single line bidirectional direction type
   */
 typedef enum
 {
@@ -184,7 +184,7 @@ typedef enum
 } spi_half_duplex_direction_type;
 
 /**
-  * @brief spi software cs internal level type 
+  * @brief spi software cs internal level type
   */
 typedef enum
 {
@@ -193,7 +193,7 @@ typedef enum
 } spi_software_cs_level_type;
 
 /**
-  * @brief i2s audio protocol type 
+  * @brief i2s audio protocol type
   */
 typedef enum
 {
@@ -222,7 +222,7 @@ typedef enum
 } i2s_audio_sampling_freq_type;
 
 /**
-  * @brief i2s data bit num and channel bit num type 
+  * @brief i2s data bit num and channel bit num type
   */
 typedef enum
 {
@@ -233,7 +233,7 @@ typedef enum
 } i2s_data_channel_format_type;
 
 /**
-  * @brief i2s operation mode type 
+  * @brief i2s operation mode type
   */
 typedef enum
 {
@@ -244,7 +244,7 @@ typedef enum
 } i2s_operation_mode_type;
 
 /**
-  * @brief i2s clock polarity type 
+  * @brief i2s clock polarity type
   */
 typedef enum
 {
@@ -262,7 +262,7 @@ typedef struct
   spi_mclk_freq_div_type                 mclk_freq_division;    /*!< master clock frequency division selection */
   spi_first_bit_type                     first_bit_transmission;/*!< transmit lsb or msb selection */
   spi_frame_bit_num_type                 frame_bit_num;         /*!< frame bit num 8 or 16 bit selection */
-  spi_clock_polarity_type                clock_polarity;        /*!< clock polarity selection */  
+  spi_clock_polarity_type                clock_polarity;        /*!< clock polarity selection */
   spi_clock_phase_type                   clock_phase;           /*!< clock phase selection */
   spi_cs_mode_type                       cs_mode_selection;     /*!< hardware or software cs mode selection */
 } spi_init_type;
@@ -284,10 +284,10 @@ typedef struct
   * @brief type define spi register all
   */
 typedef struct
-{  
-  
+{
+
   /**
-    * @brief spi ctrl1 register, offset:0x00 
+    * @brief spi ctrl1 register, offset:0x00
     */
   union
   {
@@ -299,11 +299,11 @@ typedef struct
       __IO uint32_t msten                : 1; /* [2] */
       __IO uint32_t mdiv_l               : 3; /* [5:3] */
       __IO uint32_t spien                : 1; /* [6] */
-      __IO uint32_t ltf                  : 1; /* [7] */ 
+      __IO uint32_t ltf                  : 1; /* [7] */
       __IO uint32_t swcsil               : 1; /* [8] */
       __IO uint32_t swcsen               : 1; /* [9] */
       __IO uint32_t ora                  : 1; /* [10] */
-      __IO uint32_t fbn                  : 1; /* [11] */ 
+      __IO uint32_t fbn                  : 1; /* [11] */
       __IO uint32_t ntc                  : 1; /* [12] */
       __IO uint32_t ccen                 : 1; /* [13] */
       __IO uint32_t slbtd                : 1; /* [14] */
@@ -311,9 +311,9 @@ typedef struct
       __IO uint32_t reserved1            : 16;/* [31:16] */
     } ctrl1_bit;
   };
-  
+
   /**
-    * @brief spi ctrl2 register, offset:0x04 
+    * @brief spi ctrl2 register, offset:0x04
     */
   union
   {
@@ -326,16 +326,16 @@ typedef struct
       __IO uint32_t reserved1            : 1; /* [3] */
       __IO uint32_t tien                 : 1; /* [4] */
       __IO uint32_t errie                : 1; /* [5] */
-      __IO uint32_t rdbfie               : 1; /* [6] */ 
+      __IO uint32_t rdbfie               : 1; /* [6] */
       __IO uint32_t tdbeie               : 1; /* [7] */
       __IO uint32_t mdiv_h               : 1; /* [8] */
       __IO uint32_t mdiv3en              : 1; /* [9] */
       __IO uint32_t reserved2            : 22;/* [31:10] */
     } ctrl2_bit;
   };
-  
+
   /**
-    * @brief spi sts register, offset:0x08 
+    * @brief spi sts register, offset:0x08
     */
   union
   {
@@ -353,10 +353,10 @@ typedef struct
       __IO uint32_t cspas                : 1; /* [8] */
       __IO uint32_t reserved1            : 23;/* [31:9] */
     } sts_bit;
-  };    
-  
+  };
+
   /**
-    * @brief spi dt register, offset:0x0C 
+    * @brief spi dt register, offset:0x0C
     */
   union
   {
@@ -366,10 +366,10 @@ typedef struct
       __IO uint32_t dt                  : 16;/* [15:0] */
       __IO uint32_t reserved1           : 16;/* [31:16] */
     } dt_bit;
-  };  
-  
+  };
+
   /**
-    * @brief spi cpoly register, offset:0x10 
+    * @brief spi cpoly register, offset:0x10
     */
   union
   {
@@ -379,10 +379,10 @@ typedef struct
       __IO uint32_t cpoly               : 16;/* [15:0] */
       __IO uint32_t reserved1           : 16;/* [31:16] */
     } cpoly_bit;
-  };  
-  
+  };
+
   /**
-    * @brief spi rcrc register, offset:0x14 
+    * @brief spi rcrc register, offset:0x14
     */
   union
   {
@@ -393,9 +393,9 @@ typedef struct
       __IO uint32_t reserved1           : 16;/* [31:16] */
     } rcrc_bit;
   };
-  
+
   /**
-    * @brief spi tcrc register, offset:0x18 
+    * @brief spi tcrc register, offset:0x18
     */
   union
   {
@@ -408,7 +408,7 @@ typedef struct
   };
 
   /**
-    * @brief spi i2sctrl register, offset:0x1C 
+    * @brief spi i2sctrl register, offset:0x1C
     */
   union
   {
@@ -426,10 +426,10 @@ typedef struct
       __IO uint32_t i2smsel             : 1; /* [11] */
       __IO uint32_t reserved2           : 20;/* [31:12] */
     } i2sctrl_bit;
-  };  
+  };
 
   /**
-    * @brief spi i2sclk register, offset:0x20 
+    * @brief spi i2sclk register, offset:0x20
     */
   union
   {
@@ -442,9 +442,9 @@ typedef struct
       __IO uint32_t i2sdiv_h            : 2; /* [11:10] */
       __IO uint32_t reserved1           : 20;/* [31:12] */
     } i2sclk_bit;
-  };   
+  };
 
-} spi_type;  
+} spi_type;
 
 /**
   * @}

@@ -1,17 +1,17 @@
 /**
   **************************************************************************
   * @file     at32f435_437.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
   *
-  * The software Board Support Package (BSP) that is made available to 
-  * download from Artery official website is the copyrighted work of Artery. 
-  * Artery authorizes customers to use, copy, and distribute the BSP 
-  * software and its related documentation for the purpose of design and 
-  * development in conjunction with Artery microcontrollers. Use of the 
+  * The software Board Support Package (BSP) that is made available to
+  * download from Artery official website is the copyrighted work of Artery.
+  * Artery authorizes customers to use, copy, and distribute the BSP
+  * software and its related documentation for the purpose of design and
+  * development in conjunction with Artery microcontrollers. Use of the
   * software is governed by this copyright notice and the following disclaimer.
   *
   * THIS SOFTWARE IS PROVIDED ON "AS IS" BASIS WITHOUT WARRANTIES,
@@ -43,7 +43,7 @@ extern "C" {
 /** @addtogroup AT32F435_437
   * @{
   */
-  
+
 /** @addtogroup Library_configuration_section
   * @{
   */
@@ -84,8 +84,8 @@ extern "C" {
 #ifndef USE_STDPERIPH_DRIVER
 /**
   * @brief comment the line below if you will not use the peripherals drivers.
-  * in this case, these drivers will not be included and the application code will 
-  * be based on direct access to peripherals registers 
+  * in this case, these drivers will not be included and the application code will
+  * be based on direct access to peripherals registers
   */
   #ifdef _RTE_
     #include "RTE_Components.h"
@@ -99,8 +99,8 @@ extern "C" {
   * @brief at32f435_437 standard peripheral library version number
   */
 #define __AT32F435_437_LIBRARY_VERSION_MAJOR    (0x02) /*!< [31:24] major version */
-#define __AT32F435_437_LIBRARY_VERSION_MIDDLE   (0x00) /*!< [23:16] middle version */
-#define __AT32F435_437_LIBRARY_VERSION_MINOR    (0x05) /*!< [15:8]  minor version */
+#define __AT32F435_437_LIBRARY_VERSION_MIDDLE   (0x01) /*!< [23:16] middle version */
+#define __AT32F435_437_LIBRARY_VERSION_MINOR    (0x00) /*!< [15:8]  minor version */
 #define __AT32F435_437_LIBRARY_VERSION_RC       (0x00) /*!< [7:0]  release candidate */
 #define __AT32F435_437_LIBRARY_VERSION          ((__AT32F435_437_LIBRARY_VERSION_MAJOR << 24)  | \
                                                  (__AT32F435_437_LIBRARY_VERSION_MIDDLE << 16) | \
@@ -232,13 +232,13 @@ typedef enum IRQn
     TMR20_OVF_IRQn              = 105,    /*!< tmr20 overflow interrupt                             */
     TMR20_TRG_HALL_IRQn         = 106,    /*!< tmr20 trigger and hall interrupt                     */
     TMR20_CH_IRQn               = 107,    /*!< tmr20 channel interrupt                              */
-    DMA2_Channel1_IRQn          = 108,    /*!< dma1 channel 1 global interrupt                      */
-    DMA2_Channel2_IRQn          = 109,    /*!< dma1 channel 2 global interrupt                      */
-    DMA2_Channel3_IRQn          = 110,    /*!< dma1 channel 3 global interrupt                      */
-    DMA2_Channel4_IRQn          = 111,    /*!< dma1 channel 4 global interrupt                      */
-    DMA2_Channel5_IRQn          = 112,    /*!< dma1 channel 5 global interrupt                      */
-    DMA2_Channel6_IRQn          = 113,    /*!< dma1 channel 6 global interrupt                      */
-    DMA2_Channel7_IRQn          = 114,    /*!< dma1 channel 7 global interrupt                      */
+    DMA2_Channel1_IRQn          = 108,    /*!< dma2 channel 1 global interrupt                      */
+    DMA2_Channel2_IRQn          = 109,    /*!< dma2 channel 2 global interrupt                      */
+    DMA2_Channel3_IRQn          = 110,    /*!< dma2 channel 3 global interrupt                      */
+    DMA2_Channel4_IRQn          = 111,    /*!< dma2 channel 4 global interrupt                      */
+    DMA2_Channel5_IRQn          = 112,    /*!< dma2 channel 5 global interrupt                      */
+    DMA2_Channel6_IRQn          = 113,    /*!< dma2 channel 6 global interrupt                      */
+    DMA2_Channel7_IRQn          = 114,    /*!< dma2 channel 7 global interrupt                      */
 #endif
 
 #if defined (AT32F437xx)
@@ -313,13 +313,13 @@ typedef enum IRQn
     TMR20_OVF_IRQn              = 105,    /*!< tmr20 overflow interrupt                             */
     TMR20_TRG_HALL_IRQn         = 106,    /*!< tmr20 trigger and hall interrupt                     */
     TMR20_CH_IRQn               = 107,    /*!< tmr20 channel interrupt                              */
-    DMA2_Channel1_IRQn          = 108,    /*!< dma1 channel 1 global interrupt                      */
-    DMA2_Channel2_IRQn          = 109,    /*!< dma1 channel 2 global interrupt                      */
-    DMA2_Channel3_IRQn          = 110,    /*!< dma1 channel 3 global interrupt                      */
-    DMA2_Channel4_IRQn          = 111,    /*!< dma1 channel 4 global interrupt                      */
-    DMA2_Channel5_IRQn          = 112,    /*!< dma1 channel 5 global interrupt                      */
-    DMA2_Channel6_IRQn          = 113,    /*!< dma1 channel 6 global interrupt                      */
-    DMA2_Channel7_IRQn          = 114,    /*!< dma1 channel 7 global interrupt                      */
+    DMA2_Channel1_IRQn          = 108,    /*!< dma2 channel 1 global interrupt                      */
+    DMA2_Channel2_IRQn          = 109,    /*!< dma2 channel 2 global interrupt                      */
+    DMA2_Channel3_IRQn          = 110,    /*!< dma2 channel 3 global interrupt                      */
+    DMA2_Channel4_IRQn          = 111,    /*!< dma2 channel 4 global interrupt                      */
+    DMA2_Channel5_IRQn          = 112,    /*!< dma2 channel 5 global interrupt                      */
+    DMA2_Channel6_IRQn          = 113,    /*!< dma2 channel 6 global interrupt                      */
+    DMA2_Channel7_IRQn          = 114,    /*!< dma2 channel 7 global interrupt                      */
 #endif
 
 } IRQn_Type;
@@ -334,7 +334,7 @@ typedef enum IRQn
 
 /** @addtogroup Exported_types
   * @{
-  */  
+  */
 
 typedef int32_t  INT32;
 typedef int16_t  INT16;
@@ -376,7 +376,7 @@ typedef __I uint16_t vuc16;   /*!< read only */
 typedef __I uint8_t  vuc8;    /*!< read only */
 
 typedef enum {RESET = 0, SET = !RESET} flag_status;
-typedef enum {FALSE = 0, TRUE = !FALSE} confirm_state; 
+typedef enum {FALSE = 0, TRUE = !FALSE} confirm_state;
 typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 
 /**
@@ -480,7 +480,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 #define USART1_BASE                      (APB2PERIPH_BASE + 0x1000)
 #define TMR8_BASE                        (APB2PERIPH_BASE + 0x0400)
 #define TMR1_BASE                        (APB2PERIPH_BASE + 0x0000)
-/* ahb bus base address */   
+/* ahb bus base address */
 #define OTGFS2_BASE                      (AHBPERIPH1_BASE + 0x20000)
 #define SDIO1_BASE                       (AHBPERIPH1_BASE + 0xC400)
 #define GPIOH_BASE                       (AHBPERIPH1_BASE + 0x1C00)
@@ -557,7 +557,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 #define EDMA_STREAM6_2D_BASE             (EDMA_2D_BASE + 0x002C)
 #define EDMA_STREAM7_2D_BASE             (EDMA_2D_BASE + 0x0034)
 #define EDMA_STREAM8_2D_BASE             (EDMA_2D_BASE + 0x003C)
-                                         
+
 #define EDMA_LL_BASE                     (EDMA_BASE + 0x00D0)
 #define EDMA_STREAM1_LL_BASE             (EDMA_LL_BASE + 0x0004)
 #define EDMA_STREAM2_LL_BASE             (EDMA_LL_BASE + 0x0008)
@@ -640,7 +640,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 #define USART1_BASE                      (APB2PERIPH_BASE + 0x1000)
 #define TMR8_BASE                        (APB2PERIPH_BASE + 0x0400)
 #define TMR1_BASE                        (APB2PERIPH_BASE + 0x0000)
-/* ahb bus base address */   
+/* ahb bus base address */
 #define OTGFS2_BASE                      (AHBPERIPH1_BASE + 0x20000)
 #define SDIO1_BASE                       (AHBPERIPH1_BASE + 0xC400)
 #define EMAC_BASE                        (AHBPERIPH1_BASE + 0x8000)
@@ -718,7 +718,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 #define EDMA_STREAM6_2D_BASE             (EDMA_2D_BASE + 0x002C)
 #define EDMA_STREAM7_2D_BASE             (EDMA_2D_BASE + 0x0034)
 #define EDMA_STREAM8_2D_BASE             (EDMA_2D_BASE + 0x003C)
-                                         
+
 #define EDMA_LL_BASE                     (EDMA_BASE + 0x00D0)
 #define EDMA_STREAM1_LL_BASE             (EDMA_LL_BASE + 0x0004)
 #define EDMA_STREAM2_LL_BASE             (EDMA_LL_BASE + 0x0008)
@@ -760,7 +760,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 /**
   * @}
   */
-  
+
 /**
   * @}
   */

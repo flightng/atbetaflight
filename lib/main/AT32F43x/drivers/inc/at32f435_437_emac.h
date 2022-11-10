@@ -1,8 +1,8 @@
 /**
   **************************************************************************
   * @file     at32f435_437_emac.h
-  * @version  v2.0.5
-  * @date     2022-02-11
+  * @version  v2.1.0
+  * @date     2022-08-16
   * @brief    at32f435_437 eth header file
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -44,8 +44,8 @@ extern "C" {
   * @{
   */
 
-#define PHY_TIMEOUT                      (0x0FFFFFFF) /*!< timeout for phy response */
- 
+#define PHY_TIMEOUT                      (0x000FFFFF) /*!< timeout for phy response */
+
 /** @defgroup EMAC_smi_clock_border_definition
   * @brief emac smi clock border
   * @{
@@ -1640,7 +1640,6 @@ void emac_dma_eight_pbl_mode_set(confirm_state new_state);
 void emac_dma_address_aligned_beats_set(confirm_state new_state);
 void emac_dma_poll_demand_set(emac_dma_tx_rx_type transfer_type, uint32_t value);
 uint32_t emac_dma_poll_demand_get(emac_dma_tx_rx_type transfer_type);
-flag_status emac_dma_status_get(uint32_t flag);
 emac_dma_receive_process_status_type emac_dma_receive_status_get(void);
 emac_dma_transmit_process_status_type emac_dma_transmit_status_get(void);
 void emac_dma_operations_set(emac_dma_operations_type ops, confirm_state new_state);
