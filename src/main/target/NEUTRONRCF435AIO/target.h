@@ -43,7 +43,7 @@
 //No Buttons
 
 //LEDS
-#define LED1_PIN                PC4 //confirm on LQFP64
+#define LED0_PIN                PC4 //confirm on LQFP64
 
 #define USE_BEEPER
 #define BEEPER_PIN              PC15
