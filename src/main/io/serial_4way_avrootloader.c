@@ -159,17 +159,15 @@ static uint8_t BL_ReadBuf(uint8_t *pstring, uint8_t len)
     //disable exint
     uint32_t ExIntReg=0;
 
-/* 因为收发过程采用GPIO模拟且收发时长最大可达70ms，在期间可能会出现被其他中断打断的情况
+ /* 因为收发过程采用GPIO模拟且收发时长最大可达70ms，在期间可能会出现被其他中断打断的情况
  *  造成数据校验出错，所以临时采用关闭中断方式处理
- *  后继处理： 测试通过后，尝试atomic_block(nvic_prio_max) 方式
- *
- *
+ *  TODO： 测试通过后，尝试atomic_block(nvic_prio_max) 方式
  */
 #if defined(AT32F43x)
    ATOMIC_BLOCK(NVIC_PRIO_MAX){
-	   //disable exint
-	   ExIntReg=EXINT->inten;
-	   EXINT->inten=0;//DISABLE ALL EXINT
+       //disable exint
+       ExIntReg=EXINT->inten;
+       EXINT->inten=0;//DISABLE ALL EXINT
    }
 #endif
     do {
@@ -193,13 +191,12 @@ static uint8_t BL_ReadBuf(uint8_t *pstring, uint8_t len)
     }
 timeout:
 #if defined(AT32F43x)
-	ATOMIC_BLOCK(NVIC_PRIO_MAX){
-		   //re-enable exint
-		   EXINT->inten=ExIntReg;
-	}
+    ATOMIC_BLOCK(NVIC_PRIO_MAX){
+    //re-enable exint
+    EXINT->inten=ExIntReg;
+    }
 #endif
     return (LastACK == brSUCCESS);
-
 }
 
 static void BL_SendBuf(uint8_t *pstring, uint8_t len)
