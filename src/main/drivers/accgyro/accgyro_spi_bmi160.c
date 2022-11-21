@@ -90,6 +90,10 @@
 #define BMI160_VAL_GYRO_CONF_BWP_OSR4 0x00
 #define BMI160_VAL_GYRO_CONF_BWP_OSR2 0x10
 #define BMI160_VAL_GYRO_CONF_BWP_NORM 0x20
+#define BMI160_VAL_ACC_CONF_BWP_OSR4 0x00
+#define BMI160_VAL_ACC_CONF_BWP_OSR2 0x10
+#define BMI160_VAL_ACC_CONF_BWP_NORM 0x20
+#define BMI160_VAL_ACC_CONF_US_HP 0x00
 
 // Need to see at least this many interrupts during initialisation to confirm EXTI connectivity
 #define GYRO_EXTI_DETECT_THRESHOLD 1000
@@ -184,8 +188,8 @@ static int32_t BMI160_Config(const extDevice_t *dev)
     }
 
     // Set odr and ranges
-    // Set acc_us = 0 acc_bwp = 0b010 so only the first filter stage is used
-    spiWriteReg(dev, BMI160_REG_ACC_CONF, 0x20 | BMI160_ODR_800_Hz);
+    // Set acc_us = 0 & acc_bwp = 0b001 for high performance and OSR2 mode
+    spiWriteReg(dev, BMI160_REG_ACC_CONF, BMI160_VAL_ACC_CONF_US_HP | BMI160_VAL_ACC_CONF_BWP_OSR2 | BMI160_ODR_800_Hz);
     delay(1);
 
     spiWriteReg(dev, BMI160_REG_GYR_CONF, getBmiOsrMode() | BMI160_ODR_3200_Hz);

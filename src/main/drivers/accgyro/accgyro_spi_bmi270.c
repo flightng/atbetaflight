@@ -110,7 +110,7 @@ typedef enum {
     BMI270_VAL_PAGE_0 = 0x00,                // select page 0
     BMI270_VAL_ACC_CONF_ODR800 = 0x0B,       // set acc sample rate to 800hz
     BMI270_VAL_ACC_CONF_ODR1600 = 0x0C,      // set acc sample rate to 1600hz
-    BMI270_VAL_ACC_CONF_BWP = 0x02,          // set acc filter in normal mode
+    BMI270_VAL_ACC_CONF_BWP = 0x01,          // set acc filter in osr2 mode
     BMI270_VAL_ACC_CONF_HP = 0x01,           // set acc in high performance mode
     BMI270_VAL_ACC_RANGE_8G = 0x02,          // set acc to 8G full scale
     BMI270_VAL_ACC_RANGE_16G = 0x03,         // set acc to 16G full scale

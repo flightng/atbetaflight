@@ -155,8 +155,8 @@ static void lsm6dsoConfig(gyroDev_t *gyro)
     lsm6dsoWriteRegister(dev, LSM6DSO_REG_INT2_CTRL, LSM6DSO_VAL_INT2_CTRL, 1);
 
     // Configure the accelerometer
-    // 833hz ODR, 16G scale, use LPF1 output
-    lsm6dsoWriteRegister(dev, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF1 << 1), 1);
+    // 833hz ODR, 16G scale, use LPF2 output (default with ODR/4 cutoff)
+    lsm6dsoWriteRegister(dev, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF2 << 1), 1);
 
     // Configure the gyro
     // 6664hz ODR, 2000dps scale
