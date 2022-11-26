@@ -173,7 +173,7 @@ void i2cInit(I2CDevice device)
 //    HAL_I2C_Init(pHandle);
     i2c_reset( pHandle->i2cx);
     /* config i2c */
-    i2c_init( pHandle->i2cx, 0, I2Cx_CLKCTRL);
+    i2c_init( pHandle->i2cx, 0x0f, I2Cx_CLKCTRL);
 
     i2c_own_address1_set( pHandle->i2cx, I2C_ADDRESS_MODE_7BIT, 0x0);
 
