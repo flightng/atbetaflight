@@ -28,7 +28,11 @@
 #include "debug_pin.h"
 
 typedef struct dbgPinState_s {
+#if defined(AT32F43x)
+	gpio_type * gpio;
+#else
     GPIO_TypeDef *gpio;
+#endif
     uint32_t setBSRR;
     uint32_t resetBSRR;
 } dbgPinState_t;
@@ -73,6 +77,8 @@ void dbgPinHi(int index)
     if (dbgPinState->gpio) {
 #if defined(STM32F7) || defined(STM32H7)
         dbgPinState->gpio->BSRR = dbgPinState->setBSRR;
+#elif defined(AT32F43x)
+        dbgPinState->gpio->scr = dbgPinState->setBSRR;
 #else
         dbgPinState->gpio->BSRRL = dbgPinState->setBSRR;
 #endif
@@ -93,7 +99,9 @@ void dbgPinLo(int index)
 
     if (dbgPinState->gpio) {
 #if defined(STM32F7) || defined(STM32H7)
-        dbgPinState->gpio->BSRR = dbgPinState->resetBSRR;
+    	dbgPinState->gpio->BSRR = dbgPinState->resetBSRR;
+#elif defined(AT32F43x)
+        dbgPinState->gpio->scr = dbgPinState->resetBSRR;
 #else
         dbgPinState->gpio->BSRRL = dbgPinState->resetBSRR;
 #endif

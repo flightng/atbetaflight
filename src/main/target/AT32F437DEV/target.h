@@ -38,6 +38,10 @@
  * PA10 OTG1
  */
 
+//debug
+#define USE_DEBUG_PIN
+#define DEBUG_PIN_COUNT         3
+
 //buttons
 #define USE_BUTTONS
 #define BUTTON_A_PIN            PD2
@@ -235,7 +239,7 @@
 #define TARGET_IO_PORTB         0xffff
 #define TARGET_IO_PORTC         0xffff
 #define TARGET_IO_PORTD         0xffff
-#define TARGET_IO_PORTE         BIT(2)
+#define TARGET_IO_PORTE         0xffff
 
 #define USABLE_TIMER_CHANNEL_COUNT 28
 #define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(8) | TIM_N(20) )
