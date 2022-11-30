@@ -52,10 +52,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('make/tools.mk') }}
 
       - name: Build All firmware
-        run: make binary TARGET=${{ matrix.targets }} RELEASE=${{ inputs.release_build && 'yes' || 'no' }}
+        run: make TARGET=${{ matrix.targets }} RELEASE=${{ inputs.release_build && 'yes' || 'no' }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ci_${{ matrix.targets }}_${{ github.run_number }}
-          path: obj/*.bin
+          path: obj/*.hex
