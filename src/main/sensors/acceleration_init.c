@@ -42,6 +42,7 @@
 #include "drivers/accgyro/accgyro_mpu3050.h"
 #include "drivers/accgyro/accgyro_mpu6050.h"
 #include "drivers/accgyro/accgyro_mpu6500.h"
+#include "drivers/accgyro/accgyro_spi_bmi088.h"
 #include "drivers/accgyro/accgyro_spi_bmi160.h"
 #include "drivers/accgyro/accgyro_spi_bmi270.h"
 #include "drivers/accgyro/accgyro_spi_icm20649.h"
@@ -287,6 +288,15 @@ retry:
                 accHardware = ACC_NONE;
                 break;
             }
+            break;
+        }
+        FALLTHROUGH;
+#endif
+
+#ifdef USE_ACCGYRO_BMI088
+    case ACC_BMI088:
+        if (bmi088SpiAccDetect(dev)) {
+            accHardware = ACC_BMI088;
             break;
         }
         FALLTHROUGH;

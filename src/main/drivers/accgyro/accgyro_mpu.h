@@ -200,6 +200,7 @@ typedef enum {
     ICM_20689_SPI,
     ICM_42605_SPI,
     ICM_42688P_SPI,
+    BMI_088_GYRO_SPI,
     BMI_160_SPI,
     BMI_270_SPI,
     LSM6DS3_SPI,

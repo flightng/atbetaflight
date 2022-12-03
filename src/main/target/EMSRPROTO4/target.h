@@ -20,8 +20,8 @@
 
 #pragma once
 
-#define TARGET_BOARD_IDENTIFIER "EMSR"
-#define USBD_PRODUCT_STRING     "EMSR-PROTO-2"
+#define TARGET_BOARD_IDENTIFIER "HUGO"
+#define USBD_PRODUCT_STRING     "EMSR-PROTO-4"
 /**********swd debuger reserved *****************
  *
  * pa13	swdio
@@ -91,8 +91,8 @@
 
 #define USE_EXTI
 #define USE_GYRO_EXTI
-#define GYRO_1_EXTI_PIN        PA15
-#define GYRO_2_EXTI_PIN        PD13
+#define GYRO_1_EXTI_PIN        PD13
+#define GYRO_2_EXTI_PIN        PA15
 #define USE_MPU_DATA_READY_SIGNAL
 #define ENSURE_MPU_DATA_READY_IS_LOW
 
@@ -105,7 +105,7 @@
 #define GYRO_2_ALIGN           CW270_DEG
 
 #define USE_GYRO
-#define USE_FAKE_GYRO
+// #define USE_FAKE_GYRO
 #define USE_GYRO_SPI_ICM42688P
 #define USE_ACCGYRO_BMI088
 #define USE_ACCGYRO_BMI270
@@ -117,6 +117,7 @@
 
 
 #define USE_ACC
+// #define USE_FAKE_ACC
 #define USE_ACC_SPI_ICM42688P
 
 
