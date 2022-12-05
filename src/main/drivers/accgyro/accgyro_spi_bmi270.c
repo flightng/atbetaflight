@@ -45,14 +45,15 @@
 
 #define BMI270_FIFO_FRAME_SIZE 6
 
-#define BMI270_CONFIG_SIZE 328
+#define BMI270_CONFIG_SIZE 8192
 
 // Declaration for the device config (microcode) that must be uploaded to the sensor
-extern const uint8_t bmi270_maximum_fifo_config_file[BMI270_CONFIG_SIZE];
+extern const uint8_t bmi270_config_file[BMI270_CONFIG_SIZE];
 
 #define BMI270_CHIP_ID 0x24
 
-#define BMI270_GYRO_CAS_SIGN_BIT_MASK 0x0040
+#define BMI270_GYRO_CAS_MASK 0x7F
+#define BMI270_GYRO_CAS_SIGN_BIT_MASK 0x40
 
 // BMI270 registers (not the complete list)
 typedef enum {
@@ -159,9 +160,9 @@ static void bmi270RegisterWrite(const extDevice_t *dev, bmi270Register_e registe
     }
 }
 
-static int16_t bmi270GetGyroCas(int16_t gyroCasRaw)
+static int16_t bmi270GetGyroCas(uint8_t gyroCasRaw)
 {
-    if (gyroCasRaw & BMI270_GYRO_CAS_SIGN_BIT_MASK ){
+    if (gyroCasRaw & BMI270_GYRO_CAS_SIGN_BIT_MASK) {
         return (int16_t)(((int16_t)gyroCasRaw) - 128);
     } else {
         return (int16_t)(gyroCasRaw);
@@ -196,7 +197,7 @@ static void bmi270UploadConfig(const extDevice_t *dev)
     bmi270RegisterWrite(dev, BMI270_REG_INIT_CTRL, 0, 1);
 
     // Transfer the config file
-    spiWriteRegBuf(dev, BMI270_REG_INIT_DATA, (uint8_t *)bmi270_maximum_fifo_config_file, sizeof(bmi270_maximum_fifo_config_file));
+    spiWriteRegBuf(dev, BMI270_REG_INIT_DATA, (uint8_t *)bmi270_config_file, sizeof(bmi270_config_file));
 
     delay(10);
     bmi270RegisterWrite(dev, BMI270_REG_INIT_CTRL, 1, 1);
@@ -445,19 +446,19 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
         spiWait(&gyro->dev);
 
         // GYRO_CAS rading
-        gyro->dev.txBuf[9] = BMI270_REG_FEATURES_C | 0x80;
+        gyro->dev.txBuf[8] = BMI270_REG_FEATURES_C | 0x80;
         busSegment_t segmentsCas[] = {
                 {.u.buffers = {NULL, NULL}, 4, true, NULL},
                 {.u.link = {NULL, NULL}, 0, true, NULL},
         };
-        segmentsCas[0].u.buffers.txData = &gyro->dev.txBuf[9];
-        segmentsCas[0].u.buffers.rxData = &gyro->dev.rxBuf[9];
+        segmentsCas[0].u.buffers.txData = &gyro->dev.txBuf[8];
+        segmentsCas[0].u.buffers.rxData = &gyro->dev.rxBuf[8];
 
         spiSequence(&gyro->dev, &segmentsCas[0]);
         // Wait for completion
         spiWait(&gyro->dev);
 
-        int16_t cas = bmi270GetGyroCas((int16_t)(gyroData[5]));
+        int16_t cas = bmi270GetGyroCas(segmentsCas[0].u.buffers.rxData[3] & BMI270_GYRO_CAS_MASK);
         gyro->gyroADCRaw[X] = gyroData[1] - (cas * gyroData[3] / 512);
         gyro->gyroADCRaw[Y] = gyroData[2];
         gyro->gyroADCRaw[Z] = gyroData[3];
@@ -468,19 +469,19 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
     case GYRO_EXTI_INT_DMA:
     {
         // GYRO_CAS rading
-        gyro->dev.txBuf[15] = BMI270_REG_FEATURES_C | 0x80;
+        gyro->dev.txBuf[14] = BMI270_REG_FEATURES_C | 0x80;
         busSegment_t segmentsCas[] = {
                 {.u.buffers = {NULL, NULL}, 4, true, NULL},
                 {.u.link = {NULL, NULL}, 0, true, NULL},
         };
-        segmentsCas[0].u.buffers.txData = &gyro->dev.txBuf[15];
-        segmentsCas[0].u.buffers.rxData = &gyro->dev.rxBuf[15];
+        segmentsCas[0].u.buffers.txData = &gyro->dev.txBuf[14];
+        segmentsCas[0].u.buffers.rxData = &gyro->dev.rxBuf[14];
 
         spiSequence(&gyro->dev, &segmentsCas[0]);
         // Wait for completion
         spiWait(&gyro->dev);
 
-        int16_t cas = bmi270GetGyroCas((int16_t)(gyroData[8]));
+        int16_t cas = bmi270GetGyroCas(segmentsCas[0].u.buffers.rxData[3] & BMI270_GYRO_CAS_MASK);
         gyro->gyroADCRaw[X] = gyroData[4] - (cas * gyroData[6] / 512);
         gyro->gyroADCRaw[Y] = gyroData[5];
         gyro->gyroADCRaw[Z] = gyroData[6];

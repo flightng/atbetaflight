@@ -6,4 +6,4 @@ Library download location:
 Version:
     2.63.1
 
-The only file that is compiled as part of Betaflight is bmi270_maximum_fifo.c. This file contains the device microcode that must be uploaded during initialization. 
+The only file that is compiled as part of Betaflight is bmi270.c. This file contains the device microcode that must be uploaded during initialization. 
