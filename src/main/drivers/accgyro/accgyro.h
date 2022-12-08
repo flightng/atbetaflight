@@ -58,6 +58,7 @@ typedef enum {
     GYRO_ICM42688P,
     GYRO_BMI160,
     GYRO_BMI270,
+    GYRO_LSM6DSM,
     GYRO_LSM6DSO,
     GYRO_FAKE
 } gyroHardware_e;

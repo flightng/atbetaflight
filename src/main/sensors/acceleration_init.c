@@ -306,6 +306,15 @@ retry:
         FALLTHROUGH;
 #endif
 
+#ifdef USE_ACCGYRO_LSM6DSM
+    case ACC_LSM6DSM:
+        if (lsm6dsmSpiAccDetect(dev)) {
+            accHardware = ACC_LSM6DSM;
+            break;
+        }
+        FALLTHROUGH;
+#endif
+
 #ifdef USE_ACCGYRO_LSM6DSO
     case ACC_LSM6DSO:
         if (lsm6dsoSpiAccDetect(dev)) {
