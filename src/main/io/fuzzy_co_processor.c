@@ -6,6 +6,8 @@
 
 #ifdef USE_FUZZY_CO_PROCESSOR
 
+//for Roll=0 Pitch Yaw High
+FAST_DATA_ZERO_INIT pidDelta_t deltaPidBuffer[4];
 
 
 // baud rate should be optimized, since the flc is tested by CP210x which only give stable output at 500_000 baud rate
@@ -17,10 +19,12 @@
 	<Payload>	[x bytes]
 	<CRC>		[1 byte], CRC8 of the <Type>+<Payload>
 */
-
+#define CO_PROCESS_RX_LEN 9
 static serialPort_t *coProcessorPort;
-static int8_t timestampSend;//发送次数，有可能会溢出
-static int8_t timestampRecv;//接收次数
+static int8_t coRecvBuffer[12];// 9 used for now
+static int32_t timestampSend;//发送次数，有可能会溢出
+static int32_t timestampRecv=0;//接收次数
+static int32_t lastRecvCnt=0;
 static uint8_t payloadLen;//payload长度
 static uint16_t symbleErrorCountTX;// 发送误码次数
 //static uint16_t symbleErrorCountRX;// 接收误码次数
@@ -30,19 +34,19 @@ static bool badFrame;
 	协处理器初始化，默认先使用 uart5
 */
 
+void fuzzyProcessFrame(uint16_t c,void * unused);
+
 bool fuzzyCoProcessorInit( void ){
 
 	const serialPortConfig_t *portConfig = findSerialPortConfig(FUNCTION_CO_PROCESSOR);
+	 portOptions_e portOptions = 0;
 
 	    if (portConfig) {
-	        portOptions_e portOptions = 0;
-	        portOptions = SERIAL_BIDIR;
-	        coProcessorPort = openSerialPort(portConfig->identifier, FUNCTION_CO_PROCESSOR, NULL, NULL, 500000, MODE_RXTX, portOptions);
-
+	        coProcessorPort = openSerialPort(portConfig->identifier, FUNCTION_CO_PROCESSOR, NULL, NULL, 115200, MODE_RXTX, portOptions);
 
 	    }else{
 			//fixme : for debug use port5
-	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, NULL, NULL, CO_PROCESSOR_UART_BAUD, MODE_RXTX, SERIAL_BIDIR);
+	        coProcessorPort = openSerialPort(CO_PROCESSOR_UART, FUNCTION_CO_PROCESSOR, fuzzyProcessFrame, NULL, CO_PROCESSOR_UART_BAUD, MODE_RXTX, portOptions);
 
 	    }
 
@@ -72,16 +76,7 @@ void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,
 
 	uint8_t txErrorBuffer[10];
 
-//	txErrorBuffer[0] = 0x55;
-//	txErrorBuffer[1] = 0xE0;
-//	txErrorBuffer[2] = timestampSend;
-//	txErrorBuffer[3] = (uint8_t)(errRoll  	>> 8);
-//	txErrorBuffer[4] = (uint8_t)(errRoll	&0x00FF);
-//	txErrorBuffer[5] = (uint8_t)(errPitch 	>> 8);
-//	txErrorBuffer[6] = (uint8_t)(errPitch	&0x00FF);
-//	txErrorBuffer[7] = (uint8_t)(errYaw   	>> 8);
-//	txErrorBuffer[8] = (uint8_t)(errYaw		&0x00FF);
-//	txErrorBuffer[9] = 0x56;//crc, not implemented yet
+
 	UNUSED(errHigh);
 
 	sbuf_t buf;
@@ -121,8 +116,9 @@ void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,
 
 //process 0x55 0xE1 timecount r.p r.i r.d p.p p.i p.d y.p y.i 0xCC
 
-void fuzzyProcessFrame(uint8_t c)
+void fuzzyProcessFrame(uint16_t c,void * unused)
 {
+	UNUSED(unused);
 	static enum coRecvState_e {
         FCP_HEADER=1, // Waiting for preamble 1 (0x55)
         FCP_TYPE, 	// Waiting for preamble 2 (0xE1)
@@ -146,7 +142,7 @@ void fuzzyProcessFrame(uint8_t c)
 		case FCP_TYPE:
 			if(0xE1==c){
 				coRecvState=FCP_PAYLOAD;
-				payloadLen = 9;
+				payloadLen = CO_PROCESS_RX_LEN;
 				r_index=0;
 			}
 			else{
@@ -179,26 +175,22 @@ void fuzzyProcessFrame(uint8_t c)
 
 //在 mainpid Loop 中调用，读取串口缓存到 pid buffer 之后直接从pid buffer 获取 pid信息
 // static pidDelta_t fuzzyCoProcessorRecv(){
-void fuzzyCoProcessorRecv(){
+bool fuzzyCoProcessorRecv(){
 
-    if (coProcessorPort == NULL) {
-        return;
-    }
-
-    while (serialRxBytesWaiting(coProcessorPort) > 0) {
-        uint8_t c = serialRead(coProcessorPort);
-        fuzzyProcessFrame(c);
-    }
-
-	if (badFrame){
-		badFrame=false;
-		for (int i=0;i<4;i++){
-			deltaPidBuffer[i].DP=0;
-			deltaPidBuffer[i].DI=0;
-			deltaPidBuffer[i].DD=0;
-		}
-	}
-
+    if (badFrame || 0==timestampRecv){
+    		badFrame=false;
+    		for (int i=0;i<4;i++){
+    			deltaPidBuffer[i].DP=0;
+    			deltaPidBuffer[i].DI=0;
+    			deltaPidBuffer[i].DD=0;
+    		}
+    	}
+   if(lastRecvCnt != timestampRecv )
+   {
+	   lastRecvCnt =timestampRecv;
+	   return true;
+   }
+   return false;
 	// return deltaPidBuffer;
 }
 

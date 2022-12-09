@@ -91,7 +91,7 @@ void uartReconfigure(uartPort_t *uartPort)
 //    USART_Init(uartPort->USARTx, &USART_InitStructure);
 // void usart_init(usart_type* usart_x, uint32_t baud_rate, usart_data_bit_num_type data_bit, usart_stop_bit_num_type stop_bit)
 
-	usart_enable(uartPort->USARTx,DISABLE);
+	usart_enable(uartPort->USARTx,FALSE);
 	//init
 	usart_init(uartPort->USARTx,
 			   uartPort->port.baudRate,
@@ -251,7 +251,7 @@ void uartTryStartTxDMA(uartPort_t *s)
         s->txDMAEmpty = false;
 
     reenable:
-        xDMA_Cmd(s->txDMAResource, ENABLE);
+        xDMA_Cmd(s->txDMAResource, TRUE);
     }
 }
 #endif
@@ -283,7 +283,7 @@ void uartIrqHandler(uartPort_t *s)
 	//rx 非空
     if (!s->rxDMAResource && (usart_flag_get(s->USARTx, USART_RDBF_FLAG) == SET)) {
         if (s->port.rxCallback) {
-            s->port.rxCallback(s->USARTx->dt, s->port.rxCallbackData);
+            s->port.rxCallback((uint16_t)s->USARTx->dt, s->port.rxCallbackData);
         } else {
             s->port.rxBuffer[s->port.rxBufferHead] = s->USARTx->dt;
             s->port.rxBufferHead = (s->port.rxBufferHead + 1) % s->port.rxBufferSize;
@@ -296,7 +296,7 @@ void uartIrqHandler(uartPort_t *s)
         	usart_data_transmit(s->USARTx, s->port.txBuffer[s->port.txBufferTail]);
             s->port.txBufferTail = (s->port.txBufferTail + 1) % s->port.txBufferSize;
         } else {
-        	usart_interrupt_enable(s->USARTx, USART_TDBE_INT, DISABLE);
+        	usart_interrupt_enable(s->USARTx, USART_TDBE_INT, FALSE);
         }
     }
 

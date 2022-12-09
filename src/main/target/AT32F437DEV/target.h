@@ -215,7 +215,7 @@
 //*******************CO-Proceseor*******************
 #define USE_FUZZY_CO_PROCESSOR
 #define CO_PROCESSOR_UART		SERIAL_PORT_UART5
-#define CO_PROCESSOR_UART_BAUD	115200
+#define CO_PROCESSOR_UART_BAUD	10000000
 
 
 
