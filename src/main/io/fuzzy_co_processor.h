@@ -8,6 +8,7 @@
 #pragma once
 
 #include "flight/pid.h"
+#include "flight/pid.h"
 
 
 extern pidDelta_t deltaPidBuffer[4];

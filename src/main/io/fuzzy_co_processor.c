@@ -76,7 +76,6 @@ void fuzzyCoProcessorSendError(int16_t errRoll,int16_t errPitch ,int16_t errYaw,
 
 	uint8_t txErrorBuffer[10];
 
-
 	UNUSED(errHigh);
 
 	sbuf_t buf;
