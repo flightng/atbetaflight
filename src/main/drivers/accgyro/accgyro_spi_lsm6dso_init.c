@@ -53,7 +53,7 @@ typedef enum {
     LSM6DSO_VAL_CTRL1_XL_ODR833 = 0x07,       // accelerometer 833hz output data rate (gyro/8)
     LSM6DSO_VAL_CTRL1_XL_ODR1667 = 0x08,      // accelerometer 1666hz output data rate (gyro/4)
     LSM6DSO_VAL_CTRL1_XL_ODR3332 = 0x09,      // accelerometer 3332hz output data rate (gyro/2)
-    LSM6DSO_VAL_CTRL1_XL_ODR3333 = 0x0A,      // accelerometer 6664hz output data rate (gyro/1)
+    LSM6DSO_VAL_CTRL1_XL_ODR6664 = 0x0A,      // accelerometer 6664hz output data rate (gyro/1)
     LSM6DSO_VAL_CTRL1_XL_8G = 0x03,           // accelerometer 8G scale
     LSM6DSO_VAL_CTRL1_XL_16G = 0x01,          // accelerometer 16G scale
     LSM6DSO_VAL_CTRL1_XL_LPF1 = 0x00,         // accelerometer output from LPF1
