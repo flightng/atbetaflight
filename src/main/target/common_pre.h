@@ -84,7 +84,7 @@
 //#define USE_USB_CDC_HID
 #define USE_USB_MSC
 #define USE_PERSISTENT_MSC_RTC
-#define USE_MCO
+//#define USE_MCO
 #define USE_DMA_SPEC
 #define USE_TIMER_MGMT
 #define USE_PERSISTENT_OBJECTS
