@@ -13,6 +13,8 @@ TARGET_SRC = \
             drivers/accgyro/accgyro_spi_mpu6500.c\
             drivers/accgyro/accgyro_spi_lsm6ds3_init.c \
             drivers/accgyro/accgyro_spi_lsm6ds3.c \
+            drivers/accgyro/accgyro_spi_lsm6dsl_init.c \
+            drivers/accgyro/accgyro_spi_lsm6dsl.c \
             drivers/accgyro/accgyro_spi_lsm6dso_init.c \
             drivers/accgyro/accgyro_spi_lsm6dso.c \
             drivers/max7456.c \

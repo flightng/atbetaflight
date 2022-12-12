@@ -203,6 +203,7 @@ typedef enum {
     BMI_160_SPI,
     BMI_270_SPI,
     LSM6DS3_SPI,
+    LSM6DSL_SPI,
     LSM6DSO_SPI,
     L3GD20_SPI,
 } mpuSensor_e;
