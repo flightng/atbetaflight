@@ -188,7 +188,7 @@
 #define TARGET_IO_PORTA         0xffff
 #define TARGET_IO_PORTB         0xffff
 #define TARGET_IO_PORTC         0xffff
-#define TARGET_IO_PORTH         BIT(1)|BIT(2)
+#define TARGET_IO_PORTH         BIT(1)|BIT(2)|BIT(3)
 
 #define USABLE_TIMER_CHANNEL_COUNT 28
 #define USED_TIMERS             ( TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(5) | TIM_N(8) | TIM_N(20) )
