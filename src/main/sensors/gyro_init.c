@@ -316,6 +316,9 @@ void gyroInitSensor(gyroSensor_t *gyroSensor, const gyroDeviceConfig_t *config)
     buildRotationMatrixFromAlignment(&config->customAlignment, &gyroSensor->gyroDev.rotationMatrix);
     gyroSensor->gyroDev.mpuIntExtiTag = config->extiTag;
     gyroSensor->gyroDev.hardware_lpf = gyroConfig()->gyro_hardware_lpf;
+    gyroSensor->gyroDev.gyroScaleCompensator[0] = gyroConfig()->gyro_sens_scaler_x;
+    gyroSensor->gyroDev.gyroScaleCompensator[1] = gyroConfig()->gyro_sens_scaler_y;
+    gyroSensor->gyroDev.gyroScaleCompensator[2] = gyroConfig()->gyro_sens_scaler_z;
 
     // The targetLooptime gets set later based on the active sensor's gyroSampleRateHz and pid_process_denom
     gyroSensor->gyroDev.gyroSampleRateHz = gyroSetSampleRate(&gyroSensor->gyroDev);

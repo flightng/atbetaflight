@@ -165,6 +165,7 @@ typedef enum {
     VAR_UINT16 = (2 << VALUE_TYPE_OFFSET),
     VAR_INT16 = (3 << VALUE_TYPE_OFFSET),
     VAR_UINT32 = (4 << VALUE_TYPE_OFFSET),
+    VAR_UINT32_L = (5 << VALUE_TYPE_OFFSET),
 
     // value section, bits 3-4
     MASTER_VALUE = (0 << VALUE_SECTION_OFFSET),
@@ -195,6 +196,11 @@ typedef struct cliMinMaxUnsignedConfig_s {
     const uint16_t max;
 } cliMinMaxUnsignedConfig_t;
 
+typedef struct cliMinMaxU32LimitConfig_s {
+    const uint32_t min;
+    const uint32_t max;
+} cliMinMaxU32LimitConfig_t;
+
 typedef struct cliLookupTableConfig_s {
     const lookupTableIndex_e tableIndex;
 } cliLookupTableConfig_t;
@@ -216,6 +222,7 @@ typedef union {
     cliLookupTableConfig_t lookup;            // used for MODE_LOOKUP excl. VAR_UINT32
     cliMinMaxConfig_t minmax;                 // used for MODE_DIRECT with signed parameters
     cliMinMaxUnsignedConfig_t minmaxUnsigned; // used for MODE_DIRECT with unsigned parameters
+    cliMinMaxU32LimitConfig_t minmaxUnsigned32Limited;//// used for MODE_DIRECT with unsigned parameters
     cliArrayLengthConfig_t array;             // used for MODE_ARRAY
     cliStringLengthConfig_t string;           // used for MODE_STRING
     uint8_t bitpos;                           // used for MODE_BITSET
