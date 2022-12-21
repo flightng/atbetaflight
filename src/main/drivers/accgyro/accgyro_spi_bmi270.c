@@ -165,6 +165,17 @@ static uint8_t bmi270RegisterRead(const extDevice_t *dev, bmi270Register_e regis
     }
 }
 
+static uint16_t bmi270RegisterRead16(const extDevice_t *dev, bmi270Register_e registerId)
+{
+    uint8_t data[3] = { 0, 0, 0 };
+
+    if (spiReadRegMskBufRB(dev, registerId, data, 3)) {
+        return (uint16_t)( (data[2]<<8) | data[1] );    // LSB first since address is auto-incremented
+    } else {
+        return 0;
+    }
+}
+
 static void bmi270RegisterWrite(const extDevice_t *dev, bmi270Register_e registerId, uint8_t value, unsigned delayMs)
 {
     spiWriteReg(dev, registerId, value);
@@ -175,19 +186,17 @@ static void bmi270RegisterWrite(const extDevice_t *dev, bmi270Register_e registe
 
 static void bmi270RegisterWriteBits(const extDevice_t *dev, bmi270Register_e registerID, bmi270ConfigMasks_e mask, uint8_t value, unsigned delayMs)
 {
-    uint8_t newValue;
-        if (busReadRegisterBuffer(dev, registerID, &newValue, 1)) {
-        delayMicroseconds(2);
-        newValue = (newValue & ~mask) | value;
-        bmi270RegisterWrite(dev, registerID, newValue, delayMs);
-    }
+    uint8_t newValue = bmi270RegisterRead(dev, registerID);
+    delayMicroseconds(2);
+    newValue = (newValue & ~mask) | value;
+    bmi270RegisterWrite(dev, registerID, newValue, delayMs);
 }
 
 static void bmi270RegisterWrite16(const extDevice_t *dev, bmi270Register_e registerId, uint16_t data, unsigned delayMs)
 {
     uint8_t buf[2] = {
-        (uint8_t)(data >> 8),
-        (uint8_t)(data & 0x00FF)
+        (uint8_t)(data & 0x00FF),   // LSB first since address is auto-incremented
+        (uint8_t)(data >> 8)
     };
     spiWriteRegBuf(dev, registerId, buf, 2);
     if (delayMs) {
@@ -197,13 +206,10 @@ static void bmi270RegisterWrite16(const extDevice_t *dev, bmi270Register_e regis
 
 static void bmi270RegisterWriteBits16(const extDevice_t *dev, bmi270Register_e registerID, bmi270ConfigMasks_e mask, uint16_t value, unsigned delayMs)
 {
-    uint8_t data[2] = {0};
-    if (busReadRegisterBuffer(dev, registerID, data, 2)) {
-        delayMicroseconds(2);
-        uint16_t newValue = (data[0] << 8) | data[1];
-        newValue = (newValue & ~mask) | value;
-        bmi270RegisterWrite16(dev, registerID, newValue, delayMs);
-    }
+    uint16_t newValue = bmi270RegisterRead16(dev, registerID);
+    delayMicroseconds(2);
+    newValue = (newValue & ~mask) | value;
+    bmi270RegisterWrite16(dev, registerID, newValue, delayMs);
 }
 
 static int16_t bmi270GetGyroCas(uint8_t gyroCasRaw)
