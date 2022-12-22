@@ -101,4 +101,5 @@ const char * const debugModeNames[DEBUG_COUNT] = {
     "RX_EXPRESSLRS_PHASELOCK",
     "RX_STATE_TIME",
     "SMITH_PREDICTOR",
+    // "BMI270_GYRO",
 };
