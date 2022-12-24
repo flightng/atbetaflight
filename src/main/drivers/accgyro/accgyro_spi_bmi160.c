@@ -339,7 +339,7 @@ static bool bmi160AccRead(accDev_t *acc)
         // Wait for completion
         spiWait(&acc->gyro->dev);
 
-        uint16_t *accData = (uint16_t *)acc->gyro->dev.rxBuf;
+        int16_t *accData = (int16_t *)acc->gyro->dev.rxBuf;
         acc->ADCRaw[X] = accData[1];
         acc->ADCRaw[Y] = accData[2];
         acc->ADCRaw[Z] = accData[3];
@@ -352,7 +352,7 @@ static bool bmi160AccRead(accDev_t *acc)
         // up an old value.
 
         // This data was read from the gyro, which is the same SPI device as the acc
-        uint16_t *accData = (uint16_t *)acc->gyro->dev.rxBuf;
+        int16_t *accData = (int16_t *)acc->gyro->dev.rxBuf;
         acc->ADCRaw[X] = accData[4];
         acc->ADCRaw[Y] = accData[5];
         acc->ADCRaw[Z] = accData[6];
@@ -370,7 +370,7 @@ static bool bmi160AccRead(accDev_t *acc)
 
 static bool bmi160GyroRead(gyroDev_t *gyro)
 {
-    uint16_t *gyroData = (uint16_t *)gyro->dev.rxBuf;
+    int16_t *gyroData = (int16_t *)gyro->dev.rxBuf;
     switch (gyro->gyroModeSPI) {
     case GYRO_EXTI_INIT:
     {
