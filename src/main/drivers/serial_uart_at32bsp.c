@@ -63,33 +63,32 @@ static void usartConfigurePinInversion(uartPort_t *uartPort) {
 #endif
 }
 
+static uartDevice_t *uartFindDevice(uartPort_t *uartPort)
+{
+    for (uint32_t i = 0; i < UARTDEV_COUNT_MAX; i++) {
+        uartDevice_t *candidate = uartDevmap[i];
+
+        if (&candidate->port == uartPort) {
+            return candidate;
+        }
+    }
+    return NULL;
+}
+
+static void uartConfigurePinSwap(uartPort_t *uartPort)
+{
+    uartDevice_t *uartDevice = uartFindDevice(uartPort);
+    if (!uartDevice) {
+        return;
+    }
+
+    if (uartDevice->pinSwap) {
+    	usart_transmit_receive_pin_swap(uartDevice->port.USARTx,TRUE);
+    }
+}
+
 void uartReconfigure(uartPort_t *uartPort)
 {
-//    USART_InitTypeDef USART_InitStructure;
-//    USART_Cmd(uartPort->USARTx, DISABLE);
-//    USART_InitStructure.USART_BaudRate = uartPort->port.baudRate;
-
-    // according to the stm32 documentation wordlen has to be 9 for parity bits
-    // this does not seem to matter for rx but will give bad data on tx!
-    // This seems to cause RX to break on STM32F1, see https://github.com/betaflight/betaflight/pull/1654
-//    if ( (uartPort->port.options & SERIAL_PARITY_EVEN)) {
-//        USART_InitStructure.USART_WordLength = USART_WordLength_9b;
-//    } else {
-//        USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-//    }
-
-//    USART_InitStructure.USART_StopBits = (uartPort->port.options & SERIAL_STOPBITS_2) ? USART_StopBits_2 : USART_StopBits_1;
-//    USART_InitStructure.USART_Parity   = (uartPort->port.options & SERIAL_PARITY_EVEN) ? USART_Parity_Even : USART_Parity_No;
-//
-//    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-//    USART_InitStructure.USART_Mode = 0;
-//    if (uartPort->port.mode & MODE_RX)
-//        USART_InitStructure.USART_Mode |= USART_Mode_Rx;
-//    if (uartPort->port.mode & MODE_TX)
-//        USART_InitStructure.USART_Mode |= USART_Mode_Tx;
-//
-//    USART_Init(uartPort->USARTx, &USART_InitStructure);
-// void usart_init(usart_type* usart_x, uint32_t baud_rate, usart_data_bit_num_type data_bit, usart_stop_bit_num_type stop_bit)
 
 	usart_enable(uartPort->USARTx,DISABLE);
 	//init
@@ -111,8 +110,11 @@ void uartReconfigure(uartPort_t *uartPort)
 	if (uartPort->port.mode & MODE_TX)
 		usart_transmitter_enable(uartPort->USARTx,TRUE);
 
-	//config pin swap
+	//config pin inverter
     usartConfigurePinInversion(uartPort);
+
+    //config pin swap
+    uartConfigurePinSwap(uartPort);
 
     if (uartPort->port.options & SERIAL_BIDIR)
 //        USART_HalfDuplexCmd(uartPort->USARTx, ENABLE);
