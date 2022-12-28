@@ -651,10 +651,10 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
         gyro->gyroADCRaw[Y] = gyroData[5];
         gyro->gyroADCRaw[Z] = gyroData[6];
 
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 0, lrintf(gyroData[4]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 1, lrintf(gyroData[6]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 2, lrintf(gyro->gyroADCRaw[X]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 3, lrintf((int16_t)cas));
+        // DEBUG_SET(DEBUG_BMI270_GYRO, 0, (gyroData[4]));
+        // DEBUG_SET(DEBUG_BMI270_GYRO, 1, (gyroData[6]));
+        // DEBUG_SET(DEBUG_BMI270_GYRO, 2, (gyro->gyroADCRaw[X]));
+        // DEBUG_SET(DEBUG_BMI270_GYRO, 3, (int16_t)cas);
         break;
     }
 

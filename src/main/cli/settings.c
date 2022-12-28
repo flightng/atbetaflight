@@ -660,9 +660,9 @@ const lookupTableEntry_t lookupTables[] = {
 const clivalue_t valueTable[] = {
 // PG_GYRO_CONFIG
     { PARAM_NAME_GYRO_HARDWARE_LPF, VAR_UINT8  | MASTER_VALUE | MODE_LOOKUP, .config.lookup = { TABLE_GYRO_HARDWARE_LPF }, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_hardware_lpf) },
-    { "gyro_sens_scaler_x",         VAR_UINT32_L | MASTER_VALUE, .config.minmaxUnsigned32Limited = {7500000, 12500000}, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_x) },
-    { "gyro_sens_scaler_y",         VAR_UINT32_L | MASTER_VALUE, .config.minmaxUnsigned32Limited = {7500000, 12500000}, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_y) },
-    { "gyro_sens_scaler_z",         VAR_UINT32_L | MASTER_VALUE, .config.minmaxUnsigned32Limited = {7500000, 12500000}, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_z) },
+    { "gyro_sens_scaler_x",         VAR_UINT16 | MASTER_VALUE, .config.minmaxUnsigned = { 768, 1280 }, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_x) },
+    { "gyro_sens_scaler_y",         VAR_UINT16 | MASTER_VALUE, .config.minmaxUnsigned = { 768, 1280 }, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_y) },
+    { "gyro_sens_scaler_z",         VAR_UINT16 | MASTER_VALUE, .config.minmaxUnsigned = { 768, 1280 }, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_sens_scaler_z) },
 
 #if defined(USE_GYRO_SPI_ICM20649)
     { "gyro_high_range",            VAR_UINT8  | MASTER_VALUE | MODE_LOOKUP, .config.lookup = { TABLE_OFF_ON }, PG_GYRO_CONFIG, offsetof(gyroConfig_t, gyro_high_fsr) },

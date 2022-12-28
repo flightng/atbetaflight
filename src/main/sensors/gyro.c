@@ -109,9 +109,9 @@ void pgResetFn_gyroConfig(gyroConfig_t *gyroConfig)
     gyroConfig->gyroCalibrationDuration = 125;        // 1.25 seconds
     gyroConfig->gyroMovementCalibrationThreshold = 48;
     gyroConfig->gyro_hardware_lpf = GYRO_HARDWARE_LPF_NORMAL;
-    gyroConfig->gyro_sens_scaler_x = 10000000;
-    gyroConfig->gyro_sens_scaler_y = 10000000;
-    gyroConfig->gyro_sens_scaler_z = 10000000;
+    gyroConfig->gyro_sens_scaler_x = 1024;
+    gyroConfig->gyro_sens_scaler_y = 1024;
+    gyroConfig->gyro_sens_scaler_z = 1024;
     gyroConfig->gyro_lpf1_type = FILTER_PT1;
     gyroConfig->gyro_lpf1_static_hz = GYRO_LPF1_DYN_MIN_HZ_DEFAULT;
         // NOTE: dynamic lpf is enabled by default so this setting is actually

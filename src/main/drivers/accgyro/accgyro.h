@@ -107,7 +107,7 @@ typedef struct gyroDev_s {
     float gyroADC[XYZ_AXIS_COUNT];                           // gyro data after calibration and alignment
     int32_t gyroADCRawPrevious[XYZ_AXIS_COUNT];
     int16_t gyroADCRaw[XYZ_AXIS_COUNT];                      // raw data from sensor
-    uint32_t gyroScaleCompensator[XYZ_AXIS_COUNT];              // this is for bmi270 only
+    uint16_t gyroScaleCompensator[XYZ_AXIS_COUNT];              // this is for bmi270 only
     int16_t temperature;
     mpuDetectionResult_t mpuDetectionResult;
     sensor_align_e gyroAlign;
