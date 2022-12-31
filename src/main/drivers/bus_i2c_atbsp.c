@@ -38,7 +38,7 @@
 #include "drivers/bus_i2c_impl.h"
 
 //#define I2C_TIMEOUT                      0x3FFFFF
-#define I2C_TIMEOUT                      0x8700 //about 120 us at 288 mhz
+#define I2C_TIMEOUT                      0x870 //about 7 us at 288 mhz
 
 #ifdef USE_I2C_DEVICE_1
 void I2C1_ERR_IRQHandler(void)
@@ -287,7 +287,7 @@ bool i2cReadBuffer(I2CDevice device, uint8_t addr_, uint8_t reg_, uint8_t len, u
     else
     {
       /* wait for the communication to end */
-      i2c_wait_end(pHandle->i2cx, I2C_TIMEOUT);
+    //   i2c_wait_end(pHandle->i2cx, I2C_TIMEOUT);
     }
 
 
