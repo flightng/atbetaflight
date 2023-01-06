@@ -146,8 +146,8 @@
 #define UART2_TX_PIN            PA2
 
 #define USE_UART3
-#define UART3_RX_PIN            PB11
-#define UART3_TX_PIN            PB10
+#define UART3_RX_PIN            PB10
+#define UART3_TX_PIN            PB11
 
 #define USE_UART5
 #define UART5_RX_PIN            PB8
