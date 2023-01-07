@@ -511,6 +511,11 @@ static void getMinMax(const clivalue_t *var, int *min, int *max)
         *max = var->config.minmaxUnsigned.max;
 
         break;
+    case VAR_UINT32_L:
+        *min = var->config.minmaxUnsigned32Limited.min;
+        *max = var->config.minmaxUnsigned32Limited.max;
+
+        break;
     default:
         *min = var->config.minmax.min;
         *max = var->config.minmax.max;
@@ -546,6 +551,7 @@ static void printValuePointer(const char *cmdName, const clivalue_t *var, const 
                 break;
 
             case VAR_UINT32:
+            case VAR_UINT32_L:
                 // uin32_t array
                 cliPrintf("%u", ((uint32_t *)valuePointer)[i]);
                 break;
@@ -576,6 +582,7 @@ static void printValuePointer(const char *cmdName, const clivalue_t *var, const 
 
             break;
         case VAR_UINT32:
+        case VAR_UINT32_L:
             value = *(uint32_t *)valuePointer;
 
             break;
@@ -590,6 +597,17 @@ static void printValuePointer(const char *cmdName, const clivalue_t *var, const 
                     valueIsCorrupted = true;
                 } else if (full) {
                     cliPrintf(" 0 %u", var->config.u32Max);
+                }
+            } else if((var->type & VALUE_TYPE_MASK) == VAR_UINT32_L){
+                int min;
+                int max;
+                getMinMax(var, &min, &max);
+
+                cliPrintf("%u", value);
+                if ((value < min) || (value > max)) {
+                    valueIsCorrupted = true;
+                } else if (full) {
+                    cliPrintf(" %u %u", min, max);
                 }
             } else {
                 int min;
@@ -660,6 +678,7 @@ static bool valuePtrEqualsDefault(const clivalue_t *var, const void *ptr, const 
             result = result && ((int16_t *)ptr)[i] == ((int16_t *)ptrDefault)[i];
             break;
         case VAR_UINT32:
+        case VAR_UINT32_L:
             result = result && (((uint32_t *)ptr)[i] & mask) == (((uint32_t *)ptrDefault)[i] & mask);
             break;
         }
@@ -847,6 +866,10 @@ static void cliPrintVarRange(const clivalue_t *var)
             cliPrintLinef("Allowed range: 0 - %u", var->config.u32Max);
 
             break;
+        case VAR_UINT32_L:
+            cliPrintLinef("Allowed range: %u - %u", var->config.minmaxUnsigned32Limited.min, var->config.minmaxUnsigned32Limited.max);
+
+            break;
         case VAR_UINT8:
         case VAR_UINT16:
             cliPrintLinef("Allowed range: %d - %d", var->config.minmaxUnsigned.min, var->config.minmaxUnsigned.max);
@@ -919,6 +942,7 @@ static void cliSetVar(const clivalue_t *var, const uint32_t value)
             break;
 
         case VAR_UINT32:
+        case VAR_UINT32_L:
             mask = 1 << var->config.bitpos;
             if (value) {
                 workValue = *(uint32_t *)ptr | mask;
@@ -947,6 +971,7 @@ static void cliSetVar(const clivalue_t *var, const uint32_t value)
             break;
 
         case VAR_UINT32:
+        case VAR_UINT32_L:
             *(uint32_t *)ptr = value;
             break;
         }
@@ -4579,7 +4604,15 @@ STATIC_UNIT_TESTED void cliSet(const char *cmdName, char *cmdline)
                         cliSetVar(val, value);
                         valueChanged = true;
                     }
-                } else {
+                } else if ((val->type & VALUE_TYPE_MASK) == VAR_UINT32_L) {
+                    uint32_t value = strtoul(eqptr, NULL, 10);
+                    uint32_t min=val->config.minmaxUnsigned32Limited.min;
+                    uint32_t max=val->config.minmaxUnsigned32Limited.max;
+                    if (value >= min && value <= max) {
+                        cliSetVar(val, value);
+                        valueChanged = true;
+                    }
+                }else {
                     int value = atoi(eqptr);
 
                     int min;
