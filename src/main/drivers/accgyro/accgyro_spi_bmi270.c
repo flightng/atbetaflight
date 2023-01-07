@@ -76,7 +76,9 @@ typedef enum {
     BMI270_REG_FIFO_LENGTH_MSB = 0x25,
     BMI270_REG_FIFO_DATA = 0x26,
     BMI270_REG_FEAT_PAGE = 0x2F,
+    BMI270_REG_FEATURES_0_GYR_GAIN_STATUS = 0x38,
     BMI270_REG_FEATURES_0_GYR_CAS = 0x3C,
+    BMI270_REG_FEATURES_1_G_TRIG_1 = 0x32,
     BMI270_REG_FEATURES_1_GEN_SET_1 = 0x34,
     BMI270_REG_ACC_CONF = 0x40,
     BMI270_REG_ACC_RANGE = 0x41,
@@ -97,6 +99,7 @@ typedef enum {
     BMI270_REG_INT_MAP_DATA = 0x58,
     BMI270_REG_INIT_CTRL = 0x59,
     BMI270_REG_INIT_DATA = 0x5E,
+    BMI270_REG_GYR_CRT_CONF = 0x69,
     BMI270_REG_IF_CONF = 0x6B,
     BMI270_REG_ACC_SELF_TEST = 0x6D,
     BMI270_REG_GYR_SELF_TEST_AXES = 0x6E,
@@ -108,46 +111,64 @@ typedef enum {
 
 // BMI270 register configuration values
 typedef enum {
+    BMI270_VAL_CMD_G_TRIGGER = 0x02,
     BMI270_VAL_CMD_SOFTRESET = 0xB6,
     BMI270_VAL_CMD_FIFOFLUSH = 0xB0,
-    BMI270_VAL_PWR_CTRL_DISABLE_ALL = 0x00,  // disable all sensors
-    BMI270_VAL_PWR_CTRL = 0x0E,              // enable gyro, acc and temp sensors
-    BMI270_VAL_PWR_CONF = 0x02,              // disable advanced power save, enable FIFO self-wake
-    BMI270_VAL_PAGE_0 = 0x00,                // select page 0
-    BMI270_VAL_PAGE_1 = 0x01,                // select page 1
-    BMI270_VAL_ACC_CONF_ODR800 = 0x0B,       // set acc sample rate to 800hz
-    BMI270_VAL_ACC_CONF_ODR1600 = 0x0C,      // set acc sample rate to 1600hz
-    BMI270_VAL_ACC_CONF_BWP = 0x01,          // set acc filter in osr2 mode
-    BMI270_VAL_ACC_CONF_HP = 0x01,           // set acc in high performance mode
-    BMI270_VAL_ACC_RANGE_8G = 0x02,          // set acc to 8G full scale
-    BMI270_VAL_ACC_RANGE_16G = 0x03,         // set acc to 16G full scale
-    BMI270_VAL_GYRO_CONF_ODR3200 = 0x0D,     // set gyro sample rate to 3200hz
-    BMI270_VAL_GYRO_CONF_BWP_OSR4 = 0x00,    // set gyro filter in OSR4 mode
-    BMI270_VAL_GYRO_CONF_BWP_OSR2 = 0x01,    // set gyro filter in OSR2 mode
-    BMI270_VAL_GYRO_CONF_BWP_NORM = 0x02,    // set gyro filter in normal mode
-    BMI270_VAL_GYRO_CONF_NOISE_PERF = 0x01,  // set gyro in high performance noise mode
-    BMI270_VAL_GYRO_CONF_FILTER_PERF = 0x01, // set gyro in high performance filter mode
+    BMI270_VAL_PWR_CTRL_DISABLE_ALL = 0x00,             // disable all sensors
+    BMI270_VAL_PWR_CTRL = 0x0E,                         // enable gyro, acc and temp sensors
+    BMI270_VAL_PWR_CTRL_ACC_ENABLE = BIT(2),            // bit 2, enable acc
+    BMI270_VAL_PWR_CTRL_ACC_DISABLE = 0x00,             // bit 2, disable gyro
+    BMI270_VAL_PWR_CONF_ADV_POWER_SAVE_DISABLE = 0x00,  // disable ADV PS
+    BMI270_VAL_PWR_CONF_ADV_POWER_SAVE_ENABLE = BIT(0), // enable ADV PS
+    BMI270_VAL_PWR_CONF = 0x02,                         // disable advanced power save, enable FIFO self-wake
+    BMI270_VAL_PAGE_0 = 0x00,                           // select page 0
+    BMI270_VAL_PAGE_1 = 0x01,                           // select page 1
+    BMI270_VAL_ACC_CONF_ODR800 = 0x0B,                  // set acc sample rate to 800hz
+    BMI270_VAL_ACC_CONF_ODR1600 = 0x0C,                 // set acc sample rate to 1600hz
+    BMI270_VAL_ACC_CONF_BWP = 0x01,                     // set acc filter in osr2 mode
+    BMI270_VAL_ACC_CONF_HP = 0x01,                      // set acc in high performance mode
+    BMI270_VAL_ACC_RANGE_8G = 0x02,                     // set acc to 8G full scale
+    BMI270_VAL_ACC_RANGE_16G = 0x03,                    // set acc to 16G full scale
+    BMI270_VAL_GYRO_CONF_ODR3200 = 0x0D,                // set gyro sample rate to 3200hz
+    BMI270_VAL_GYRO_CONF_BWP_OSR4 = 0x00,               // set gyro filter in OSR4 mode
+    BMI270_VAL_GYRO_CONF_BWP_OSR2 = 0x01,               // set gyro filter in OSR2 mode
+    BMI270_VAL_GYRO_CONF_BWP_NORM = 0x02,               // set gyro filter in normal mode
+    BMI270_VAL_GYRO_CONF_NOISE_PERF = 0x01,             // set gyro in high performance noise mode
+    BMI270_VAL_GYRO_CONF_FILTER_PERF = 0x01,            // set gyro in high performance filter mode
 
-    BMI270_VAL_GYRO_RANGE_2000DPS = 0x08,    // set gyro to 2000dps full scale
-                                             // for some reason you have to enable the ois_range bit (bit 3) for 2000dps as well
-                                             // or else the gyro scale will be 250dps when in prefiltered FIFO mode (not documented in datasheet!)
+    BMI270_VAL_GYRO_RANGE_2000DPS = 0x08,               // set gyro to 2000dps full scale
+                                                        // for some reason you have to enable the ois_range bit (bit 3) for 2000dps as well
+                                                        // or else the gyro scale will be 250dps when in prefiltered FIFO mode (not documented in datasheet!)
 
-    BMI270_VAL_INT_MAP_DATA_DRDY_INT1 = 0x04,// enable the data ready interrupt pin 1
-    BMI270_VAL_INT_MAP_FIFO_WM_INT1 = 0x02,  // enable the FIFO watermark interrupt pin 1
-    BMI270_VAL_INT1_IO_CTRL_PINMODE = 0x0A,  // active high, push-pull, output enabled, input disabled 
-    BMI270_VAL_IF_CONF_SET_INTERFACE = 0x00, // spi 4-wire mode, disable OIS, disable AUX
-    BMI270_VAL_FIFO_CONFIG_0 = 0x00,         // don't stop when full, disable sensortime frame
-    BMI270_VAL_FIFO_CONFIG_1 = 0x80,         // only gyro data in FIFO, use headerless mode
-    BMI270_VAL_FIFO_DOWNS = 0x00,            // select unfiltered gyro data with no downsampling (6.4KHz samples)
-    BMI270_VAL_FIFO_WTM_0 = 0x06,            // set the FIFO watermark level to 1 gyro sample (6 bytes)
-    BMI270_VAL_FIFO_WTM_1 = 0x00,            // FIFO watermark MSB
-    BMI270_VAL_GEN_SET_1 = 0x0200,           // bit 9, enable self offset correction (IOC part 1)
-    BMI270_VAL_OFFSET_6 = 0xC0,              // Enable sensitivity error compensation and gyro offset compensation (IOC part2)
+    BMI270_VAL_INT_MAP_DATA_DRDY_INT1 = 0x04,           // enable the data ready interrupt pin 1
+    BMI270_VAL_INT_MAP_FIFO_WM_INT1 = 0x02,             // enable the FIFO watermark interrupt pin 1
+    BMI270_VAL_INT1_IO_CTRL_PINMODE = 0x0A,             // active high, push-pull, output enabled, input disabled 
+    BMI270_VAL_IF_CONF_SET_INTERFACE = 0x00,            // spi 4-wire mode, disable OIS, disable AUX
+    BMI270_VAL_FIFO_CONFIG_0 = 0x00,                    // don't stop when full, disable sensortime frame
+    BMI270_VAL_FIFO_CONFIG_1 = 0x80,                    // only gyro data in FIFO, use headerless mode
+    BMI270_VAL_FIFO_DOWNS = 0x00,                       // select unfiltered gyro data with no downsampling (6.4KHz samples)
+    BMI270_VAL_FIFO_WTM_0 = 0x06,                       // set the FIFO watermark level to 1 gyro sample (6 bytes)
+    BMI270_VAL_FIFO_WTM_1 = 0x00,                       // FIFO watermark MSB
+    BMI270_VAL_GEN_SET_1 = 0x0200,                      // bit 9, enable self offset correction (IOC part 1)
+    BMI270_VAL_OFFSET_6 = 0xC0,                         // Enable sensitivity error compensation and gyro offset compensation (IOC part2)
+    BMI270_VAL_OFFSET_6_GYR_GAIN_EN_ENABLE = BIT(7),    // bit 7, enable gyro gain compensation
+    BMI270_VAL_GYR_CRT_CONF_CRT_RUNNING = BIT(2),       // bit 7, enable gyro crt
+    BMI270_VAL_FEATURES_1_G_TRIG_1_SELECT_CRT = 0x0100, // bit 8, CRT will be executed
+    BMI270_VAL_FEATURES_1_G_TRIG_1_SELECT_GYR_BIST=0x0000, // bit 8, gyro built-in self-test will be executed
+    BMI270_VAL_FEATURES_1_G_TRIG_1_BLOCK_UNLOCK = 0x0000,// bit 9, do not block further G_TRIGGER commands
+    BMI270_VAL_FEATURES_1_G_TRIG_1_BLOCK_BLOCK = 0x0200, // bit 9, block further G_TRIGGER commands
 } bmi270ConfigValues_e;
 
 typedef enum {
     BMI270_MASK_FEATURES_1_GEN_SET_1 = 0x0200,
     BMI270_MASK_OFFSET_6 = 0xC0,
+    BMI270_MASK_OFFSET_6_GYR_GAIN_ENABLE = 0x80,        // bit 7, enable gyro gain compensation
+    BMI270_MASK_PWR_ADV_POWER_SAVE = 0x01,              // bit 0, enable advanced power save
+    BMI270_MASK_PWR_CTRL_ACC_ENABLE = 0x04,             // bit 2, enable acc
+    BMI270_MASK_GYR_CRT_CONF_CRT_RUNNING = 0x04,        // bit 2, gyro CRT running
+    BMI270_MASK_G_TRIG_1_SELECT = 0x0100,               // bit 8, select feature that should be executed
+    BMI270_MASK_G_TRIG_1_BLOCK = 0x0200,                // bit 9, block feature with next G_TRIGGER CMD
+    BMI270_MASK_GYR_GAIN_STATUS_G_TRIG_STATUS = 0x38    // bit[5:3]
 } bmi270ConfigMasks_e;
 
 // Need to see at least this many interrupts during initialisation to confirm EXTI connectivity
@@ -196,7 +217,7 @@ static void bmi270RegisterWriteBits(const extDevice_t *dev, bmi270Register_e reg
 static void bmi270RegisterWrite16(const extDevice_t *dev, bmi270Register_e registerId, uint16_t data, unsigned delayMs)
 {
     uint8_t buf[2] = {
-        (uint8_t)(data & 0x00FF),   // LSB first since address is auto-incremented
+        (uint8_t)(data & 0x00FF),
         (uint8_t)(data >> 8)
     };
     spiWriteRegBuf(dev, registerId, buf, 2);
@@ -246,6 +267,71 @@ static void bmi270UploadConfig(const extDevice_t *dev)
     bmi270RegisterWrite(dev, BMI270_REG_INIT_CTRL, 1, 1);
 }
 
+static void bmi270EnableIOC(const extDevice_t *dev)
+{
+    // Configure the feature register page to page 1
+    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_1, 1);
+
+    // Enable self offset correction
+    bmi270RegisterWriteBits16(dev, BMI270_REG_FEATURES_1_GEN_SET_1, BMI270_MASK_FEATURES_1_GEN_SET_1, BMI270_VAL_GEN_SET_1, 1);
+
+    // Enable IOC
+    bmi270RegisterWriteBits(dev, BMI270_REG_OFFSET_6, BMI270_MASK_OFFSET_6, 0x40, 1);
+
+    // Configure the feature register page to page 0
+    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_0, 1);
+}
+
+static void bmi270PerformCRT(const extDevice_t *dev)
+{
+    // disable advance power save mode
+    bmi270RegisterWriteBits(dev, BMI270_REG_PWR_CONF, BMI270_MASK_PWR_ADV_POWER_SAVE, BMI270_VAL_PWR_CONF_ADV_POWER_SAVE_DISABLE, 10);
+
+    // enable gyro gain compensation, set OFFSET_6.gain_comp_en = 1
+    bmi270RegisterWriteBits(dev, BMI270_REG_OFFSET_6, BMI270_MASK_OFFSET_6_GYR_GAIN_ENABLE, BMI270_VAL_OFFSET_6_GYR_GAIN_EN_ENABLE, 10);
+
+    // enable acc, set pwr_ctrl.acc_en = 1
+    bmi270RegisterWriteBits(dev, BMI270_REG_PWR_CTRL, BMI270_MASK_PWR_CTRL_ACC_ENABLE, BMI270_VAL_PWR_CTRL_ACC_ENABLE, 10);
+
+    // set GYR_CRT_CONF.crt_running = 0b1
+    bmi270RegisterWriteBits(dev, BMI270_REG_GYR_CRT_CONF, BMI270_MASK_GYR_CRT_CONF_CRT_RUNNING, BMI270_VAL_GYR_CRT_CONF_CRT_RUNNING, 10);
+
+    // set page to 1
+    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_1, 10);
+
+    // set G_TRIG_1.select =1
+    bmi270RegisterWriteBits16(dev, BMI270_REG_FEATURES_1_G_TRIG_1, BMI270_MASK_G_TRIG_1_SELECT, BMI270_VAL_FEATURES_1_G_TRIG_1_SELECT_CRT, 10);
+
+    // set G_TRIG_1.block = 0
+    // bmi270RegisterWriteBits16(dev, BMI270_REG_FEATURES_1_G_TRIG_1, BMI270_MASK_G_TRIG_1_BLOCK, BMI270_VAL_FEATURES_1_G_TRIG_1_BLOCK_UNLOCK, 1);
+
+    // send g_trigger command to CMD reg
+    bmi270RegisterWrite(dev, BMI270_REG_CMD, BMI270_VAL_CMD_G_TRIGGER, 5000);
+
+    // read GYR_CRT_CONF.crt_running and check if it is 0
+    uint8_t bmiCheck = bmi270RegisterRead(dev, BMI270_REG_GYR_CRT_CONF);
+    // if not, wait for 2 seconds and check again max time for 5
+    uint8_t checkCount = 0;
+
+    while ((bmiCheck!=0x00) && (checkCount++ < 5)) {
+        bmiCheck = bmi270RegisterRead(dev, BMI270_REG_GYR_CRT_CONF);
+        delay(1000);
+        if (bmiCheck == 0x00) {
+            break;
+        }
+    }
+
+    delay(100);
+    // set page to 0
+    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_0, 1);
+
+    // read GYR_GAIN_STATUS.g_trig_status
+    uint16_t bmiStatus = bmi270RegisterRead16(dev, BMI270_REG_FEATURES_0_GYR_GAIN_STATUS);
+    if (bmiStatus == 0x0000){
+        delay(10);
+    }
+}
+
 static uint8_t getBmiOsrMode()
 {
     switch(gyroConfig()->gyro_hardware_lpf) {
@@ -281,6 +367,8 @@ static void bmi270Config(gyroDev_t *gyro)
     bmi270EnableSPI(dev);
 
     bmi270UploadConfig(dev);
+
+    bmi270PerformCRT(dev);
 
     // Disable all sensors
     bmi270RegisterWrite(dev, BMI270_REG_PWR_CTRL, BMI270_VAL_PWR_CTRL_DISABLE_ALL, 1);
@@ -328,17 +416,8 @@ static void bmi270Config(gyroDev_t *gyro)
     // Enable the gyro, accelerometer and temperature sensor - disable aux interface
     bmi270RegisterWrite(dev, BMI270_REG_PWR_CTRL, BMI270_VAL_PWR_CTRL, 1);
 
-    // Configure the feature register page to page 1
-    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_1, 1);
-
-    // Enable self offset correction
-    bmi270RegisterWriteBits16(dev, BMI270_REG_FEATURES_1_GEN_SET_1, BMI270_MASK_FEATURES_1_GEN_SET_1, BMI270_VAL_GEN_SET_1, 1);
-
     // Enable IOC
-    bmi270RegisterWriteBits(dev, BMI270_REG_OFFSET_6, BMI270_MASK_OFFSET_6, 0x40, 1);
-
-    // Configure the feature register page to page 0
-    bmi270RegisterWrite(dev, BMI270_REG_FEAT_PAGE, BMI270_VAL_PAGE_0, 1);
+    bmi270EnableIOC(dev);
 
     // Flush the FIFO
     if (fifoMode) {
