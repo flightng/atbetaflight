@@ -15,14 +15,14 @@ This fork differs from Baseflight and Cleanflight in that it focuses on flight p
 ## News
 
 ### Requirements for the submission of new and updated targets
+* 新增 AT32F435VGT7(LQFP 64) AT32F435/7 VMT7(LQFP100) /CGU7 (QFN48) 支持
+* Add support for  AT32F435VGT7(LQFP 64) AT32F435/7 VMT7(LQFP100) /CGU7 (QFN48)
+* 调整bmi270 性能
+* modify bmi270 drivers 
 
-The following new requirements for pull requests adding new targets or modifying existing targets are put in place from now on:
-
-1. No new F3 based targets will be accepted;
-
-2. For any new target that is to be added, only a Unified Target config into https://github.com/betaflight/unified-targets/tree/master/configs/default needs to be submitted. See the [instructions](https://github.com/betaflight/betaflight/blob/master/docs/TargetMaintenance/CreatingAUnifiedTarget.md) for how to create a Unified Target configuration. If there is no Unified Target for the MCU type of the new target (see instructions above), then a 'legacy' format target definition into `src/main/target/` has to be submitted as well;
-
-3. For changes to existing targets, the change needs to be applied to the Unified Target config in https://github.com/betaflight/unified-targets/tree/master/configs/default. If no Unified Target configuration for the target exists, a new Unified Target configuration will have to be created and submitted. If there is no Unified Target for the MCU type of the new target (see instructions above), then an update to the 'legacy' format target definition in `src/main/target/` has to be submitted alongside the update to the Unified Target configuration.
+##Caution & 注意事项
+* betaflight-configutor 需要选中选项-显示所有串口 才能链接 
+* set betaflight-configutor Options -show all serial port ,and connect
 
 
 ## Features
