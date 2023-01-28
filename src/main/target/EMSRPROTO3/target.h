@@ -20,8 +20,8 @@
 
 #pragma once
 
-#define TARGET_BOARD_IDENTIFIER "EMSR-3"
-#define USBD_PRODUCT_STRING     "EMSRAT32F4"
+#define TARGET_BOARD_IDENTIFIER "EMSR"
+#define USBD_PRODUCT_STRING     "EMSR-PROTO-3"
 /**********swd debuger reserved *****************
  *
  * pa13	swdio
