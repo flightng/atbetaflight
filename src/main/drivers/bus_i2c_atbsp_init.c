@@ -78,10 +78,12 @@ const i2cHardware_t i2cHardware[I2CDEV_COUNT] = {
         .sclPins = {
             I2CPINDEF(PB10, GPIO_MUX_4),
             I2CPINDEF(PD12, GPIO_MUX_4),
+	    I2CPINDEF(PH2,  GPIO_MUX_4),
         },
         .sdaPins = {
             I2CPINDEF(PB3, GPIO_MUX_4),
             I2CPINDEF(PB11, GPIO_MUX_4),
+	    I2CPINDEF(PH3,GPIO_MUX_4),
         },
         .rcc = RCC_APB1(I2C2),
         .ev_irq = I2C2_EVT_IRQn,
@@ -97,7 +99,7 @@ const i2cHardware_t i2cHardware[I2CDEV_COUNT] = {
         },
         .sdaPins = {
             I2CPINDEF(PC1, GPIO_MUX_4),
-			I2CPINDEF(PB14, GPIO_MUX_4),
+	    I2CPINDEF(PB14, GPIO_MUX_4),
         },
         .rcc = RCC_APB1(I2C3),
         .ev_irq = I2C3_EVT_IRQn,
