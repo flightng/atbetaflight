@@ -146,6 +146,7 @@ void bot_scsi_reset(void *udev)
   */
 void bot_scsi_datain_handler(void *udev, uint8_t ept_num)
 {
+  UNUSED(ept_num);
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
   switch(pmsc->msc_state)
@@ -175,6 +176,7 @@ void bot_scsi_datain_handler(void *udev, uint8_t ept_num)
   */
 void bot_scsi_dataout_handler(void *udev, uint8_t ept_num)
 {
+  UNUSED(ept_num);
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
   switch(pmsc->msc_state)
@@ -291,6 +293,7 @@ void bot_scsi_send_csw(void *udev, uint8_t status)
   */
 void bot_scsi_sense_code(void *udev, uint8_t sense_key, uint8_t asc)
 {
+  UNUSED(udev);
   sense_data.sense_key = sense_key;
   sense_data.asc = asc;
 }
@@ -349,6 +352,7 @@ void bot_scsi_stall(void *udev)
   */
 usb_sts_type bot_scsi_test_unit(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   usb_sts_type status = USB_OK;
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
@@ -412,6 +416,7 @@ usb_sts_type bot_scsi_inquiry(void *udev, uint8_t lun)
   */
 usb_sts_type bot_scsi_start_stop(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
   pmsc->data_len = 0;
@@ -426,6 +431,7 @@ usb_sts_type bot_scsi_start_stop(void *udev, uint8_t lun)
   */
 usb_sts_type bot_scsi_allow_medium_removal(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
   pmsc->data_len = 0;
@@ -440,6 +446,7 @@ usb_sts_type bot_scsi_allow_medium_removal(void *udev, uint8_t lun)
   */
 usb_sts_type bot_scsi_mode_sense6(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   uint8_t data_len = 8;
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
@@ -460,6 +467,7 @@ usb_sts_type bot_scsi_mode_sense6(void *udev, uint8_t lun)
   */
 usb_sts_type bot_scsi_mode_sense10(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   uint8_t data_len = 8;
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
@@ -542,6 +550,7 @@ usb_sts_type bot_scsi_format_capacity(void *udev, uint8_t lun)
   */
 usb_sts_type bot_scsi_request_sense(void *udev, uint8_t lun)
 {
+  UNUSED(lun);
   uint32_t trans_len = 0x12;
   usbd_core_type *pudev = (usbd_core_type *)udev;
   msc_type *pmsc = (msc_type *)pudev->class_handler->pdata;
