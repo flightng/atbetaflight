@@ -27,16 +27,16 @@
 #include "drivers/timer_def.h"
 
 const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
-    DEF_TIM(TMR1, CH1, PA8, TIM_USE_ANY | TIM_USE_LED, 0, 7, 2),             // PWM1 - OUT1  LEDSTRIP /MCO1
+    DEF_TIM(TMR1, CH1, PA8, TIM_USE_ANY | TIM_USE_LED, 0, 8, 2),             // PWM1 - OUT1  LEDSTRIP /MCO1
 
     DEF_TIM(TMR4, CH1, PB6,  TIM_USE_MOTOR, 0, 0, 0), // motor1 DMA1 CH1
     DEF_TIM(TMR1, CH3, PA10, TIM_USE_MOTOR, 0, 1, 0), // motor2 DMA1 CH2
     DEF_TIM(TMR2, CH4, PA3,  TIM_USE_MOTOR, 0, 2, 1), // motor3 DMA1 CH3
     DEF_TIM(TMR3, CH4, PB1,  TIM_USE_MOTOR, 0, 3, 1), // motor4 DMA1 CH4
 
-    DEF_TIM(TMR4, CH2, PB7,  TIM_USE_MOTOR, 0, 4, 2), // motor5 FIXME
-    DEF_TIM(TMR1, CH2, PA9,  TIM_USE_MOTOR, 0, 5, 2), // motor6 FIXME
-    DEF_TIM(TMR3, CH3, PB0,  TIM_USE_MOTOR, 0, 6, 1), // motor7 FIXME
-    DEF_TIM(TMR2, CH3, PA2,  TIM_USE_MOTOR, 0, 7, 1), // motor8 FIXME
+    DEF_TIM(TMR4, CH2, PB7,  TIM_USE_ANY | TIM_USE_MOTOR, 0, 4, 10), // motor5 FIXME
+    DEF_TIM(TMR1, CH2, PA9,  TIM_USE_ANY | TIM_USE_MOTOR, 0, 5, 10), // motor6 FIXME
+    DEF_TIM(TMR3, CH3, PB0,  TIM_USE_ANY | TIM_USE_MOTOR, 0, 6, 10), // motor7 FIXME
+    DEF_TIM(TMR2, CH3, PA2,  TIM_USE_ANY | TIM_USE_MOTOR, 0, 7, 10), // motor8 FIXME
 
 };
