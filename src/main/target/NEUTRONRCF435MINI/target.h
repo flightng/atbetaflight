@@ -20,8 +20,8 @@
 
 #pragma once
 
-#define TARGET_BOARD_IDENTIFIER "NEUTRONRCF435MINI"
-#define USBD_PRODUCT_STRING     "NERC"
+#define TARGET_BOARD_IDENTIFIER "NERC"
+#define USBD_PRODUCT_STRING     "NEUTRONRCF435MINI"
 /**********swd debuger reserved *****************
  *
  * pa13	swdio
