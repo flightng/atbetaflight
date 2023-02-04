@@ -416,13 +416,7 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     //set tim pulse =0 , need timer channel
 
 #ifdef USE_DSHOT_TELEMETRY
-//    TIM_ICStructInit(&motor->icInitStruct);
-//    motor->icInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI;
-//    motor->icInitStruct.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
-//    motor->icInitStruct.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-//    motor->icInitStruct.TIM_Channel = timerHardware->channel;
-//    motor->icInitStruct.TIM_ICFilter = 2;
-//    tmr_input_default_para_init(&motor->icInitStruct);
+
 	motor->icInitStruct.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
 	motor->icInitStruct.input_polarity_select = TMR_INPUT_BOTH_EDGE;
 	motor->icInitStruct.input_channel_select = (timerHardware->channel-1)*2;//FIXME: BUGS ON N CHANNEL
@@ -457,33 +451,13 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
     if (useBurstDshot) {
         motor->timer->dmaBurstBuffer = &dshotBurstDmaBuffer[timerIndex][0];
 
-//#if defined(STM32F3)
-//        DMAINIT.DMA_MemoryBaseAddr = (uint32_t)motor->timer->dmaBurstBuffer;
-//        DMAINIT.DMA_DIR = DMA_DIR_PeripheralDST;
-//#else
-//        DMAINIT.DMA_Channel = timerHardware->dmaTimUPChannel;
-//        DMAINIT.DMA_Memory0BaseAddr = (uint32_t)motor->timer->dmaBurstBuffer;
-//        DMAINIT.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-//        DMAINIT.DMA_FIFOMode = DMA_FIFOMode_Enable;
-//        DMAINIT.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-//        DMAINIT.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-//        DMAINIT.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-//#endif
-//        DMAINIT.DMA_PeripheralBaseAddr = (uint32_t)&timerHardware->tim->DMAR;
-//        DMAINIT.DMA_BufferSize = (pwmProtocolType == PWM_TYPE_PROSHOT1000) ? PROSHOT_DMA_BUFFER_SIZE : DSHOT_DMA_BUFFER_SIZE; // XXX
-//        DMAINIT.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-//        DMAINIT.DMA_MemoryInc = DMA_MemoryInc_Enable;
-//        DMAINIT.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-//        DMAINIT.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-//        DMAINIT.DMA_Mode = DMA_Mode_Normal;
-//        DMAINIT.DMA_Priority = DMA_Priority_High;
         DMAINIT.memory_base_addr=(uint32_t)motor->timer->dmaBurstBuffer;
         DMAINIT.direction = DMA_DIR_MEMORY_TO_PERIPHERAL;
         DMAINIT.buffer_size=(pwmProtocolType == PWM_TYPE_PROSHOT1000) ? PROSHOT_DMA_BUFFER_SIZE : DSHOT_DMA_BUFFER_SIZE; // XXX
         DMAINIT.peripheral_base_addr=(uint32_t)&timerHardware->tim->dmadt;
         DMAINIT.peripheral_inc_enable=FALSE;
         DMAINIT.memory_inc_enable=TRUE;
-        DMAINIT.peripheral_data_width =DMA_MEMORY_DATA_WIDTH_WORD;
+        DMAINIT.peripheral_data_width =DMA_PERIPHERAL_DATA_WIDTH_WORD;
         DMAINIT.memory_data_width=DMA_MEMORY_DATA_WIDTH_WORD;
         DMAINIT.loop_mode_enable=FALSE;
         DMAINIT.priority=DMA_PRIORITY_HIGH;
@@ -492,17 +466,6 @@ bool pwmDshotMotorHardwareConfig(const timerHardware_t *timerHardware, uint8_t m
 #endif
     {
         motor->dmaBuffer = &dshotDmaBuffer[motorIndex][0];
-
-//        DMAINIT.DMA_MemoryBaseAddr = (uint32_t)motor->dmaBuffer;
-//        DMAINIT.DMA_DIR = DMA_DIR_PeripheralDST;
-//        DMAINIT.DMA_M2M = DMA_M2M_Disable;
-//        DMAINIT.DMA_PeripheralBaseAddr = (uint32_t)timerChCCR(timerHardware);
-//        DMAINIT.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-//        DMAINIT.DMA_MemoryInc = DMA_MemoryInc_Enable;
-//        DMAINIT.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-//        DMAINIT.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-//        DMAINIT.DMA_Mode = DMA_Mode_Normal;
-//        DMAINIT.DMA_Priority = DMA_Priority_High;
 
         DMAINIT.memory_base_addr= (uint32_t) motor->dmaBuffer;
         DMAINIT.direction= DMA_DIR_MEMORY_TO_PERIPHERAL;

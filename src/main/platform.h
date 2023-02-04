@@ -166,6 +166,9 @@
 
 #define MODIFY_REG(REG, CLEARMASK, SETMASK)  WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
 
+#define FunctionalState confirm_state
+#define ENABLE TRUE
+#define DISABLE FALSE
 
 #elif defined(SIMULATOR_BUILD)
 

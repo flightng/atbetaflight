@@ -25,5 +25,3 @@ typedef uint16_t rccPeriphTag_t;
 #else
 typedef uint8_t rccPeriphTag_t;
 #endif
-
-typedef enum {DISABLE = 0, ENABLE = !DISABLE} FunctionalState;

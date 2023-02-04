@@ -21,6 +21,7 @@
   * INCLUDING BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
   *
+  * mod by EMSR(shanggl@wo.cn)
   **************************************************************************
   */
 
@@ -103,11 +104,12 @@
   * @brief  initializes peripherals used by the i2c.
   * @param  none
   * @retval none
+  * not use in betaflight
   */
-__WEAK void i2c_lowlevel_init(i2c_handle_type* hi2c)
-{
-
-}
+//__WEAK void i2c_lowlevel_init(i2c_handle_type* hi2c)
+//{
+//
+//}
 
 /**
   * @brief  i2c peripheral initialization.
