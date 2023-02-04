@@ -411,7 +411,7 @@ static void timerChConfig_UpdateOverflow(timerConfig_t *cfg, const tmr_type *tim
         *chain = NULL;
     }
     // enable or disable IRQ
-    tmr_interrupt_enable((tmr_type *)tim, TMR_OVF_INT, cfg->overflowCallbackActive ? ENABLE : DISABLE);
+    tmr_interrupt_enable((tmr_type *)tim, TMR_OVF_INT, cfg->overflowCallbackActive ? TRUE : FALSE);
 }
 // config edge and overflow callback for channel. Try to avoid per-channel overflowCallback, it is a bit expensive
 void timerChConfigCallbacks(const timerHardware_t *timHw, timerCCHandlerRec_t *edgeCallback, timerOvrHandlerRec_t *overflowCallback)
@@ -422,13 +422,13 @@ void timerChConfigCallbacks(const timerHardware_t *timHw, timerCCHandlerRec_t *e
     }
     uint8_t channelIndex = lookupChannelIndex(timHw->channel);
     if (edgeCallback == NULL)   // disable irq before changing callback to NULL
-    	tmr_interrupt_enable(timHw->tim, TIM_IT_CCx(timHw->channel), DISABLE);
+    	tmr_interrupt_enable(timHw->tim, TIM_IT_CCx(timHw->channel), FALSE);
     // setup callback info
     timerConfig[timerIndex].edgeCallback[channelIndex] = edgeCallback;
     timerConfig[timerIndex].overflowCallback[channelIndex] = overflowCallback;
     // enable channel IRQ
     if (edgeCallback)
-    	tmr_interrupt_enable(timHw->tim, TIM_IT_CCx(timHw->channel), ENABLE);
+    	tmr_interrupt_enable(timHw->tim, TIM_IT_CCx(timHw->channel), TRUE);
 
     timerChConfig_UpdateOverflow(&timerConfig[timerIndex], timHw->tim);
 }
@@ -442,49 +442,6 @@ void timerConfigUpdateCallback(const tmr_type *tim, timerOvrHandlerRec_t *update
     timerConfig[timerIndex].updateCallback = updateCallback;
     timerChConfig_UpdateOverflow(&timerConfig[timerIndex], tim);
 }
-//FIXME: 20220331 HERE!
-//  双定时器的用法应该用不上
-// configure callbacks for pair of channels (1+2 or 3+4).
-// Hi(2,4) and Lo(1,3) callbacks are specified, it is not important which timHw channel is used.
-// This is intended for dual capture mode (each channel handles one transition)
-//void timerChConfigCallbacksDual(const timerHardware_t *timHw, timerCCHandlerRec_t *edgeCallbackLo, timerCCHandlerRec_t *edgeCallbackHi, timerOvrHandlerRec_t *overflowCallback)
-//{
-//    uint8_t timerIndex = lookupTimerIndex(timHw->tim);
-//    if (timerIndex >= USED_TIMER_COUNT) {
-//        return;
-//    }
-//    uint16_t chLo = timHw->channel & ~TIM_Channel_2;   // lower channel
-//    uint16_t chHi = timHw->channel | TIM_Channel_2;    // upper channel
-//    uint8_t channelIndex = lookupChannelIndex(chLo);   // get index of lower channel
-//
-//    if (edgeCallbackLo == NULL)   // disable irq before changing setting callback to NULL
-//        TIM_ITConfig(timHw->tim, TIM_IT_CCx(chLo), DISABLE);
-//    if (edgeCallbackHi == NULL)   // disable irq before changing setting callback to NULL
-//        TIM_ITConfig(timHw->tim, TIM_IT_CCx(chHi), DISABLE);
-//
-//    // setup callback info
-//    timerConfig[timerIndex].edgeCallback[channelIndex] = edgeCallbackLo;
-//    timerConfig[timerIndex].edgeCallback[channelIndex + 1] = edgeCallbackHi;
-//    timerConfig[timerIndex].overflowCallback[channelIndex] = overflowCallback;
-//    timerConfig[timerIndex].overflowCallback[channelIndex + 1] = NULL;
-//
-//    // enable channel IRQs
-//    if (edgeCallbackLo) {
-//        TIM_ClearFlag(timHw->tim, TIM_IT_CCx(chLo));
-//        TIM_ITConfig(timHw->tim, TIM_IT_CCx(chLo), ENABLE);
-//    }
-//    if (edgeCallbackHi) {
-//        TIM_ClearFlag(timHw->tim, TIM_IT_CCx(chHi));
-//        TIM_ITConfig(timHw->tim, TIM_IT_CCx(chHi), ENABLE);
-//    }
-//
-//    timerChConfig_UpdateOverflow(&timerConfig[timerIndex], timHw->tim);
-//}
-//
-//// enable/disable IRQ for low channel in dual configuration
-//void timerChITConfigDualLo(const timerHardware_t *timHw, FunctionalState newState) {
-//    TIM_ITConfig(timHw->tim, TIM_IT_CCx(timHw->channel&~TIM_Channel_2), newState);
-//}
 
 // enable or disable IRQ
 void timerChITConfig(const timerHardware_t *timHw, FunctionalState newState)
@@ -540,17 +497,6 @@ void timerChConfigIC(const timerHardware_t *timHw, bool polarityRising, unsigned
 }
 
 
-/* 获取输入通道极性 暂时没用*/
-//void timerChICPolarity(const timerHardware_t *timHw, bool polarityRising)
-//{
-//    timCCER_t tmpccer = timHw->tim->CCER;
-//    tmpccer &= ~(TIM_CCER_CC1P << timHw->channel);
-//    tmpccer |= polarityRising ? (TIM_ICPolarity_Rising << timHw->channel) : (TIM_ICPolarity_Falling << timHw->channel);
-//    timHw->tim->CCER = tmpccer;
-//}
-
-
-
 volatile timCCR_t* timerChCCR(const timerHardware_t *timHw)
 {
 
@@ -567,41 +513,6 @@ volatile timCCR_t* timerChCCR(const timerHardware_t *timHw)
 
 }
 
-//void timerChConfigOC(const timerHardware_t* timHw, bool outEnable, bool stateHigh)
-//{
-//    TIM_OCInitTypeDef  TIM_OCInitStructure;
-//
-//    TIM_OCStructInit(&TIM_OCInitStructure);
-//    if (outEnable) {
-//        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Inactive;
-//        TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-//        if (timHw->output & TIMER_OUTPUT_INVERTED) {
-//            stateHigh = !stateHigh;
-//        }
-//        TIM_OCInitStructure.TIM_OCPolarity = stateHigh ? TIM_OCPolarity_High : TIM_OCPolarity_Low;
-//    } else {
-//        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
-//    }
-//
-//    switch (timHw->channel) {
-//    case TIM_Channel_1:
-//        TIM_OC1Init(timHw->tim, &TIM_OCInitStructure);
-//        TIM_OC1PreloadConfig(timHw->tim, TIM_OCPreload_Disable);
-//        break;
-//    case TIM_Channel_2:
-//        TIM_OC2Init(timHw->tim, &TIM_OCInitStructure);
-//        TIM_OC2PreloadConfig(timHw->tim, TIM_OCPreload_Disable);
-//        break;
-//    case TIM_Channel_3:
-//        TIM_OC3Init(timHw->tim, &TIM_OCInitStructure);
-//        TIM_OC3PreloadConfig(timHw->tim, TIM_OCPreload_Disable);
-//        break;
-//    case TIM_Channel_4:
-//        TIM_OC4Init(timHw->tim, &TIM_OCInitStructure);
-//        TIM_OC4PreloadConfig(timHw->tim, TIM_OCPreload_Disable);
-//        break;
-//    }
-//}
 
 static void timCCxHandler(tmr_type *tim, timerConfig_t *timerConfig)
 {

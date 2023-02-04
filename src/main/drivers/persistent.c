@@ -33,13 +33,13 @@
 
 uint32_t persistentObjectRead(persistentObjectId_e id)
 {
-    uint32_t value = ertc_bpr_data_read(id);
+    uint32_t value = ertc_bpr_data_read((ertc_dt_type)id);
     return value;
 }
 
 void persistentObjectWrite(persistentObjectId_e id, uint32_t value)
 {
-    ertc_bpr_data_write(id,value);
+    ertc_bpr_data_write((ertc_dt_type)id,value);
 }
 
 void persistentObjectRTCEnable(void)

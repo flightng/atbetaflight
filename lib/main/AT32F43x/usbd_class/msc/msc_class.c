@@ -188,6 +188,7 @@ static usb_sts_type class_ept0_tx_handler(void *udev)
   usb_sts_type status = USB_OK;
   
   /* ...user code... */
+  UNUSED(udev);
   
   return status;
 }
@@ -203,6 +204,7 @@ static usb_sts_type class_ept0_rx_handler(void *udev)
   usbd_core_type *pudev = (usbd_core_type *)udev;
   uint32_t recv_len = usbd_get_recv_len(pudev, 0);
   /* ...user code... */
+  UNUSED(recv_len);
   return status;
 }
 
@@ -245,6 +247,7 @@ static usb_sts_type class_sof_handler(void *udev)
   usb_sts_type status = USB_OK;
   
   /* ...user code... */
+  UNUSED(udev);
   
   return status;
 }
@@ -257,6 +260,7 @@ static usb_sts_type class_sof_handler(void *udev)
   */
 static usb_sts_type class_event_handler(void *udev, usbd_event_type event)
 {
+  UNUSED(udev);
   usb_sts_type status = USB_OK;
   switch(event)
   {

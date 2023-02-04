@@ -84,14 +84,6 @@ typedef struct
 }cdc_struct_type;
 
 
-/**
-  * @}
-  */
-
-static void (*ctrlLineStateCb)(void *context, uint16_t ctrlLineState);
-static void *ctrlLineStateCbContext;
-static void (*baudRateCb)(void *context, uint32_t baud);
-static void *baudRateCbContext;
 
 /** @defgroup USB_cdc_class_exported_functions
   * @{
