@@ -53,6 +53,7 @@
 #include "drivers/accgyro/accgyro_spi_mpu6000.h"
 #include "drivers/accgyro/accgyro_spi_mpu6500.h"
 #include "drivers/accgyro/accgyro_spi_mpu9250.h"
+#include "drivers/accgyro/accgyro_spi_sh3001.h"
 
 #ifdef USE_ACC_ADXL345
 #include "drivers/accgyro_legacy/accgyro_adxl345.h"
@@ -330,6 +331,15 @@ retry:
     case ACC_LSM6DSO:
         if (lsm6dsoSpiAccDetect(dev)) {
             accHardware = ACC_LSM6DSO;
+            break;
+        }
+        FALLTHROUGH;
+#endif
+
+#ifdef USE_ACCGYRO_SH3001
+    case ACC_SH3001:
+        if (sh3001SpiAccDetect(dev)) {
+            accHardware = ACC_SH3001;
             break;
         }
         FALLTHROUGH;
