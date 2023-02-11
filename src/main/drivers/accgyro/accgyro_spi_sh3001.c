@@ -42,7 +42,7 @@
 extern compCoef_t sh3001CompCoef; 
 
 // Need to see at least this many interrupts during initialisation to confirm EXTI connectivity
-#define GYRO_EXTI_DETECT_THRESHOLD 10 // since the no-latched clean time is too long
+#define SH3001_EXTI_DETECT_THRESHOLD 0 // since the no-latched clean time is too long
 
 #ifdef USE_GYRO_EXTI
 // Called in ISR context
@@ -88,7 +88,7 @@ void sh3001ExtiHandler(extiCallbackRec_t* cb)
 bool sh3001AccRead(accDev_t *acc)
 {
     switch (acc->gyro->gyroModeSPI) {
-    case GYRO_EXTI_INIT:
+
     case GYRO_EXTI_INT:
     case GYRO_EXTI_NO_INT:
     {
@@ -148,6 +148,7 @@ bool sh3001AccRead(accDev_t *acc)
         break;
     }
 
+    case GYRO_EXTI_INIT:
     default:
         break;
     }
@@ -155,27 +156,25 @@ bool sh3001AccRead(accDev_t *acc)
     return true;
 }
 
-uint8_t initCount = 0;
+static uint8_t sh3001InitCont = 0;
 bool sh3001GyroRead(gyroDev_t *gyro)
 {
     int16_t *gyroData = (int16_t *)gyro->dev.rxBuf;
     switch (gyro->gyroModeSPI) {
     case GYRO_EXTI_INIT:
     {
-        initCount++;
-        if (initCount > 200) {
+        // 0 R 1L 1H 2L 2H 3L 3H AL AH BL BH CL CH TL TH PP
+        //     1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+        // 0   1     2     3     4     5     6     7     8
+        sh3001InitCont++;
+        if (sh3001InitCont > 200 ){
+#ifdef USE_GYRO_EXTI
             // Initialise the tx buffer to all 0x00
             memset(gyro->dev.txBuf, 0x00, 18);
-            // 0 R 1L 1H 2L 2H 3L 3H AL AH BL BH CL CH TL TH EL EH
-            //     1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
-            // 0   1     2     3     4     5     6     7     8
-#ifdef USE_GYRO_EXTI
-            // Check that minimum number of interrupts have been detected
-
             // We need some offset from the gyro interrupts to ensure sampling after the interrupt
             gyro->gyroDmaMaxDuration = 5;
-            // Using DMA for gyro access upsets the scheduler on the F4
-            if (gyro->detectedEXTI > GYRO_EXTI_DETECT_THRESHOLD) {
+            // Check that minimum number of interrupts have been detected
+            if (gyro->detectedEXTI > SH3001_EXTI_DETECT_THRESHOLD) {
                 if (spiUseDMA(&gyro->dev)) {
                     gyro->dev.callbackArg = (uint32_t)gyro;
                     gyro->dev.txBuf[1] = SH3001_REG_ACC_X_DATA_L | 0x80;
@@ -185,6 +184,9 @@ bool sh3001GyroRead(gyroDev_t *gyro)
                     gyro->segments[0].u.buffers.rxData = &gyro->dev.rxBuf[1];
                     gyro->segments[0].negateCS = true;
                     gyro->gyroModeSPI = GYRO_EXTI_INT_DMA;
+                    // clear the data ready flag inside of the sensor
+                    spiSequence(&gyro->dev, gyro->segments);
+                    spiWait(&gyro->dev);
                 } else {
                     // Interrupts are present, but no DMA
                     gyro->gyroModeSPI = GYRO_EXTI_INT;
@@ -203,11 +205,11 @@ bool sh3001GyroRead(gyroDev_t *gyro)
     case GYRO_EXTI_NO_INT:
     {
         gyro->dev.txBuf[1] = SH3001_REG_GYRO_X_DATA_L | 0x80;
-        // 0 R 1L 1H 2L 2H 3L 3H TL TH EL EH
-        //   1 2  3  4  5  6  7  8  9  10
+        // 0 R 1L 1H 2L 2H 3L 3H TL TH PP
+        //   1 2  3  4  5  6  7  8  9  10   txBuf & rxBuf
         // 0   1     2     3     4     5
         busSegment_t segments[] = {
-                {.u.buffers = {NULL, NULL}, 11, true, NULL},
+                {.u.buffers = {NULL, NULL}, 10, true, NULL},
                 {.u.link = {NULL, NULL}, 0, true, NULL},
         };
         segments[0].u.buffers.txData = &gyro->dev.txBuf[1];
@@ -249,7 +251,7 @@ bool sh3001GyroRead(gyroDev_t *gyro)
         // If read was triggered in interrupt don't bother waiting. The worst that could happen is that we pick
         // up an old value.
 
-        uint8_t paramP = gyro->dev.rxBuf[16] & 0x1F;
+        uint8_t paramP = gyro->dev.rxBuf[15] & 0x1F;
 
         int32_t gyroTempX = gyroData[4] - (paramP - sh3001CompCoef.paramP0) * sh3001CompCoef.jX * sh3001CompCoef.xMulti;
         int32_t gyroTempY = gyroData[5] - (paramP - sh3001CompCoef.paramP0) * sh3001CompCoef.jY * sh3001CompCoef.yMulti;
