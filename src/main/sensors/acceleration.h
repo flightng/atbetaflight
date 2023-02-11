@@ -49,6 +49,7 @@ typedef enum {
     ACC_LSM6DS3,
     ACC_LSM6DSL,
     ACC_LSM6DSO,
+    ACC_SH3001,
     ACC_FAKE
 } accelerationSensor_e;
 
