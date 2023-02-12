@@ -94,6 +94,11 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
             accSampleRateHz = 833;
             break;
 #endif
+        case QMI_8658_SPI:
+            gyro->gyroRateKHz = GYRO_RATE_7174_Hz;
+            gyroSampleRateHz = 7174;
+            accSampleRateHz = 896;
+            break;
         default:
             gyro->gyroRateKHz = GYRO_RATE_8_kHz;
             gyroSampleRateHz = 8000;
