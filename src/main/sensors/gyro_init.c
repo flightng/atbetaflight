@@ -52,6 +52,7 @@
 #include "drivers/accgyro/accgyro_spi_mpu6000.h"
 #include "drivers/accgyro/accgyro_spi_mpu6500.h"
 #include "drivers/accgyro/accgyro_spi_mpu9250.h"
+#include "drivers/accgyro/accgyro_spi_qmi8658.h"
 #include "drivers/accgyro/accgyro_spi_sh3001.h"
 
 #ifdef USE_GYRO_L3GD20
@@ -340,6 +341,7 @@ void gyroInitSensor(gyroSensor_t *gyroSensor, const gyroDeviceConfig_t *config)
     case GYRO_LSM6DS3:
     case GYRO_LSM6DSL:
     case GYRO_LSM6DSO:
+    case GYRO_QMI8658:
     case GYRO_SH3001:
         gyroSensor->gyroDev.gyroHasOverflowProtection = true;
         break;
@@ -536,6 +538,15 @@ STATIC_UNIT_TESTED gyroHardware_e gyroDetect(gyroDev_t *dev)
         FALLTHROUGH;
 #endif
 
+#ifdef USE_ACCGYRO_QMI8658
+    case GYRO_QMI8658:
+        if (qmi8658SpiGyroDetect(dev)) {
+            gyroHardware = GYRO_QMI8658;
+            break;
+        }
+        FALLTHROUGH;
+#endif
+
 #ifdef USE_ACCGYRO_SH3001
     case GYRO_SH3001:
         if (sh3001SpiGyroDetect(dev)) {
@@ -571,7 +582,8 @@ static bool gyroDetectSensor(gyroSensor_t *gyroSensor, const gyroDeviceConfig_t 
 #if defined(USE_GYRO_MPU6050) || defined(USE_GYRO_MPU3050) || defined(USE_GYRO_MPU6500) || defined(USE_GYRO_SPI_MPU6500) || defined(USE_GYRO_SPI_MPU6000) \
  || defined(USE_ACC_MPU6050) || defined(USE_GYRO_SPI_MPU9250) || defined(USE_GYRO_SPI_ICM20601) || defined(USE_GYRO_SPI_ICM20649) \
  || defined(USE_GYRO_SPI_ICM20689) || defined(USE_GYRO_L3GD20) || defined(USE_ACCGYRO_BMI160) || defined(USE_ACCGYRO_BMI270) \
- || defined(USE_ACCGYRO_LSM6DS3) || defined(USE_ACCGYRO_LSM6DSL) || defined(USE_ACCGYRO_LSM6DSO) || defined(USE_ACCGYRO_SH3001) || defined(USE_GYRO_SPI_ICM42605) || defined(USE_GYRO_SPI_ICM42688P)
+ || defined(USE_ACCGYRO_LSM6DS3) || defined(USE_ACCGYRO_LSM6DSL) || defined(USE_ACCGYRO_LSM6DSO) || defined(USE_ACCGYRO_QMI8658) \
+ || defined(USE_ACCGYRO_SH3001) || defined(USE_GYRO_SPI_ICM42605) || defined(USE_GYRO_SPI_ICM42688P)
 
     bool gyroFound = mpuDetect(&gyroSensor->gyroDev, config);
 
@@ -597,7 +609,7 @@ static void gyroPreInitSensor(const gyroDeviceConfig_t *config)
 #if defined(USE_GYRO_MPU6050) || defined(USE_GYRO_MPU3050) || defined(USE_GYRO_MPU6500) || defined(USE_GYRO_SPI_MPU6500) || defined(USE_GYRO_SPI_MPU6000) \
  || defined(USE_ACC_MPU6050) || defined(USE_GYRO_SPI_MPU9250) || defined(USE_GYRO_SPI_ICM20601) || defined(USE_GYRO_SPI_ICM20649) || defined(USE_GYRO_SPI_ICM20689) \
  || defined(USE_ACCGYRO_BMI160) || defined(USE_ACCGYRO_BMI270) || defined(USE_ACCGRYO_LSM6DS3) || defined(USE_ACCGRYO_LSM6DSL) ||defined(USE_ACCGRYO_LSM6DSO) \
- || defined(USE_ACCGYRO_SH3001)
+ || defined(USE_ACCGYRO_QMI8658) || defined(USE_ACCGYRO_SH3001)
     mpuPreInit(config);
 #else
     UNUSED(config);
