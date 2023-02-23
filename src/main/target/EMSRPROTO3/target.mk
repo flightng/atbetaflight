@@ -21,7 +21,6 @@ TARGET_SRC = \
             drivers/accgyro/accgyro_spi_sh3001_init.c \
             drivers/accgyro/accgyro_spi_sh3001.c \
             drivers/max7456.c \
-            drivers/max7456.c \
             drivers/vtx_rtc6705.c \
             drivers/vtx_rtc6705_soft_spi.c \
             drivers/rx/expresslrs_driver_atbsp.c \
