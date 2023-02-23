@@ -234,6 +234,18 @@ static void bmi270RegisterWriteBits16(const extDevice_t *dev, bmi270Register_e r
     bmi270RegisterWrite16(dev, registerID, newValue, delayMs);
 }
 
+static int8_t bmi270ProcessGyroCas(uint8_t raw)
+{
+    int8_t result = 0;
+    raw = raw & BMI270_GYRO_CAS_MASK;
+    if ((raw & BMI270_GYRO_CAS_SIGN_BIT_MASK) == 0) {
+        result = (int8_t)(raw);
+    } else {
+        result = (int8_t)(raw - 128);
+    }
+    return result;
+}
+
 // Toggle the CS to switch the device into SPI mode.
 // Device switches initializes as I2C and switches to SPI on a low to high CS transition
 static void bmi270EnableSPI(const extDevice_t *dev)
@@ -347,6 +359,7 @@ static uint8_t getBmiOsrMode()
     return 0;
 }
 
+int8_t cas = 0;
 static void bmi270Config(gyroDev_t *gyro)
 {
     extDevice_t *dev = &gyro->dev;
@@ -423,6 +436,10 @@ static void bmi270Config(gyroDev_t *gyro)
     if (fifoMode) {
         bmi270RegisterWrite(dev, BMI270_REG_CMD, BMI270_VAL_CMD_FIFOFLUSH, 1);
     }
+    // Read the CAS.zx factor
+    uint8_t casRaw = bmi270RegisterRead(dev, BMI270_REG_FEATURES_0_GYR_CAS);
+
+    cas = bmi270ProcessGyroCas(casRaw);
 }
 
 extiCallbackRec_t bmi270IntCallbackRec;
@@ -434,13 +451,6 @@ extiCallbackRec_t bmi270IntCallbackRec;
 // Called in ISR context
 // Gyro read has just completed, next is CAS read
 busStatus_e bmi270Intcallback(uint32_t arg)
-{
-    UNUSED(arg);
-    return BUS_READY;
-}
-
-// CAS read has just completed
-busStatus_e bmi270IntCAScallback(uint32_t arg)
 {
     gyroDev_t *gyro = (gyroDev_t *)arg;
     int32_t gyroDmaDuration = cmpTimeCycles(getCycleCounter(), gyro->gyroLastEXTI);
@@ -537,36 +547,6 @@ static bool bmi270AccRead(accDev_t *acc)
     return true;
 }
 
-static int8_t bmi270ProcessGyroCas(uint8_t raw)
-{
-    int8_t result = 0;
-    raw = raw & BMI270_GYRO_CAS_MASK;
-    if ((raw & BMI270_GYRO_CAS_SIGN_BIT_MASK) == 0) {
-        result = (int8_t)(raw);
-    } else {
-        result = (int8_t)(raw - 128);
-    }
-    return result;
-}
-
-static uint8_t bmi270ReadGyroCas(gyroDev_t *gyro)
-{
-    // GYRO_CAS rading
-    uint8_t casTxBuf[4] = {BMI270_REG_FEATURES_0_GYR_CAS | 0x80, 0, 0, 0};
-    uint8_t casRxBuf[4] = {0, 0, 0, 0};
-    busSegment_t segmentsCas[] = {
-            {.u.buffers = {casTxBuf, casRxBuf}, 4, true, NULL},
-            {.u.link = {NULL, NULL}, 0, true, NULL},
-    };
-
-    spiSequence(&gyro->dev, &segmentsCas[0]);
-    // Wait for completion
-    spiWait(&gyro->dev);
-
-    uint8_t gyroCasRaw = segmentsCas[0].u.buffers.rxData[2];
-    return bmi270ProcessGyroCas(gyroCasRaw);
-}
-
 static bool bmi270GyroReadRegister(gyroDev_t *gyro)
 {
     int16_t *gyroData = (int16_t *)gyro->dev.rxBuf;
@@ -574,7 +554,7 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
     case GYRO_EXTI_INIT:
     {
         // Initialise the tx buffer to all 0x00
-        memset(gyro->dev.txBuf, 0x00, 18);
+        memset(gyro->dev.txBuf, 0x00, 14);
 #ifdef USE_GYRO_EXTI
         // Check that minimum number of interrupts have been detected
 
@@ -591,13 +571,6 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
                 gyro->segments[0].u.buffers.txData = gyro->dev.txBuf;
                 gyro->segments[0].u.buffers.rxData = gyro->dev.rxBuf;
                 gyro->segments[0].negateCS = true;
-                // second segment is for gyro CAS factor
-                gyro->dev.txBuf[14] = BMI270_REG_FEATURES_0_GYR_CAS | 0x80;
-                gyro->segments[1].len = 4;
-                gyro->segments[1].callback = bmi270IntCAScallback;
-                gyro->segments[1].u.buffers.txData = &gyro->dev.txBuf[14];
-                gyro->segments[1].u.buffers.rxData = &gyro->dev.rxBuf[14];
-                gyro->segments[1].negateCS = true;
                 gyro->gyroModeSPI = GYRO_EXTI_INT_DMA;
             } else {
                 // Interrupts are present, but no DMA
@@ -628,8 +601,6 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
         // Wait for completion
         spiWait(&gyro->dev);
 
-        int8_t cas = bmi270ReadGyroCas(gyro);
-
         // only x axis need overflow check
         int32_t tempx = gyroData[1] - (int16_t)(cas * (int16_t)(gyroData[3]) / 512);
         if (tempx > 32767) {
@@ -642,18 +613,11 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
         gyro->gyroADCRaw[Y] = gyroData[2];
         gyro->gyroADCRaw[Z] = gyroData[3];
 
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 0, lrintf(gyroData[1]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 1, lrintf(gyro->gyroADCRaw[X]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 2, lrintf(gyroData[3]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 3, lrintf((int16_t)(cas * (int16_t)(gyroData[3]) / 512)));
-
         break;
     }
 
     case GYRO_EXTI_INT_DMA:
     {
-        int8_t cas = bmi270ProcessGyroCas((uint8_t)(gyroData[8]));
-        // only x axis need overflow check
         int32_t tempx = gyroData[4] - (int16_t)(cas * (int16_t)(gyroData[6]) / 512);
         if (tempx > 32767) {
             gyro->gyroADCRaw[X] = 32767;
@@ -665,10 +629,6 @@ static bool bmi270GyroReadRegister(gyroDev_t *gyro)
         gyro->gyroADCRaw[Y] = gyroData[5];
         gyro->gyroADCRaw[Z] = gyroData[6];
 
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 0, lrintf(gyroData[4]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 1, lrintf(gyroData[6]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 2, lrintf(gyro->gyroADCRaw[X]));
-        // DEBUG_SET(DEBUG_BMI270_GYRO, 3, lrintf((int16_t)cas));
         break;
     }
 
