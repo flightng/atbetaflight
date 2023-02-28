@@ -13,6 +13,8 @@ TARGET_SRC = \
             drivers/compass/compass_qmc5883l.c\
             $(ROOT)/lib/main/BoschSensortec/BMI270-Sensor-API/bmi270.c \
             drivers/accgyro/accgyro_spi_bmi270.c\
+            drivers/accgyro/accgyro_spi_asm330lhh_init.c \
+            drivers/accgyro/accgyro_spi_asm330lhh.c \
             drivers/accgyro/accgyro_spi_lsm6dsl_init.c \
             drivers/accgyro/accgyro_spi_lsm6dsl.c \
             drivers/accgyro/accgyro_spi_lsm6dso_init.c \
