@@ -174,8 +174,8 @@ static void asm330lhhConfig(gyroDev_t *gyro)
     // disable I2C interface; set gyro LPF1 cutoff according to gyro_hardware_lpf setting
     asm330lhhWriteRegisterBits(dev, ASM330LHH_REG_CTRL6_C, ASM330LHH_MASK_CTRL6_C, (ASM330LHH_VAL_CTRL6_C_XL_HM_MODE | getAsmDlpfBandwidth()), 1);
 
-    // Configure control register 7
-    asm330lhhWriteRegisterBits(dev, ASM330LHH_REG_CTRL7_G, ASM330LHH_MASK_CTRL7_G, (ASM330LHH_VAL_CTRL7_G_HP_EN_G | ASM330LHH_VAL_CTRL7_G_HPM_G_16), 1);
+    // // Configure control register 7
+    // asm330lhhWriteRegisterBits(dev, ASM330LHH_REG_CTRL7_G, ASM330LHH_MASK_CTRL7_G, (ASM330LHH_VAL_CTRL7_G_HP_EN_G | ASM330LHH_VAL_CTRL7_G_HPM_G_16), 1);
 
     // Configure control register 9
     // Enables the proper device configuration
