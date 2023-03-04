@@ -47,6 +47,7 @@
 #include "drivers/accgyro/accgyro_spi_icm20649.h"
 #include "drivers/accgyro/accgyro_spi_icm20689.h"
 #include "drivers/accgyro/accgyro_spi_icm426xx.h"
+#include "drivers/accgyro/accgyro_spi_asm330lhh.h"
 #include "drivers/accgyro/accgyro_spi_lsm6ds3.h"
 #include "drivers/accgyro/accgyro_spi_lsm6dsl.h"
 #include "drivers/accgyro/accgyro_spi_lsm6dso.h"
@@ -305,6 +306,15 @@ retry:
     case ACC_BMI270:
         if (bmi270SpiAccDetect(dev)) {
             accHardware = ACC_BMI270;
+            break;
+        }
+        FALLTHROUGH;
+#endif
+
+#ifdef USE_ACCGYRO_ASM330LHH
+    case ACC_ASM330LHH:
+        if (asm330lhhSpiAccDetect(dev)) {
+            accHardware = ACC_ASM330LHH;
             break;
         }
         FALLTHROUGH;

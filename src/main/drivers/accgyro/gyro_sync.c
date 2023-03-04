@@ -77,6 +77,11 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
             gyroSampleRateHz = 9000;
             accSampleRateHz = 1125;
             break;
+        case ASM330LHH_SPI:
+            gyro->gyroRateKHz = GYRO_RATE_6664_Hz;
+            gyroSampleRateHz = 6664;
+            accSampleRateHz = 833;
+            break;
         case LSM6DS3_SPI:
             gyro->gyroRateKHz = GYRO_RATE_1667_Hz;
             gyroSampleRateHz = 1667;
