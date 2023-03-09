@@ -175,7 +175,7 @@ static void lsm6dsoConfig(gyroDev_t *gyro)
     lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL6_C, LSM6DSO_MASK_CTRL6_C, (LSM6DSO_VAL_CTRL6_C_XL_HM_MODE | getLsmDlpfBandwidth()), 1);
 
     // Configure control register 7
-    lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL7_G, LSM6DSO_MASK_CTRL7_G, (LSM6DSO_VAL_CTRL7_G_HP_EN_G | LSM6DSO_VAL_CTRL7_G_HPM_G_16), 1);
+    // lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL7_G, LSM6DSO_MASK_CTRL7_G, (LSM6DSO_VAL_CTRL7_G_HP_EN_G | LSM6DSO_VAL_CTRL7_G_HPM_G_16), 1);
 
     // Configure control register 9
     // disable I3C interface

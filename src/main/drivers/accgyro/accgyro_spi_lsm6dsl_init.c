@@ -173,7 +173,7 @@ static void lsm6dslConfig(gyroDev_t *gyro)
     lsm6dslWriteRegisterBits(dev, LSM6DSL_REG_CTRL6_C, LSM6DSL_MASK_CTRL6_C, (LSM6DSL_VAL_CTRL6_C_XL_HM_MODE | getLsmDlpfBandwidth()), 1);
 
     // Configure control register 7
-    lsm6dslWriteRegisterBits(dev, LSM6DSL_REG_CTRL7_G, LSM6DSL_MASK_CTRL7_G, (LSM6DSL_VAL_CTRL7_G_HP_EN_G | LSM6DSL_VAL_CTRL7_G_HPM_G_16), 1);
+    // lsm6dslWriteRegisterBits(dev, LSM6DSL_REG_CTRL7_G, LSM6DSL_MASK_CTRL7_G, (LSM6DSL_VAL_CTRL7_G_HP_EN_G | LSM6DSL_VAL_CTRL7_G_HPM_G_16), 1);
 
 }
 
