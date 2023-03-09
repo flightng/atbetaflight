@@ -376,6 +376,7 @@ SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             drivers/accgyro/accgyro_spi_mpu9250.c \
             drivers/accgyro/accgyro_spi_icm20689.c \
             drivers/accgyro/accgyro_spi_icm426xx.c \
+            drivers/accgyro/accgyro_spi_bmi270_init.c \
             drivers/accgyro/accgyro_spi_asm330lhh_init.c \
             drivers/accgyro/accgyro_spi_lsm6ds3_init.c \
             drivers/accgyro/accgyro_spi_lsm6dsl_init.c \
