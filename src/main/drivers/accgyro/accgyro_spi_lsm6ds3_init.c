@@ -153,7 +153,7 @@ static void lsm6ds3Config(gyroDev_t *gyro)
     lsm6ds3WriteRegisterBits(dev, LSM6DS3_REG_CTRL6_C, LSM6DS3_MASK_CTRL6_C, LSM6DS3_VAL_CTRL6_C_XL_HM_MODE, 1);
 
     // Configure control register 7
-    lsm6ds3WriteRegisterBits(dev, LSM6DS3_REG_CTRL7_G, LSM6DS3_MASK_CTRL7_G, (LSM6DS3_VAL_CTRL7_G_HP_EN_G | LSM6DS3_VAL_CTRL7_G_HPM_G_32), 1);
+    // lsm6ds3WriteRegisterBits(dev, LSM6DS3_REG_CTRL7_G, LSM6DS3_MASK_CTRL7_G, (LSM6DS3_VAL_CTRL7_G_HP_EN_G | LSM6DS3_VAL_CTRL7_G_HPM_G_32), 1);
 
 }
 
