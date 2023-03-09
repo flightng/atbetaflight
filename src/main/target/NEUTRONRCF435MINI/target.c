@@ -27,12 +27,12 @@
 #include "drivers/timer_def.h"
 
 const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
-    DEF_TIM(TMR1, CH1, PA8, TIM_USE_ANY | TIM_USE_LED, 0, 7, 2),             // PWM1 - OUT1  LEDSTRIP /MCO1
+    DEF_TIM(TMR1, CH1, PA8, TIM_USE_ANY | TIM_USE_LED, 0, 7, 1),             // PWM1 - OUT1  LEDSTRIP /MCO1
 
     DEF_TIM(TMR4, CH1, PB6,  TIM_USE_MOTOR, 0, 0, 0), // motor1 DMA1 CH1
-    DEF_TIM(TMR1, CH3, PA10, TIM_USE_MOTOR, 0, 1, 0), // motor2 DMA1 CH2
-    DEF_TIM(TMR2, CH4, PA3,  TIM_USE_MOTOR, 0, 2, 1), // motor3 DMA1 CH3
-    DEF_TIM(TMR3, CH4, PB1,  TIM_USE_MOTOR, 0, 3, 1), // motor4 DMA1 CH4
+    DEF_TIM(TMR4, CH2, PB7,  TIM_USE_MOTOR, 0, 1, 1), // motor2 DMA1 CH2
+    DEF_TIM(TMR2, CH4, PA3,  TIM_USE_MOTOR, 0, 2, 2), // motor3 DMA1 CH3
+    DEF_TIM(TMR3, CH4, PB1,  TIM_USE_MOTOR, 0, 3, 3), // motor4 DMA1 CH4
 
 
 };
