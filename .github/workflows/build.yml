@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        targets: [ EMSRPROTO1, EMSRPROTO2, EMSRPROTO3, NEUTRONRCF435MINI, NEUTRONRCF435SE ]
+        targets: [ EMSRPROTO1, EMSRPROTO2, EMSRPROTO3, EMSRPROTO4, NEUTRONRCF435MINI, NEUTRONRCF435SE ]
     steps:
       - name: Code Checkout
         uses: actions/checkout@v2
