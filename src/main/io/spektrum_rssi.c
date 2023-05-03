@@ -19,7 +19,7 @@
  */
 
 #include "platform.h"
-#ifdef USE_SERIAL_RX
+#ifdef USE_SERIALRX
 #if defined(USE_SPEKTRUM_REAL_RSSI) || defined(USE_SPEKTRUM_FAKE_RSSI)
 
 #include "config/feature.h"
