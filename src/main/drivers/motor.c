@@ -60,16 +60,52 @@ void motorWriteAll(float *values)
 {
 #ifdef USE_PWM_OUTPUT
     if (motorDevice->enabled) {
+#ifdef USE_DSHOT_BITBANG
+        if (isDshotBitbangActive(&motorConfig()->dev)) {
+            // Initialise the output buffers
+            if (motorDevice->vTable.updateInit) {
+                motorDevice->vTable.updateInit();
+            }
+
+            // Update the motor data
+            for (int i = 0; i < motorDevice->count; i++) {
+                motorDevice->vTable.write(i, values[i]);
+            }
+
+            // Don't attempt to write commands to the motors if telemetry is still being received
+            if (motorDevice->vTable.telemetryWait) {
+                (void)motorDevice->vTable.telemetryWait();
+            }
+
+            // Trigger the transmission of the motor data
+            motorDevice->vTable.updateComplete();
+
+            // Perform the decode of the last data received
+            // New data will be received once the send of motor data, triggered above, completes
 #if defined(USE_DSHOT) && defined(USE_DSHOT_TELEMETRY)
-        if (!motorDevice->vTable.updateStart()) {
-            return;
-        }
+            motorDevice->vTable.decodeTelemetry();
 #endif
-        for (int i = 0; i < motorDevice->count; i++) {
-            motorDevice->vTable.write(i, values[i]);
+        } else
+#endif
+        {
+            // Perform the decode of the last data received
+            // New data will be received once the send of motor data, triggered above, completes
+#if defined(USE_DSHOT) && defined(USE_DSHOT_TELEMETRY)
+            motorDevice->vTable.decodeTelemetry();
+#endif
+
+            // Update the motor data
+            for (int i = 0; i < motorDevice->count; i++) {
+                motorDevice->vTable.write(i, values[i]);
+            }
+
+            // Trigger the transmission of the motor data
+            motorDevice->vTable.updateComplete();
+
         }
-        motorDevice->vTable.updateComplete();
     }
+#else
+    UNUSED(values);
 #endif
 }
 
@@ -84,7 +120,8 @@ motorVTable_t motorGetVTable(void)
 }
 
 // This is not motor generic anymore; should be moved to analog pwm module
-static void analogInitEndpoints(const motorConfig_t *motorConfig, float outputLimit, float *outputLow, float *outputHigh, float *disarm, float *deadbandMotor3dHigh, float *deadbandMotor3dLow) {
+static void analogInitEndpoints(const motorConfig_t *motorConfig, float outputLimit, float *outputLow, float *outputHigh, float *disarm, float *deadbandMotor3dHigh, float *deadbandMotor3dLow)
+{
     if (featureIsEnabled(FEATURE_3D)) {
         float outputLimitOffset = (flight3DConfig()->limit3d_high - flight3DConfig()->limit3d_low) * (1 - outputLimit) / 2;
         *disarm = flight3DConfig()->neutral3d;
@@ -111,7 +148,6 @@ bool checkMotorProtocolEnabled(const motorDevConfig_t *motorDevConfig, bool *isP
     case PWM_TYPE_MULTISHOT:
     case PWM_TYPE_BRUSHED:
         enabled = true;
-
         break;
 
 #ifdef USE_DSHOT
@@ -121,11 +157,9 @@ bool checkMotorProtocolEnabled(const motorDevConfig_t *motorDevConfig, bool *isP
     case PWM_TYPE_PROSHOT1000:
         enabled = true;
         isDshot = true;
-
         break;
 #endif
     default:
-
         break;
     }
 
@@ -168,7 +202,7 @@ uint16_t motorConvertToExternal(float motorValue)
     return motorDevice->vTable.convertMotorToExternal(motorValue);
 }
 
-void motorPostInit()
+void motorPostInit(void)
 {
     motorDevice->vTable.postInit();
 }
@@ -193,7 +227,7 @@ static bool motorIsEnabledNull(uint8_t index)
     return false;
 }
 
-bool motorUpdateStartNull(void)
+bool motorDecodeTelemetryNull(void)
 {
     return true;
 }
@@ -235,7 +269,7 @@ static const motorVTable_t motorNullVTable = {
     .enable = motorEnableNull,
     .disable = motorDisableNull,
     .isMotorEnabled = motorIsEnabledNull,
-    .updateStart = motorUpdateStartNull,
+    .decodeTelemetry = motorDecodeTelemetryNull,
     .write = motorWriteNull,
     .writeInt = motorWriteIntNull,
     .updateComplete = motorUpdateCompleteNull,
@@ -259,7 +293,8 @@ bool isMotorProtocolDshot(void)
     return motorProtocolDshot;
 }
 
-void motorDevInit(const motorDevConfig_t *motorDevConfig, uint16_t idlePulse, uint8_t motorCount) {
+void motorDevInit(const motorDevConfig_t *motorDevConfig, uint16_t idlePulse, uint8_t motorCount)
+{
     memset(motors, 0, sizeof(motors));
 
     bool useUnsyncedPwm = motorDevConfig->useUnsyncedPwm;

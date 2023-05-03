@@ -135,10 +135,10 @@ typedef struct bbPort_s {
     uint32_t llChannel;
 #endif
 
-    uint16_t dmaSource; //timer dma source
+    uint16_t dmaSource;
 
     dmaResource_t *dmaResource; // DMA resource for this port & timer channel
-//    uint32_t dmaChannel;        // DMA channel or peripheral request
+    // uint32_t dmaChannel;        // DMA channel or peripheral request
     uint32_t dmaMuxId; 			//dma mux id for at32f43x
 
     uint8_t direction;
@@ -179,6 +179,7 @@ typedef struct bbPort_s {
     uint16_t *portInputBuffer;
     uint32_t portInputCount;
     bool inputActive;
+    volatile bool telemetryPending;
 
     // Misc
 #ifdef DEBUG_COUNT_INTERRUPT
@@ -252,7 +253,7 @@ void bbSwitchToOutput(bbPort_t * bbPort);
 void bbSwitchToInput(bbPort_t * bbPort);
 
 void bbTIM_TimeBaseInit(bbPort_t *bbPort, uint16_t period);
-void bbTIM_DMACmd(tmr_type*  TIMx, uint16_t TIM_DMASource, FunctionalState NewState);
+void bbTIM_DMACmd(tmr_type* TIMx, uint16_t TIM_DMASource, FunctionalState NewState);
 void bbDMA_ITConfig(bbPort_t *bbPort);
 void bbDMA_Cmd(bbPort_t *bbPort, FunctionalState NewState);
 int  bbDMA_Count(bbPort_t *bbPort);
