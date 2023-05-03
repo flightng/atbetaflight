@@ -151,6 +151,7 @@ COMMON_SRC = \
             cms/cms_menu_vtx_rtc6705.c \
             cms/cms_menu_vtx_smartaudio.c \
             cms/cms_menu_vtx_tramp.c \
+            cms/cms_menu_vtx_msp.c\
             cms/cms_menu_persistent_stats.c \
             drivers/display_ug2864hsweg01.c \
             drivers/light_ws2811strip.c \
@@ -163,6 +164,7 @@ COMMON_SRC = \
             io/displayport_frsky_osd.c \
             io/displayport_max7456.c \
             io/displayport_msp.c \
+            io/vtx_msp.c\
             io/displayport_oled.c \
             io/displayport_srxl.c \
             io/displayport_crsf.c \
@@ -355,12 +357,14 @@ SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             cms/cms_menu_vtx_rtc6705.c \
             cms/cms_menu_vtx_smartaudio.c \
             cms/cms_menu_vtx_tramp.c \
+            cms/cms_menu_vtx_msp.c\
             cms/cms_menu_persistent_stats.c \
             io/vtx.c \
             io/vtx_rtc6705.c \
             io/vtx_smartaudio.c \
             io/vtx_tramp.c \
             io/vtx_control.c \
+            io/vtx_msp.c\
             io/spektrum_vtx_control.c \
             osd/osd.c \
             osd/osd_elements.c \
