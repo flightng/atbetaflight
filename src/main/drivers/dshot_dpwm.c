@@ -113,12 +113,7 @@ static bool dshotPwmEnableMotors(void)
     for (int i = 0; i < dshotPwmDevice.count; i++) {
         motorDmaOutput_t *motor = getMotorDmaOutput(i);
         const IO_t motorIO = IOGetByTag(motor->timerHardware->tag);
-#if defined(STM32F1)
-    //init gpio pin using bus_spi_config
-    IOConfigGPIO(motorIO,motor->iocfg);
-#else
         IOConfigGPIOAF(motorIO, motor->iocfg, motor->timerHardware->alternateFunction);
-#endif
     }
 
     // No special processing required
@@ -145,7 +140,7 @@ static motorVTable_t dshotPwmVTable = {
     .enable = dshotPwmEnableMotors,
     .disable = dshotPwmDisableMotors,
     .isMotorEnabled = dshotPwmIsMotorEnabled,
-    .updateStart = motorUpdateStartNull, // May be updated after copying
+    .decodeTelemetry = motorDecodeTelemetryNull, // May be updated after copying
     .write = dshotWrite,
     .writeInt = dshotWriteInt,
     .updateComplete = pwmCompleteDshotMotorUpdate,
@@ -165,7 +160,7 @@ motorDevice_t *dshotPwmDevInit(const motorDevConfig_t *motorConfig, uint16_t idl
 
 #ifdef USE_DSHOT_TELEMETRY
     useDshotTelemetry = motorConfig->useDshotTelemetry;
-    dshotPwmDevice.vTable.updateStart = pwmStartDshotMotorUpdate;
+    dshotPwmDevice.vTable.decodeTelemetry = pwmTelemetryDecode;
 #endif
 
     switch (motorConfig->motorPwmProtocol) {
