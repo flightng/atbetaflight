@@ -39,24 +39,22 @@ FAST_DATA_ZERO_INIT pwmOutputPort_t motors[MAX_SUPPORTED_MOTORS];
 
 static void pwmOCConfig(tmr_type *tim, uint8_t channel, uint16_t value, uint8_t output)
 {
+    tmr_output_config_type  tmr_OCInitStruct;
+    tmr_output_default_para_init(&tmr_OCInitStruct);
+    tmr_OCInitStruct.oc_mode= TMR_OUTPUT_CONTROL_PWM_MODE_A;
 
-	tmr_output_config_type  tmr_OCInitStruct;
-	tmr_output_default_para_init(&tmr_OCInitStruct);
-	tmr_OCInitStruct.oc_mode= TMR_OUTPUT_CONTROL_PWM_MODE_A;//when count up  pwm1 eq pwma pwm2 =pwmb
-
-	if (timerHardware->output & TIMER_OUTPUT_N_CHANNEL) {
-		tmr_OCInitStruct.occ_output_state = TRUE;
-		tmr_OCInitStruct.occ_idle_state = FALSE;
-		tmr_OCInitStruct.occ_polarity =  (output & TIMER_OUTPUT_INVERTED) ? TMR_OUTPUT_ACTIVE_LOW : TMR_OUTPUT_ACTIVE_HIGH;
-	} else {
-		tmr_OCInitStruct.oc_output_state = TRUE;
-		tmr_OCInitStruct.oc_idle_state = TRUE;
-		tmr_OCInitStruct.oc_polarity =  (output & TIMER_OUTPUT_INVERTED) ? TMR_OUTPUT_ACTIVE_LOW : TMR_OUTPUT_ACTIVE_HIGH;
-	}
-	tmr_channel_value_set(tim, (channel-1)*2, value);
-	tmr_output_channel_config(tim,(channel-1)*2, &tmr_OCInitStruct);
+    if (output & TIMER_OUTPUT_N_CHANNEL) {
+        tmr_OCInitStruct.occ_output_state = TRUE;
+        tmr_OCInitStruct.occ_idle_state = FALSE;
+        tmr_OCInitStruct.occ_polarity =  (output & TIMER_OUTPUT_INVERTED) ? TMR_OUTPUT_ACTIVE_LOW : TMR_OUTPUT_ACTIVE_HIGH;
+    } else {
+        tmr_OCInitStruct.oc_output_state = TRUE;
+        tmr_OCInitStruct.oc_idle_state = TRUE;
+        tmr_OCInitStruct.oc_polarity =  (output & TIMER_OUTPUT_INVERTED) ? TMR_OUTPUT_ACTIVE_LOW : TMR_OUTPUT_ACTIVE_HIGH;
+    }
+    tmr_channel_value_set(tim, (channel-1)*2, value);
+    tmr_output_channel_config(tim,(channel-1)*2, &tmr_OCInitStruct);
     tmr_output_channel_buffer_enable(tim, ((channel-1)*2),TRUE);
-
 }
 
 void pwmOutConfig(timerChannel_t *channel, const timerHardware_t *timerHardware, uint32_t hz, uint16_t period, uint16_t value, uint8_t inversion)
@@ -186,7 +184,7 @@ motorDevice_t *motorPwmDevInit(const motorDevConfig_t *motorConfig, uint16_t idl
     }
 
     motorPwmDevice.vTable.write = pwmWriteStandard;
-    motorPwmDevice.vTable.updateStart = motorUpdateStartNull;
+    motorPwmDevice.vTable.decodeTelemetry = motorDecodeTelemetryNull;
     motorPwmDevice.vTable.updateComplete = useUnsyncedPwm ? motorUpdateCompleteNull : pwmCompleteOneshotMotorUpdate;
 
     for (int motorIndex = 0; motorIndex < MAX_SUPPORTED_MOTORS && motorIndex < motorCount; motorIndex++) {
@@ -205,12 +203,7 @@ motorDevice_t *motorPwmDevInit(const motorDevConfig_t *motorConfig, uint16_t idl
         motors[motorIndex].io = IOGetByTag(tag);
         IOInit(motors[motorIndex].io, OWNER_MOTOR, RESOURCE_INDEX(reorderedMotorIndex));
 
-#if defined(STM32F1)
-        IOConfigGPIO(motors[motorIndex].io, IOCFG_AF_PP);
-        //FIXME：AT32F1 可以配置pin mux ，需要在io里面改一下
-#else
         IOConfigGPIOAF(motors[motorIndex].io, IOCFG_AF_PP, timerHardware->alternateFunction);
-#endif
 
         /* standard PWM outputs */
         // margin of safety is 4 periods when unsynced
@@ -281,11 +274,7 @@ void servoDevInit(const servoDevConfig_t *servoConfig)
             break;
         }
 
-#if defined(STM32F1)
-        IOConfigGPIO(servos[servoIndex].io, IOCFG_AF_PP);
-#else
         IOConfigGPIOAF(servos[servoIndex].io, IOCFG_AF_PP, timer->alternateFunction);
-#endif
 
         pwmOutConfig(&servos[servoIndex].channel, timer, PWM_TIMER_1MHZ, PWM_TIMER_1MHZ / servoConfig->servoPwmRate, servoConfig->servoCenterPulse, 0);
         servos[servoIndex].enabled = true;
