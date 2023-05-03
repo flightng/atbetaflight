@@ -155,14 +155,16 @@ bool cmsDisplayPortSelect(displayPort_t *instance)
 //   30 cols x 13 rows
 // HoTT Telemetry Screen
 //   21 cols x 8 rows
-//
+// HD
+//   53 cols x 20 rows
 // Spektrum SRXL Telemtry Textgenerator
 //   13 cols x 9 rows, top row printed as a Bold Heading
 //   Needs the "smallScreen" adaptions
 
-#define CMS_MAX_ROWS 16
+#define CMS_MAX_ROWS 31
 
 #define NORMAL_SCREEN_MIN_COLS 18      // Less is a small screen
+#define NORMAL_SCREEN_MAX_COLS 30      // More is a large screen
 static bool    smallScreen;
 static uint8_t leftMenuColumn;
 static uint8_t rightMenuColumn;
@@ -388,7 +390,7 @@ static int cmsDrawMenuItemValue(displayPort_t *pDisplay, char *buff, uint8_t row
 #else
     colpos = smallScreen ? rightMenuColumn - maxSize : rightMenuColumn;
 #endif
-    cnt = cmsDisplayWrite(pDisplay, colpos, row, DISPLAYPORT_ATTR_NONE, buff);
+    cnt = cmsDisplayWrite(pDisplay, colpos, row, DISPLAYPORT_SEVERITY_NORMAL, buff);
     return cnt;
 }
 
@@ -589,7 +591,7 @@ static int cmsDrawMenuEntry(displayPort_t *pDisplay, const OSD_Entry *p, uint8_t
     case OME_Label:
         if (IS_PRINTVALUE(*flags) && p->data) {
             // A label with optional string, immediately following text
-            cnt = cmsDisplayWrite(pDisplay, leftMenuColumn + 1 + (uint8_t)strlen(p->text), row, DISPLAYPORT_ATTR_NONE, p->data);
+            cnt = cmsDisplayWrite(pDisplay, leftMenuColumn + 1 + (uint8_t)strlen(p->text), row, DISPLAYPORT_SEVERITY_NORMAL, p->data);
             CLR_PRINTVALUE(*flags);
         }
         break;
@@ -605,9 +607,9 @@ static int cmsDrawMenuEntry(displayPort_t *pDisplay, const OSD_Entry *p, uint8_t
 #ifdef CMS_MENU_DEBUG
         // Shouldn't happen. Notify creator of this menu content
 #ifdef CMS_OSD_RIGHT_ALIGNED_VALUES
-        cnt = cmsDisplayWrite(pDisplay, rightMenuColumn - 6, row, DISPLAYPORT_ATTR_NONE, "BADENT");
+        cnt = cmsDisplayWrite(pDisplay, rightMenuColumn - 6, row, DISPLAYPORT_SEVERITY_NORMAL, "BADENT");
 #else
-        cnt = cmsDisplayWrite(pDisplay, rightMenuColumn, row, DISPLAYPORT_ATTR_NONE, "BADENT");
+        cnt = cmsDisplayWrite(pDisplay, rightMenuColumn, row, DISPLAYPORT_SEVERITY_NORMAL, "BADENT");
 #endif
 #endif
         break;
@@ -746,7 +748,7 @@ static void cmsDrawMenu(displayPort_t *pDisplay, uint32_t currentTimeUs)
 #endif
 
     if (pDisplay->cursorRow >= 0 && currentCtx.cursorRow != pDisplay->cursorRow) {
-        room -= cmsDisplayWrite(pDisplay, leftMenuColumn, top + pDisplay->cursorRow * linesPerMenuItem, DISPLAYPORT_ATTR_NONE, " ");
+        room -= cmsDisplayWrite(pDisplay, leftMenuColumn, top + pDisplay->cursorRow * linesPerMenuItem, DISPLAYPORT_SEVERITY_NORMAL, " ");
     }
 
     if (room < 30) {
@@ -754,7 +756,7 @@ static void cmsDrawMenu(displayPort_t *pDisplay, uint32_t currentTimeUs)
     }
 
     if (pDisplay->cursorRow != currentCtx.cursorRow) {
-        room -= cmsDisplayWrite(pDisplay, leftMenuColumn, top + currentCtx.cursorRow * linesPerMenuItem, DISPLAYPORT_ATTR_NONE, ">");
+        room -= cmsDisplayWrite(pDisplay, leftMenuColumn, top + currentCtx.cursorRow * linesPerMenuItem, DISPLAYPORT_SEVERITY_NORMAL, ">");
         pDisplay->cursorRow = currentCtx.cursorRow;
     }
 
@@ -776,7 +778,7 @@ static void cmsDrawMenu(displayPort_t *pDisplay, uint32_t currentTimeUs)
         if (IS_PRINTLABEL(runtimeEntryFlags[i])) {
             uint8_t coloff = leftMenuColumn;
             coloff += ((p->flags & OSD_MENU_ELEMENT_MASK) == OME_Label) ? 0 : 1;
-            room -= cmsDisplayWrite(pDisplay, coloff, top + i * linesPerMenuItem, DISPLAYPORT_ATTR_NONE, p->text);
+            room -= cmsDisplayWrite(pDisplay, coloff, top + i * linesPerMenuItem, DISPLAYPORT_SEVERITY_NORMAL, p->text);
             CLR_PRINTLABEL(runtimeEntryFlags[i]);
             if (room < 30) {
                 return;
@@ -786,7 +788,7 @@ static void cmsDrawMenu(displayPort_t *pDisplay, uint32_t currentTimeUs)
 
         // Highlight values overridden by sliders
         if (rowSliderOverride(p->flags)) {
-            displayWriteChar(pDisplay, leftMenuColumn - 1, top + i * linesPerMenuItem, DISPLAYPORT_ATTR_NONE, 'S');
+            displayWriteChar(pDisplay, leftMenuColumn - 1, top + i * linesPerMenuItem, DISPLAYPORT_SEVERITY_NORMAL, 'S');
         }
 
     // Print values
@@ -809,12 +811,12 @@ static void cmsDrawMenu(displayPort_t *pDisplay, uint32_t currentTimeUs)
     // simple text device and use the '^' (carat) and 'V' for arrow approximations.
     if (displayWasCleared && leftMenuColumn > 0) {      // make sure there's room to draw the symbol
         if (currentCtx.page > 0) {
-            const uint8_t symbol = displaySupportsOsdSymbols(pDisplay) ? SYM_ARROW_NORTH : '^';
-            displayWriteChar(pDisplay, leftMenuColumn - 1, top, DISPLAYPORT_ATTR_NONE, symbol);
+            const uint8_t symbol = displaySupportsOsdSymbols(pDisplay) ? SYM_ARROW_SMALL_UP : '^';
+            displayWriteChar(pDisplay, leftMenuColumn - 1, top, DISPLAYPORT_SEVERITY_NORMAL, symbol);
         }
          if (currentCtx.page < pageCount - 1) {
-            const uint8_t symbol = displaySupportsOsdSymbols(pDisplay) ? SYM_ARROW_SOUTH : 'V';
-            displayWriteChar(pDisplay, leftMenuColumn - 1, top + pageMaxRow, DISPLAYPORT_ATTR_NONE, symbol);
+            const uint8_t symbol = displaySupportsOsdSymbols(pDisplay) ? SYM_ARROW_SMALL_DOWN : 'v';
+            displayWriteChar(pDisplay, leftMenuColumn - 1, top + pageMaxRow, DISPLAYPORT_SEVERITY_NORMAL, symbol);
         }
     }
 
@@ -897,9 +899,11 @@ void cmsMenuOpen(void)
         menuStackIdx = 0;
         setArmingDisabled(ARMING_DISABLED_CMS_MENU);
         displayLayerSelect(pCurrentDisplay, DISPLAYPORT_LAYER_FOREGROUND); // make sure the foreground layer is active
+#ifdef USE_OSD
         if (osdConfig()->cms_background_type != DISPLAY_BACKGROUND_TRANSPARENT) {
             displaySetBackgroundType(pCurrentDisplay, (displayPortBackground_e)osdConfig()->cms_background_type); // set the background type if not transparent
         }
+#endif
     } else {
         // Switch display
         displayPort_t *pNextDisplay = cmsDisplayPortSelectNext();
@@ -911,7 +915,9 @@ void cmsMenuOpen(void)
             displaySetBackgroundType(pCurrentDisplay, DISPLAY_BACKGROUND_TRANSPARENT); // reset previous displayPort to transparent
             displayRelease(pCurrentDisplay);
             pCurrentDisplay = pNextDisplay;
+#ifdef USE_OSD
             displaySetBackgroundType(pCurrentDisplay, (displayPortBackground_e)osdConfig()->cms_background_type); // set the background type if not transparent
+#endif
         } else {
             return;
         }
@@ -931,12 +937,21 @@ void cmsMenuOpen(void)
     } else {
       smallScreen       = false;
       linesPerMenuItem  = 1;
-      leftMenuColumn    = 2;
+      if (pCurrentDisplay->cols <= NORMAL_SCREEN_MAX_COLS) {
+          leftMenuColumn    = 2;
 #ifdef CMS_OSD_RIGHT_ALIGNED_VALUES
-      rightMenuColumn   = pCurrentDisplay->cols - 2;
+          rightMenuColumn   = pCurrentDisplay->cols - 2;
 #else
-      rightMenuColumn   = pCurrentDisplay->cols - CMS_DRAW_BUFFER_LEN;
+          rightMenuColumn   = pCurrentDisplay->cols - CMS_DRAW_BUFFER_LEN;
 #endif
+      } else {
+          leftMenuColumn    = (pCurrentDisplay->cols / 2) - 13;
+#ifdef CMS_OSD_RIGHT_ALIGNED_VALUES
+          rightMenuColumn   = (pCurrentDisplay->cols / 2) + 13;
+#else
+          rightMenuColumn   = pCurrentDisplay->cols - CMS_DRAW_BUFFER_LEN;
+#endif
+      }
       maxMenuItems      = pCurrentDisplay->rows - 2;
     }
 
@@ -999,7 +1014,7 @@ const void *cmsMenuExit(displayPort_t *pDisplay, const void *ptr)
 
     if ((exitType == CMS_EXIT_SAVEREBOOT) || (exitType == CMS_POPUP_SAVEREBOOT) || (exitType == CMS_POPUP_EXITREBOOT)) {
         displayClearScreen(pDisplay, DISPLAY_CLEAR_WAIT);
-        cmsDisplayWrite(pDisplay, 5, 3, DISPLAYPORT_ATTR_NONE, "REBOOTING...");
+        cmsDisplayWrite(pDisplay, 5, 3, DISPLAYPORT_SEVERITY_NORMAL, "REBOOTING...");
 
         // Flush display
         displayRedraw(pDisplay);
