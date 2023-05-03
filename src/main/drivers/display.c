@@ -80,11 +80,20 @@ void displaySetXY(displayPort_t *instance, uint8_t x, uint8_t y)
     instance->posY = y;
 }
 
-int displayWrite(displayPort_t *instance, uint8_t x, uint8_t y, uint8_t attr, const char *s)
+int displaySys(displayPort_t *instance, uint8_t x, uint8_t y, displayPortSystemElement_e systemElement)
 {
-    instance->posX = x + strlen(s);
+    if (instance->vTable->writeSys) {
+        return instance->vTable->writeSys(instance, x, y, systemElement);
+    }
+
+    return 0;
+}
+
+int displayWrite(displayPort_t *instance, uint8_t x, uint8_t y, uint8_t attr, const char *text)
+{
+    instance->posX = x + strlen(text);
     instance->posY = y;
-    return instance->vTable->writeString(instance, x, y, attr, s);
+    return instance->vTable->writeString(instance, x, y, attr, text);
 }
 
 int displayWriteChar(displayPort_t *instance, uint8_t x, uint8_t y, uint8_t attr, uint8_t c)

@@ -100,6 +100,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { BOXMSPOVERRIDE, "MSP OVERRIDE", 50},
     { BOXSTICKCOMMANDDISABLE, "STICK COMMANDS DISABLE", 51},
     { BOXBEEPERMUTE, "BEEPER MUTE", 52},
+    { BOXREADY, "READY", 53},
 };
 
 // mask of enabled IDs, calculated on startup based on enabled features. boxId_e is used as bit index
@@ -290,7 +291,7 @@ void initActiveBoxIds(void)
     BME(BOXCAMERA3);
 #endif
 
-#if defined(USE_VTX_SMARTAUDIO) || defined(USE_VTX_TRAMP)
+#if defined(USE_VTX_SMARTAUDIO) || defined(USE_VTX_TRAMP) || defined(USE_VTX_MSP)
     BME(BOXVTXPITMODE);
     BME(BOXVTXCONTROLDISABLE);
 #endif
@@ -340,6 +341,7 @@ void initActiveBoxIds(void)
 #endif
 
     BME(BOXSTICKCOMMANDDISABLE);
+    BME(BOXREADY);
 
 #undef BME
     // check that all enabled IDs are in boxes array (check may be skipped when using findBoxById() functions)

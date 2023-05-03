@@ -23,7 +23,8 @@
 #include <string.h>
 
 #include "platform.h"
-#if defined (USE_HOTT_TEXTMODE) && defined (USE_CMS)
+
+#if defined(USE_HOTT_TEXTMODE) && defined(USE_CMS)
 
 #include "common/utils.h"
 #include "cms/cms.h"
@@ -56,7 +57,7 @@ static int hottWriteString(displayPort_t *displayPort, uint8_t col, uint8_t row,
     UNUSED(attr);
 
     while (*s) {
-        hottWriteChar(displayPort,  col++, row, DISPLAYPORT_ATTR_NONE, *(s++));
+        hottWriteChar(displayPort,  col++, row, DISPLAYPORT_SEVERITY_NORMAL, *(s++));
     }
     return 0;
 }
@@ -67,7 +68,7 @@ static int hottClearScreen(displayPort_t *displayPort, displayClearOption_e opti
 
     for (int row = 0; row < displayPort->rows; row++) {
         for (int col= 0; col < displayPort->cols; col++) {
-            hottWriteChar(displayPort, col, row, DISPLAYPORT_ATTR_NONE, ' ');
+            hottWriteChar(displayPort, col, row, DISPLAYPORT_SEVERITY_NORMAL, ' ');
         }
     }
     return 0;
@@ -130,7 +131,7 @@ static const displayPortVTable_t hottVTable = {
     .layerCopy = NULL,
 };
 
-static displayPort_t *displayPortHottInit()
+static displayPort_t *displayPortHottInit(void)
 {
     hottDisplayPort.device = NULL;
     displayInit(&hottDisplayPort, &hottVTable, DISPLAYPORT_DEVICE_TYPE_HOTT);
@@ -140,12 +141,12 @@ static displayPort_t *displayPortHottInit()
     return &hottDisplayPort;
 }
 
-void hottDisplayportRegister()
+void hottDisplayportRegister(void)
 {
     cmsDisplayPortRegister(displayPortHottInit());
 }
 
-void hottCmsOpen()
+void hottCmsOpen(void)
 {
     if (!cmsInMenu) {
         cmsDisplayPortSelect(&hottDisplayPort);

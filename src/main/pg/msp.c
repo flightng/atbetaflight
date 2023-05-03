@@ -18,24 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "platform.h"
 
-#include "io/displayport_msp.h"
 #include "pg/pg.h"
+#include "pg/pg_ids.h"
 
-typedef struct displayPortProfile_s {
-    int8_t colAdjust;
-    int8_t rowAdjust;
-    bool invert;
-    uint8_t blackBrightness;
-    uint8_t whiteBrightness;
+#include "msp.h"
 
-    // For attribute-rich OSDs
-
-    uint8_t fontSelection[DISPLAYPORT_SEVERITY_COUNT];
-    uint8_t useDeviceBlink;    // Use device local blink capability
-} displayPortProfile_t;
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMsp);
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMax7456);
+PG_REGISTER(mspConfig_t, mspConfig, PG_MSP_CONFIG, 0);

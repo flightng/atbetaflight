@@ -20,22 +20,12 @@
 
 #pragma once
 
-#include "io/displayport_msp.h"
+#include "drivers/io_types.h"
+
 #include "pg/pg.h"
 
-typedef struct displayPortProfile_s {
-    int8_t colAdjust;
-    int8_t rowAdjust;
-    bool invert;
-    uint8_t blackBrightness;
-    uint8_t whiteBrightness;
+typedef struct mspConfig_s {
+    uint8_t halfDuplex; // allow msp to operate in half duplex mode
+} mspConfig_t;
 
-    // For attribute-rich OSDs
-
-    uint8_t fontSelection[DISPLAYPORT_SEVERITY_COUNT];
-    uint8_t useDeviceBlink;    // Use device local blink capability
-} displayPortProfile_t;
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMsp);
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMax7456);
+PG_DECLARE(mspConfig_t, mspConfig);

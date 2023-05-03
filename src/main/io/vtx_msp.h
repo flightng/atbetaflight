@@ -20,22 +20,16 @@
 
 #pragma once
 
-#include "io/displayport_msp.h"
-#include "pg/pg.h"
+#include <stdint.h>
 
-typedef struct displayPortProfile_s {
-    int8_t colAdjust;
-    int8_t rowAdjust;
-    bool invert;
-    uint8_t blackBrightness;
-    uint8_t whiteBrightness;
+#include "build/build_config.h"
 
-    // For attribute-rich OSDs
+typedef enum {
+    // Offline - device hasn't responded yet
+    MSP_VTX_STATUS_OFFLINE = 0,
+    MSP_VTX_STATUS_READY,
+} mspVtxStatus_e;
 
-    uint8_t fontSelection[DISPLAYPORT_SEVERITY_COUNT];
-    uint8_t useDeviceBlink;    // Use device local blink capability
-} displayPortProfile_t;
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMsp);
-
-PG_DECLARE(displayPortProfile_t, displayPortProfileMax7456);
+bool vtxMspInit(void);
+void setMspVtxDeviceStatusReady(const int descriptor);
+void prepareMspFrame(uint8_t *mspFrame);
