@@ -77,7 +77,7 @@
 #endif
 
 
-#if !defined(USE_SERIAL_RX)
+#if !defined(USE_SERIALRX)
 #undef USE_SERIALRX_CRSF
 #undef USE_SERIALRX_IBUS
 #undef USE_SERIALRX_JETIEXBUS

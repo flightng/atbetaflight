@@ -273,8 +273,8 @@ extern uint8_t _dmaram_end__;
 #define USE_SERIAL_PASSTHROUGH
 #define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 #define USE_IMU_CALC
-#define USE_PPM
-#define USE_SERIAL_RX
+#define USE_RX_PPM
+#define USE_SERIALRX
 #define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
 #define USE_SERIALRX_GHST       // ImmersionRC Ghost Protocol
 #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
@@ -357,7 +357,7 @@ extern uint8_t _dmaram_end__;
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 5))
-#define USE_PWM
+#define USE_RX_PWM
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 4))
@@ -453,4 +453,11 @@ extern uint8_t _dmaram_end__;
 #define USE_EMFAT_AUTORUN
 #define USE_EMFAT_ICON
 #define USE_GPS_PLUS_CODES
+#endif
+
+
+#if defined(USE_MAX7456) || defined(USE_FRSKYOSD) || defined(USE_MSP_DISPLAYPORT)
+#ifndef USE_VIDEO_SYSTEM
+#define USE_VIDEO_SYSTEM
+#endif
 #endif

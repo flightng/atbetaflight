@@ -39,7 +39,7 @@
  * PH0 HEXT IN
  * PH1 HEXT OUT
  */
-
+#define SYSTEM_HSE_MHZ        8
 //buttons
 #define USE_BUTTONS
 #define BUTTON_A_PIN            PD2
