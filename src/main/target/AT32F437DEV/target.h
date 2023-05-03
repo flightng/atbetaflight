@@ -38,6 +38,7 @@
  * PA10 OTG1
  */
 
+#define SYSTEM_HSE_MHZ        8
 //debug
 #define USE_DEBUG_PIN
 #define DEBUG_PIN_COUNT         3

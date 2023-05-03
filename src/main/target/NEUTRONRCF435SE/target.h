@@ -39,7 +39,7 @@
  * PH0 HEXT IN
  * PH1 HEXT OUT
  */
-
+#define SYSTEM_HSE_MHZ        8
 //No Buttons
 
 //LEDS
