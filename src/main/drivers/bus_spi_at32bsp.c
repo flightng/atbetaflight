@@ -385,8 +385,8 @@ void spiSequenceStart(const extDevice_t *dev)
     // Check that any there are no attempts to DMA to/from CCD SRAM
     for (busSegment_t *checkSegment = (busSegment_t *)bus->curSegment; checkSegment->len; checkSegment++) {
         // Check there is no receive data as only transmit DMA is available
-        if (((checkSegment->u.buffers.rxData) && (IS_CCM(checkSegment->u.buffers.rxData) || (bus->dmaRx == (dmaChannelDescriptor_t *)NULL))) ||
-            ((checkSegment->u.buffers.txData) && IS_CCM(checkSegment->u.buffers.txData))) {
+        if ((checkSegment->u.buffers.rxData)||(bus->dmaRx == (dmaChannelDescriptor_t *)NULL)||
+            (checkSegment->u.buffers.txData)) {
             dmaSafe = false;
             break;
         }
