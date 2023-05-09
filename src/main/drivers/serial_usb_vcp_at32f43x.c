@@ -264,12 +264,12 @@ uint32_t CDC_Send_DATA(const uint8_t *ptrBuffer, uint32_t sendLength)
     }
     while(pcdc->g_tx_completed != 1) {
       if (millis() - start > USB_TIMEOUT) {
-         return pos;
+        return pos;
       }
     }
     uint32_t txed=usb_vcp_send_data(&otg_core_struct.dev,(uint8_t *)(ptrBuffer+pos), tosend);
     if(pos==sendLength){
-        break;
+      break;
     }
     if (txed==SUCCESS) {
       pos+=tosend;
@@ -281,12 +281,12 @@ uint32_t CDC_Send_DATA(const uint8_t *ptrBuffer, uint32_t sendLength)
 
 //是否插入
 uint8_t usbIsConnected(){
-	return (USB_CONN_STATE_DEFAULT !=otg_core_struct.dev.conn_state);
+  return (USB_CONN_STATE_DEFAULT !=otg_core_struct.dev.conn_state);
 }
 
 //是否配置
 uint8_t usbIsConfigured(){
-	return (USB_CONN_STATE_CONFIGURED ==otg_core_struct.dev.conn_state);
+  return (USB_CONN_STATE_CONFIGURED ==otg_core_struct.dev.conn_state);
 }
 
 //vcp 状态
