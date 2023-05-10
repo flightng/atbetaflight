@@ -543,8 +543,5 @@ uint32_t usbVcpGetBaudRate(serialPort_t *instance)
     cdc_struct_type *pcdc = (cdc_struct_type *)otg_core_struct.dev.class_handler->pdata;
     return pcdc->linecoding.bitrate;
 }
-
-
-
-
 #endif
+
