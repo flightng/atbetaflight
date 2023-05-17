@@ -4019,6 +4019,16 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
         }
         break;
 #endif // OSD
+    case MSP2_SET_CUSTOM_OSD_INFO:
+        {//先修改pilotName来测试MSP命令功能
+            const uint8_t textLength = MIN(MAX_NAME_LENGTH, sbufReadU8(src)); //MAX_CUSTOM_INFO_LENGTH=自定义OSD信息长度 待定义
+
+            memset(pilotConfigMutable()->name, 0, ARRAYLEN(pilotConfig()->name));
+            for (unsigned int i = 0; i < textLength; i++) {
+                pilotConfigMutable()->name[i] = sbufReadU8(src);// currentMsgLen当前信息长度 待定义
+            }
+        }
+        break;
 
     default:
         return mspProcessInCommand(srcDesc, cmdMSP, src);

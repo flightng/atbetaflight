@@ -1476,6 +1476,11 @@ static void osdElementWarnings(osdElementParms_t *element)
     }
 }
 
+static void osdElementCustomMessage(osdElementParms_t *element)
+{
+    tfp_sprintf(element->buff, "LAP%d|%.3f", 3, 12.456);
+}
+
 // Define the order in which the elements are drawn.
 // Elements positioned later in the list will overlay the earlier
 // ones if their character positions overlap
@@ -1558,6 +1563,7 @@ static const uint8_t osdElementDisplayOrder[] = {
 #ifdef USE_PERSISTENT_STATS
     OSD_TOTAL_FLIGHTS,
 #endif
+    OSD_CUSTOM_MESSAGE,
 };
 
 // Define the mapping between the OSD element id and the function to draw it
@@ -1675,6 +1681,7 @@ const osdElementDrawFn osdElementDrawFunction[OSD_ITEM_COUNT] = {
 #ifdef USE_PERSISTENT_STATS
     [OSD_TOTAL_FLIGHTS]           = osdElementTotalFlights,
 #endif
+    [OSD_CUSTOM_MESSAGE]          = osdElementCustomMessage,
 };
 
 // Define the mapping between the OSD element id and the function to draw its background (static part)
