@@ -156,28 +156,7 @@ static uint8_t BL_ReadBuf(uint8_t *pstring, uint8_t len)
     CRC_16.word = 0;
     LastCRC_16.word = 0;
     uint8_t  LastACK = brNONE;
-    //disable exint
-    uint32_t ExIntReg=0;
 
-/* 因为收发过程采用GPIO模拟且收发时长最大可达70ms，在期间可能会出现被其他中断打断的情况
- *  造成数据校验出错，所以临时采用关闭中断方式处理
- *  后继处理： 测试通过后，尝试atomic_block(nvic_prio_max) 方式
- */
-#if defined(AT32F43x)
-    //disable exint
-    ExIntReg=EXINT->inten;
-    EXINT->inten=0;//DISABLE ALL EXINT
-    //disable 5-15 EXINT
-    NVIC_DisableIRQ(EXINT9_5_IRQn);
-    NVIC_DisableIRQ(EXINT15_10_IRQn);
-    //disable USB
-    NVIC_DisableIRQ(TMR20_OVF_IRQn);
-    NVIC_DisableIRQ(OTGFS1_IRQn);
-    //disable uart 1\2\3
-    NVIC_DisableIRQ(USART1_IRQn);
-    NVIC_DisableIRQ(USART2_IRQn);
-    NVIC_DisableIRQ(USART3_IRQn);
-#endif
     do {
         if (!suart_getc_(pstring)) goto timeout;
         ByteCrc(pstring);
@@ -197,19 +176,6 @@ static uint8_t BL_ReadBuf(uint8_t *pstring, uint8_t len)
         if (!suart_getc_(&LastACK)) goto timeout;
     }
 timeout:
-#if defined(AT32F43x)
-    //re-enable exint
-    EXINT->inten=ExIntReg;
-    NVIC_EnableIRQ(EXINT9_5_IRQn);
-    NVIC_EnableIRQ(EXINT15_10_IRQn);
-    //re-enable USB
-    NVIC_EnableIRQ(TMR20_OVF_IRQn);//TODO:tmr20 should be removed after
-    NVIC_EnableIRQ(OTGFS1_IRQn);
-    //re-enable uart 1\2\3
-    NVIC_EnableIRQ(USART1_IRQn);
-    NVIC_EnableIRQ(USART2_IRQn);
-    NVIC_EnableIRQ(USART3_IRQn);
-#endif
     return (LastACK == brSUCCESS);
 }
 

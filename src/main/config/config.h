@@ -26,6 +26,7 @@
 #include "pg/pg.h"
 
 #define MAX_NAME_LENGTH 16u
+#define MAX_CUSTOM_MSG_LENGTH 30u
 
 typedef enum {
     CONFIGURATION_STATE_DEFAULTS_BARE = 0,
@@ -55,6 +56,14 @@ typedef struct systemConfig_s {
 } systemConfig_t;
 
 PG_DECLARE(systemConfig_t, systemConfig);
+
+//Custom message configure
+typedef struct customMsgConfig_s {
+    char message1[MAX_CUSTOM_MSG_LENGTH + 1];
+    char message2[MAX_CUSTOM_MSG_LENGTH + 1];
+} customMsgConfig_t;
+
+PG_DECLARE(customMsgConfig_t, customMsgConfig);
 
 struct pidProfile_s;
 extern struct pidProfile_s *currentPidProfile;

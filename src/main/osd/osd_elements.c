@@ -1478,7 +1478,21 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementCustomMessage(osdElementParms_t *element)
 {
-    tfp_sprintf(element->buff, "LAP%d|%.3f", 3, 12.456);
+    //display string from msp, without handle
+    if (strlen(customMsgConfig()->message1) == 0) {
+        strcpy(element->buff, "READY_GO");
+    } else {
+        unsigned i;
+        for (i = 0; i < MAX_CUSTOM_MSG_LENGTH; i++) {
+            if (customMsgConfig()->message1[i]) {
+                element->buff[i] = customMsgConfig()->message1[i];
+                //element->buff[i] = toupper((unsigned char)customMsgConfig()->message1[i]);
+            } else {
+                break;
+            }
+        }
+        element->buff[i] = '\0';
+    }
 }
 
 // Define the order in which the elements are drawn.
