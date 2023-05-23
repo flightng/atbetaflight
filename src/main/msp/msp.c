@@ -4021,11 +4021,27 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
 #endif // OSD
     case MSP2_SET_CUSTOM_OSD_INFO:
         {   //handle custom msg from msp
-            const uint8_t textLength = MIN(MAX_CUSTOM_MSG_LENGTH, sbufReadU8(src));
-            memset(customMsgConfigMutable()->message1, 0, textLength);
+            char customRawMessage[MAX_CUSTOM_MSG_LENGTH*3];
+            const uint8_t textLength = MIN(MAX_CUSTOM_MSG_LENGTH*3, sbufReadU8(src));
+            memset(customRawMessage, 0, textLength);
             
             for (unsigned int i = 0; i < textLength; i++) {
-                customMsgConfigMutable()->message1[i] = sbufReadU8(src);
+                customRawMessage[i] = sbufReadU8(src);
+            }
+
+            uint8_t spliter_pos = 0;
+            uint8_t msg_cnt = 0;
+            uint8_t i = 0;
+            for(msg_cnt = 0;msg_cnt < 3;msg_cnt++)
+            {
+                for(i = spliter_pos;i < 20;i++)
+                {
+                    if(customRawMessage[i] != CUSTOM_MSG_SPLITER)
+                        customMsgConfigMutable()->customMessage[msg_cnt][i-spliter_pos] = customRawMessage[i];
+                    else
+                        break;
+                }
+                spliter_pos = i + 1;
             }
         }
         break;

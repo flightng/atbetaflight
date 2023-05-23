@@ -1476,7 +1476,7 @@ static void osdElementWarnings(osdElementParms_t *element)
     }
 }
 
-static void osdElementCustomMessage(osdElementParms_t *element)
+static void osdElementCustomMessage1(osdElementParms_t *element)
 {
     //display string from msp, without handle
     if (strlen(customMsgConfig()->message1) == 0) {
@@ -1484,9 +1484,8 @@ static void osdElementCustomMessage(osdElementParms_t *element)
     } else {
         unsigned i;
         for (i = 0; i < MAX_CUSTOM_MSG_LENGTH; i++) {
-            if (customMsgConfig()->message1[i]) {
-                element->buff[i] = customMsgConfig()->message1[i];
-                //element->buff[i] = toupper((unsigned char)customMsgConfig()->message1[i]);
+            if (customMsgConfig()->customMessage[0][i]) {
+                element->buff[i] = customMsgConfig()->customMessage[0][i];
             } else {
                 break;
             }
@@ -1494,7 +1493,40 @@ static void osdElementCustomMessage(osdElementParms_t *element)
         element->buff[i] = '\0';
     }
 }
-
+static void osdElementCustomMessage2(osdElementParms_t *element)
+{
+    //display string from msp, without handle
+    if (strlen(customMsgConfig()->message1) == 0) {
+        strcpy(element->buff, "LAPTIMER");
+    } else {
+        unsigned i;
+        for (i = 0; i < MAX_CUSTOM_MSG_LENGTH; i++) {
+            if (customMsgConfig()->customMessage[1][i]) {
+                element->buff[i] = customMsgConfig()->customMessage[1][i];
+            } else {
+                break;
+            }
+        }
+        element->buff[i] = '\0';
+    }
+}
+static void osdElementCustomMessage3(osdElementParms_t *element)
+{
+    //display string from msp, without handle
+    if (strlen(customMsgConfig()->message1) == 0) {
+        strcpy(element->buff, "VER_1.0");
+    } else {
+        unsigned i;
+        for (i = 0; i < MAX_CUSTOM_MSG_LENGTH; i++) {
+            if (customMsgConfig()->customMessage[2][i]) {
+                element->buff[i] = customMsgConfig()->customMessage[2][i];
+            } else {
+                break;
+            }
+        }
+        element->buff[i] = '\0';
+    }
+}
 // Define the order in which the elements are drawn.
 // Elements positioned later in the list will overlay the earlier
 // ones if their character positions overlap
@@ -1695,7 +1727,9 @@ const osdElementDrawFn osdElementDrawFunction[OSD_ITEM_COUNT] = {
 #ifdef USE_PERSISTENT_STATS
     [OSD_TOTAL_FLIGHTS]           = osdElementTotalFlights,
 #endif
-    [OSD_CUSTOM_MESSAGE]          = osdElementCustomMessage,
+    [OSD_CUSTOM_MESSAGE1]          = osdElementCustomMessage1,
+    [OSD_CUSTOM_MESSAGE2]          = osdElementCustomMessage2,
+    [OSD_CUSTOM_MESSAGE3]          = osdElementCustomMessage3,
 };
 
 // Define the mapping between the OSD element id and the function to draw its background (static part)

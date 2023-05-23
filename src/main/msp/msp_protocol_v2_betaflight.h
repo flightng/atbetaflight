@@ -25,4 +25,4 @@
 #define MSP2_GET_VTX_DEVICE_STATUS          0x3004
 #define MSP2_GET_OSD_WARNINGS               0x3005  // returns active OSD warning message text
 
-#define MSP2_SET_CUSTOM_OSD_INFO            0x3008  // for set self defined OSD message text
+#define MSP2_SET_CUSTOM_OSD_INFO            0x4000  // for set self defined OSD message text
