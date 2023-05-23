@@ -1479,7 +1479,7 @@ static void osdElementWarnings(osdElementParms_t *element)
 static void osdElementCustomMessage1(osdElementParms_t *element)
 {
     //display string from msp, without handle
-    if (strlen(customMsgConfig()->>customMessage[0]) == 0) {
+    if (strlen(customMsgConfig()->customMessage[0]) == 0) {
         strcpy(element->buff, "READY_GO");
     } else {
         unsigned i;
@@ -1496,7 +1496,7 @@ static void osdElementCustomMessage1(osdElementParms_t *element)
 static void osdElementCustomMessage2(osdElementParms_t *element)
 {
     //display string from msp, without handle
-    if (strlen(customMsgConfig()->>customMessage[1]) == 0) {
+    if (strlen(customMsgConfig()->customMessage[1]) == 0) {
         strcpy(element->buff, "LAPTIMER");
     } else {
         unsigned i;
@@ -1513,7 +1513,7 @@ static void osdElementCustomMessage2(osdElementParms_t *element)
 static void osdElementCustomMessage3(osdElementParms_t *element)
 {
     //display string from msp, without handle
-    if (strlen(customMsgConfig()->>customMessage[2]) == 0) {
+    if (strlen(customMsgConfig()->customMessage[2]) == 0) {
         strcpy(element->buff, "VER_1.0");
     } else {
         unsigned i;
