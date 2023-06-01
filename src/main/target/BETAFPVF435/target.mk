@@ -5,7 +5,6 @@ FEATURES       +=  VCP ONBOARDFLASH
 
 TARGET_SRC = \
             drivers/accgyro/accgyro_spi_mpu6000.c \
-            drivers/accgyro/accgyro_spi_icm426xx.c\
             drivers/barometer/barometer_bmp280.c \
             drivers/barometer/barometer_dps310.c\
             $(ROOT)/lib/main/BoschSensortec/BMI270-Sensor-API/bmi270.c \

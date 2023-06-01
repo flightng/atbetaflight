@@ -91,7 +91,6 @@
 #define USE_GYRO
 // #define USE_GYRO_SPI_MPU6500  //debug only
 // #define USE_ACC_SPI_MPU6500		//debug only
-#define USE_GYRO_SPI_ICM42688P
 #define USE_ACCGYRO_BMI270
 #define USE_ACCGYRO_ASM330LHH
 #define USE_ACCGYRO_LSM6DSL
@@ -100,7 +99,6 @@
 #define USE_ACCGYRO_SH3001
 
 #define USE_ACC
-#define USE_ACC_SPI_ICM42688P
 
 
 // *************** OSD *****************************

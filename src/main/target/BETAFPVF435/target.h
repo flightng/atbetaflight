@@ -51,14 +51,12 @@
 
 #define USE_GYRO
 #define USE_GYRO_SPI_MPU6000
-#define USE_GYRO_SPI_ICM42688P
 #define GYRO_1_ALIGN            CW270_DEG
 
 #define USE_ACC
 #define USE_ACCGYRO_BMI270
 #define USE_ACC_SPI_MPU6000
 #define USE_ACCGYRO_LSM6DSO
-#define USE_ACC_SPI_ICM42688P
 
 // *************** Baro **************************
 #define USE_BARO
