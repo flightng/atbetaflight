@@ -23,6 +23,8 @@
 #define TARGET_BOARD_IDENTIFIER "BHER"
 #define USBD_PRODUCT_STRING     "BETAFPVF435"
 
+#define SYSTEM_HSE_MHZ        8
+
 #define LED0_PIN                PB5
 
 #define USE_BEEPER
