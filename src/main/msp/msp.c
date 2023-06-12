@@ -1952,13 +1952,13 @@ case MSP_NAME:
         sbufWriteU8(dst, 0); // reserved
         sbufWriteU16(dst, currentPidProfile->rateAccelLimit);
         sbufWriteU16(dst, currentPidProfile->yawRateAccelLimit);
-        sbufWriteU8(dst, currentPidProfile->levelAngleLimit);
-        sbufWriteU8(dst, 0); // was pidProfile.levelSensitivity
-        sbufWriteU16(dst, 0); // was currentPidProfile->itermThrottleThreshold
+        sbufWriteU8(dst,  currentPidProfile->levelAngleLimit);
+        sbufWriteU8(dst,  0); // was pidProfile.levelSensitivity
+        sbufWriteU16(dst, currentPidProfile->itermThrottleThreshold); // was currentPidProfile->itermThrottleThreshold
         sbufWriteU16(dst, currentPidProfile->itermAcceleratorGain);
         sbufWriteU16(dst, 0); // was currentPidProfile->dtermSetpointWeight
-        sbufWriteU8(dst, currentPidProfile->iterm_rotation);
-        sbufWriteU8(dst, 0); // was currentPidProfile->smart_feedforward
+        sbufWriteU8(dst,  currentPidProfile->iterm_rotation);
+        sbufWriteU8(dst,  0); // was currentPidProfile->smart_feedforward
 #if defined(USE_ITERM_RELAX)
         sbufWriteU8(dst, currentPidProfile->iterm_relax);
         sbufWriteU8(dst, currentPidProfile->iterm_relax_type);
@@ -2043,6 +2043,10 @@ case MSP_NAME:
 #else
         sbufWriteU8(dst, 0);
 #endif
+        sbufWriteU8(dst, currentControlRateProfile->tpaMode);
+        sbufWriteU8(dst, currentControlRateProfile->tpa_rate);
+        sbufWriteU16(dst, currentControlRateProfile->tpa_breakpoint);   // was currentControlRateProfile->tpa_breakpoint
+      
         break;
     case MSP_SENSOR_CONFIG:
 #if defined(USE_ACC)
@@ -2737,11 +2741,12 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
                 currentControlRateProfile->rates[i] = sbufReadU8(src);
             }
 
-  value = sbufReadU8(src);
-            currentControlRateProfile->tpa_rate = MIN(value, CONTROL_RATE_CONFIG_TPA_MAX);
+            value = sbufReadU8(src);
+            // currentControlRateProfile->tpa_rate = MIN(value, CONTROL_RATE_CONFIG_TPA_MAX);
             currentControlRateProfile->thrMid8 = sbufReadU8(src);            
             currentControlRateProfile->thrExpo8 = sbufReadU8(src);
-            currentControlRateProfile->tpa_breakpoint = sbufReadU16(src);   // tpa_breakpoint is moved to PID profile
+            // currentControlRateProfile->tpa_breakpoint = sbufReadU16(src);   // tpa_breakpoint is moved to PID profile
+            sbufReadU16(src); 
 
             if (sbufBytesRemaining(src) >= 1) {
                 currentControlRateProfile->rcExpo[FD_YAW] = sbufReadU8(src);
@@ -3203,9 +3208,9 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         }
         if (sbufBytesRemaining(src) >= 4) {
             // Added in API 1.45
-            sbufReadU8(src);
-            sbufReadU8(src);
-            sbufReadU16(src);
+            currentControlRateProfile->tpaMode = sbufReadU8(src);
+            currentControlRateProfile->tpa_rate = MIN(sbufReadU8(src), CONTROL_RATE_CONFIG_TPA_MAX);
+            currentControlRateProfile->tpa_breakpoint = sbufReadU16(src);
         }
 
         pidInitConfig(currentPidProfile);
