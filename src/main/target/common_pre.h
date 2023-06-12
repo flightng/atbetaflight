@@ -35,40 +35,6 @@
 //#define USE_UART1_TX_DMA
 //#endif
 
-#ifdef STM32F3
-#define MINIMAL_CLI
-#define USE_DSHOT
-#define USE_DYN_NOTCH_FILTER
-#define USE_CCM_CODE
-#endif
-
-#ifdef STM32F4
-#if defined(STM32F40_41xxx)
-#define USE_FAST_DATA
-#endif
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define USE_DYN_NOTCH_FILTER
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID
-#define USE_USB_MSC
-#define USE_PERSISTENT_MSC_RTC
-#define USE_MCO
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_PERSISTENT_OBJECTS
-#define USE_CUSTOM_DEFAULTS_ADDRESS
-#define USE_LATE_TASK_STATISTICS
-
-#if defined(STM32F40_41xxx) || defined(STM32F411xE)
-#define USE_OVERCLOCK
-#endif
-#endif // STM32F4
-
 #ifdef AT32F4
 #define USE_ITCM_RAM
 #define ITCM_RAM_OPTIMISATION "-O2"
@@ -91,71 +57,6 @@
 #define USE_LATE_TASK_STATISTICS
 #endif // AT32F4
 
-#ifdef STM32F7
-#define USE_ITCM_RAM
-#define ITCM_RAM_OPTIMISATION "-O2"
-#define USE_FAST_DATA
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define USE_DYN_NOTCH_FILTER
-#define USE_OVERCLOCK
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID
-#define USE_USB_MSC
-#define USE_PERSISTENT_MSC_RTC
-#define USE_MCO
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_PERSISTENT_OBJECTS
-#define USE_CUSTOM_DEFAULTS_ADDRESS
-#define USE_LATE_TASK_STATISTICS
-#endif // STM32F7
-
-#ifdef STM32H7
-#define USE_ITCM_RAM
-#define USE_FAST_DATA
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define USE_DYN_NOTCH_FILTER
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_PERSISTENT_OBJECTS
-#define USE_DMA_RAM
-#define USE_USB_MSC
-#define USE_RTC_TIME
-#define USE_PERSISTENT_MSC_RTC
-#define USE_DSHOT_CACHE_MGMT
-#define USE_LATE_TASK_STATISTICS
-#endif
-
-#ifdef STM32G4
-#define USE_FAST_RAM
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define USE_OVERCLOCK
-#define USE_DYN_NOTCH_FILTER
-#define USE_ADC_INTERNAL
-#define USE_USB_MSC
-#define USE_USB_CDC_HID
-#define USE_MCO
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_LATE_TASK_STATISTICS
-#endif
 
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(AT32F43x)
 #define TASK_GYROPID_DESIRED_PERIOD     125 // 125us = 8kHz
@@ -461,3 +362,35 @@ extern uint8_t _dmaram_end__;
 #define USE_VIDEO_SYSTEM
 #endif
 #endif
+
+
+#if (defined(USE_OSD_HD) || defined(USE_OSD_SD)) && !defined(USE_OSD)
+// If either USE_OSD_SD for USE_OSD_HD are defined, ensure that USE_OSD is also defined
+#define USE_OSD
+#endif
+
+
+#if defined(USE_OSD)
+
+#if !defined(USE_OSD_HD) && !defined(USE_OSD_SD)
+// If USE_OSD is defined without specifying SD or HD, then support both
+#define USE_OSD_SD
+#define USE_OSD_HD
+#endif
+
+#if !defined(USE_OSD_SD) && defined(USE_MAX7456)
+// If USE_OSD_SD isn't defined then explicitly exclude MAX7456 support
+#undef USE_MAX7456
+#endif
+
+#define USE_CANVAS
+#define USE_CMS
+#define USE_CMS_FAILSAFE_MENU
+#define USE_EXTENDED_CMS_MENUS
+#define USE_MSP_DISPLAYPORT
+#define USE_OSD_OVER_MSP_DISPLAYPORT
+#define USE_OSD_ADJUSTMENTS
+#define USE_OSD_PROFILES
+#define USE_OSD_STICK_OVERLAY
+
+#endif //end of USE_OSD
