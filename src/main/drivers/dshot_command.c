@@ -221,6 +221,7 @@ void dshotCommandWrite(uint8_t index, uint8_t motorCount, uint8_t command, dshot
             while (!motorGetVTable().decodeTelemetry() &&
                    cmpTimeUs(timeoutUs, micros()) > 0);
 #endif
+            motorGetVTable().updateInit();//prepare to set data
             for (uint8_t i = 0; i < motorDeviceCount(); i++) {
                 motorDmaOutput_t *const motor = getMotorDmaOutput(i);
                 motor->protocolControl.requestTelemetry = true;
