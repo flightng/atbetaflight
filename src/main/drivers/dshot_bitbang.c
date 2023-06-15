@@ -575,7 +575,7 @@ static bool bbDecodeTelemetry(void)
         }
 #endif
         for (int motorIndex = 0; motorIndex < MAX_SUPPORTED_MOTORS && motorIndex < motorCount; motorIndex++) {
-#if defined(STM32F4) || defined(AT32F4)
+#if defined(STM32F4)
             uint32_t rawValue = decode_bb_bitband(
                 bbMotors[motorIndex].bbPort->portInputBuffer,
                 bbMotors[motorIndex].bbPort->portInputCount,
