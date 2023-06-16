@@ -55,6 +55,10 @@
 #define USE_TIMER_MGMT
 #define USE_PERSISTENT_OBJECTS
 #define USE_LATE_TASK_STATISTICS
+#define USE_VTX
+#define USE_OSD
+#define USE_OSD_SD
+#define USE_OSD_HD
 #endif // AT32F4
 
 
