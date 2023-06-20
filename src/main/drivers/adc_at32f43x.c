@@ -290,7 +290,7 @@ void adcInit(const adcConfig_t *config)
 			adc_common_struct.sampling_interval = ADC_SAMPLING_INTERVAL_5CYCLES;
 			/* config inner temperature sensor and vintrv */
 			adc_common_struct.tempervintrv_state = TRUE;
-			adc_common_struct.vbat_state = TRUE;
+			adc_common_struct.vbat_state = FALSE;
 			/* config voltage battery */
 			adc_common_config(&adc_common_struct);
 		}
