@@ -36,7 +36,7 @@
 #define MAX_GCR_EDGES                   (22)
 
 // comment out to see frame dump of corrupted frames in dshot_telemetry_info
-#define DEBUG_BBDECODE
+// #define DEBUG_BBDECODE
 
 #ifdef USE_DSHOT_TELEMETRY_STATS
 #define DSHOT_TELEMETRY_QUALITY_WINDOW 1       // capture a rolling 1 second of packet stats
