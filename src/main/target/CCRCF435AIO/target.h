@@ -38,7 +38,7 @@
  * PH1 HEXT OUT
  * PB2 BOOT1 -> GND
  */
-
+#define SYSTEM_HSE_MHZ        8
 //No Buttons
 
 //LEDS
