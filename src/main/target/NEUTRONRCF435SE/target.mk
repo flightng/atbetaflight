@@ -23,6 +23,8 @@ TARGET_SRC = \
             drivers/accgyro/accgyro_spi_qmi8658_init.c \
             drivers/accgyro/accgyro_spi_qmi8658.c \
             drivers/accgyro/accgyro_spi_icm20689.c\
+            drivers/accgyro/accgyro_spi_bmi323_init.c\
+            drivers/accgyro/accgyro_spi_bmi323.c\
             drivers/max7456.c \
             drivers/vtx_rtc6705.c \
             drivers/vtx_rtc6705_soft_spi.c \
