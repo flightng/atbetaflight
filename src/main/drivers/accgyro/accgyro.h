@@ -65,6 +65,7 @@ typedef enum {
     GYRO_LSM6DSO,
     GYRO_QMI8658,
     GYRO_SH3001,
+    GYRO_BMI323,
     GYRO_FAKE
 } gyroHardware_e;
 
