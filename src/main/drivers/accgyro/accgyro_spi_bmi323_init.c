@@ -90,10 +90,10 @@ static void bmi323RegisterWrite(const extDevice_t *dev, bmi323Register_e registe
 
 static void bmi323RegisterWriteBits(const extDevice_t *dev, bmi323Register_e registerId, bmi323ConfigMasks_e mask, uint16_t value, unsigned delayMs)
 {
-    uint16_t newValue = bmi323RegisterRead(dev, registerID);
+    uint16_t newValue = bmi323RegisterRead(dev, registerId);
     delayMicroseconds(2);
     newValue = (newValue & ~mask) | value;
-    bmi323RegisterWrite(dev, registerID, newValue, delayMs);
+    bmi323RegisterWrite(dev, registerId, newValue, delayMs);
 }
 
 // Toggle the CS to switch the device into SPI mode.
@@ -118,13 +118,13 @@ uint8_t bmi323Detect(const extDevice_t *dev)
     return MPU_NONE;
 }
 
-uint8_t bmi323PerformCRT(const extDevice_t *dev)
+static void bmi323PerformCRT(const extDevice_t *dev)
 {
     // check self-test status
     uint16_t data = bmi323RegisterRead(dev, BMI323_REG_FEATURE_IO1);
     for (int i = 0; i < 3; i++)
     {
-        if ((data & BMI323_FEATURE_IO1_MASK_STATE) == 0x00)
+        if ((data & BMI323_MASK_FEATURE_IO1_STATE) == 0x00)
         {
             break;
         }
@@ -141,7 +141,7 @@ uint8_t bmi323PerformCRT(const extDevice_t *dev)
     // set crt option GYRO_OFFSET_EN GYRO_SENS_EN ,GYRO_APPLY_CORR TO AUTO APPLY TO OUTPUT  this is default value
     // NOOP
     // start self-calibration
-    bmi323RegisterWrite(dev, BMI323_REG_CMD, BMI323_CMD_GYRO_SELF_CALI, 500);
+    bmi323RegisterWrite(dev, BMI323_REG_CMD, BMI323_VAL_CMD_GYRO_SELF_CALI, 500);
     data = bmi323RegisterRead(dev, BMI323_REG_FEATURE_IO1);
     for (int i = 0; i < 6; i++)
     {
@@ -174,7 +174,7 @@ static void bmi323Config(gyroDev_t *gyro)
     // Perform a soft reset to set all configuration to default
     // Delay 100ms before continuing configuration
     bmi323EnableSPI(dev);
-    bmi323RegisterWrite(dev, BMI323_REG_CMD, BMI323_CMD_SOFT_RESET, 100);
+    bmi323RegisterWrite(dev, BMI323_REG_CMD, BMI323_VAL_CMD_SOFT_RESET, 100);
 
     // Toggle the chip into SPI mode
     bmi323EnableSPI(dev);
@@ -191,13 +191,6 @@ static void bmi323Config(gyroDev_t *gyro)
     bmi323RegisterWriteBits(dev, BMI323_REG_IO_INT_CTRL, BMI323_MASK_IO_INT_CTRL, BMI323_VAL_IO_INT_CTRL, 1);
     bmi323RegisterWriteBits(dev, BMI323_REG_INT_LATCH_CONF, BMI323_MASK_INT_LATCH_CONF, BMI323_VAL_INT_LATCH_CONF, 1);
     bmi323RegisterWriteBits(dev, BMI323_REG_INT_MAP2, BMI323_MASK_INT_MAP2, BMI323_VAL_INT_MAP2, 1);
-}
-
-static void bmi323_init(extDevice_t *dev)
-{
-    bmi323EnableSPI(dev);
-    bmi323RegisterWrite(dev, BMI323_REG_CMD, BMI323_CMD_SOFT_RESET, 100);
-    bmi323EnableSPI(dev);
 }
 
 #ifdef USE_GYRO_EXTI
