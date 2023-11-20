@@ -209,6 +209,7 @@ typedef enum {
     QMI_8658_SPI,
     L3GD20_SPI,
     SH3001_SPI,
+    BMI_323_SPI,
 } mpuSensor_e;
 
 typedef enum {
