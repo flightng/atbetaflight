@@ -1,7 +1,5 @@
 /*
- * This file is part of AtBetaflight a fork of Betaflight 
- * @author EMSR(shanggl@wo.cn)
- * 
+ * This file is part of ATBetaflight
  */
 
 #include <stdbool.h>
