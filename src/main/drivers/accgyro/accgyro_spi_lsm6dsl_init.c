@@ -232,7 +232,7 @@ bool lsm6dslSpiGyroDetect(gyroDev_t *gyro)
 
     gyro->initFn = lsm6dslSpiGyroInit;
     gyro->readFn = lsm6dslGyroRead;
-    gyro->scale = GYRO_SCALE_2000DPS;
+    gyro->scale = 0.07f;
 
     return true;
 }

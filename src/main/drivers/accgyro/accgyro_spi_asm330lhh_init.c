@@ -237,7 +237,7 @@ bool asm330lhhSpiGyroDetect(gyroDev_t *gyro)
 
     gyro->initFn = asm330lhhSpiGyroInit;
     gyro->readFn = asm330lhhGyroRead;
-    gyro->scale = GYRO_SCALE_2000DPS;
+    gyro->scale = 0.07f;
 
     return true;
 }
